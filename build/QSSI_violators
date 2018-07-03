@@ -1,0 +1,180 @@
+#!/bin/sh
+
+# This script parses the ninja file and finds all QSSI violators if no component name is given; else finds violators based on component related string given as argument.
+# Run the script from the root directory of your workspace.
+# To know the usage, type ./QSSI_violators --help
+
+QSSI_WHITELIST_FILE="$QCPATH/release/QSSI/QSSI_whitelist.txt"
+QSSI_ENFORCED_FILE="$QCPATH/release/QSSI/QSSI_enforced_projects.txt"
+QSSI_VIOLATORS_OUTPUT_FILE="$OUT/QSSI_violators.txt"
+TARGET_NINJA="out/build-$TARGET_PRODUCT.ninja"
+
+AWK=`which awk`
+AWK=${AWK:-awk}
+CAT=`which cat`
+CAT=${CAT:-cat}
+ECHO=`which echo`
+ECHO=${ECHO:-echo}
+EGREP=`which egrep`
+EGREP=${EGREP:-egrep}
+GREP=`which grep`
+GREP=${GREP:-grep}
+MV=`which mv`
+MV=${MV:-mv}
+RM=`which rm`
+RM=${RM:-rm}
+SED=`which sed`
+SED=${SED:-sed}
+SORT=`which sort`
+SORT=${SORT:-sort}
+TOUCH=`which touch`
+TOUCH=${TOUCH:-touch}
+
+ninja_split()
+{
+  ${RM} -f $3
+  ${CAT} $2 | ${AWK} -v pstr=$1 '
+    BEGIN {c=0;m=0;i=0;mstr="";istr="";
+           if (match(pstr, "host")) {pmatch="out/";}
+           else {pmatch="out/target/product/([[:alnum:]]|_)+/";}
+          }
+    /^ command = / {c=1;mstr="";istr="";}
+    /--makefile /  {if (c==1) {
+                      idx=match($0, "--makefile ([[:graph:]]+)");
+                      if (idx) {mstr=substr($0, RSTART+11, RLENGTH-11);m=1;}
+                    }
+                   }
+    /Install: /    {if (m==1) {
+                      idx=match($0, "Install: ([[:graph:]]+)");
+                      if (idx) istr=substr($0, RSTART+9, RLENGTH-9);
+                      idx=match(istr, pmatch pstr);
+                      if (idx && (mstr!="")) {print mstr " " istr;}
+                    }
+                    c=0;m=0;
+                   }
+  ' > $3.tmp
+
+  ${CAT} $2 | ${GREP} "rspfile_content" | ${GREP} '"class":' | ${SED} 's#\\n#\n#g' | ${AWK} -v pstr=$1 '
+    BEGIN {c=0;m=0;i=0;mstr="";istr="";
+           if (match(pstr, "host")) {pmatch="out/";}
+           else {pmatch="out/target/product/([[:alnum:]]|_)+/";}
+          }
+    /"class": \[/       {c=1;mstr="";istr="";}
+    /"path": \[/        {if (c==1) {
+                         idx=match($0, "[[:punct:]]path[[:punct:]]: [[[:punct:]]([[:graph:]]+)");
+                         if (idx) {mstr=substr($0, RSTART+10, RLENGTH-12);m=1;}
+                         }
+                        }
+    /"installed": \[/   {if (m==1) {
+                         idx=match($0, "[[:punct:]]installed[[:punct:]]: [[[:punct:]]([^]]+)");
+                         if (idx) {istr=substr($0, RSTART+14, RLENGTH-16);m=1;}
+                         idx=match(istr, pmatch pstr);
+                         if (idx && (mstr!="")) {gsub(","," ",istr);gsub("\"","",istr);split(istr,iarr," ");
+                           for (x in iarr) {print mstr " " iarr[x];}}
+                         }
+                         c=0;m=0;
+                        }
+  ' >> $3.tmp
+
+  ${CAT} $3.tmp | sort | ${EGREP} -v "^out\/soong\/" > $3
+
+  if [ ! "$2" == "host" ]; then
+    ${MV} $3 $3.tmp
+    ${CAT} $3.tmp | ${GREP} -v " out\/host\/" > $3
+  fi
+  ${RM} -f $3.tmp
+}
+
+# Main shell script starts here
+#1 Check for qssi supported on this target or not
+if [ "$TARGET_PRODUCT" != 'sdm845' ] &&  [ "$TARGET_PRODUCT" != 'sdm710' ]; then
+    ${ECHO} "QSSI: not enabled for" "$TARGET_PRODUCT" "target"
+    exit 0
+fi
+
+#2 check qssi enforced file and whitelist file size greater than zero or not
+if [ ! -s $QSSI_ENFORCED_FILE ] | [ ! -f $QSSI_WHITELIST_FILE ] ; then
+    exit 0
+fi
+
+#3 check out/build-XXX.ninja file size greater than zero or not
+if [ ! -s $TARGET_NINJA ]; then
+    exit 0
+fi
+
+if [ -s $QSSI_VIOLATORS_OUTPUT_FILE ]; then
+    ${RM} $QSSI_VIOLATORS_OUTPUT_FILE
+fi
+
+while test $# -gt 0; do
+    case "$TARGET_NINJA" in
+        -h|--help)
+        ${ECHO} "usage : ./QSSI_violators <ninja file path>"
+        ${ECHO} "        Example : ./QSSI_violators out/build-sdm845.ninja"
+        ${ECHO} "        -> for getting the list of violators based on QSSI_enforced_projects.txt and QSSI_whitelist.txt"
+        ${ECHO} "           ./QSSI_violators <ninja file path> <component name string to grep>"
+        ${ECHO} "        Example : ./QSSI_violators out/build-sdm845.ninja gfx or ./QSSI_violators out/build-sdm845.ninja display.lnx"
+        ${ECHO} "        -> for getting the list of violators for the component corresponding to the component string\n\n"
+        exit 0
+        ;;
+        *)
+        break
+        ;;
+    esac
+done
+
+# Generate the ninja-split files if they do not exist
+if [ ! -s $OUT/qssi-system.txt ]; then
+    ninja_split system $TARGET_NINJA $OUT/qssi-system.txt
+fi
+if [ ! -s $OUT/qssi-vendor.txt ]; then
+    ninja_split vendor $TARGET_NINJA $OUT/qssi-vendor.txt
+fi
+if [ ! -s $OUT/qssi-root.txt ]; then
+    ninja_split root $TARGET_NINJA $OUT/qssi-root.txt
+fi
+
+# Search for violators based on QSSI_enforced_projects.txt and QSSI_whitelist.txt or based on component-name
+if [ -s $TARGET_NINJA ]; then
+    ${ECHO} "QSSI: Finding QSSI violators..."
+
+    ${AWK} 'ARGV[1] == FILENAME{a[$0];next} {
+        for (i in a) {
+            if(match($1,i)) print $0
+        }
+    }' $QSSI_ENFORCED_FILE $OUT/qssi-system.txt | ${AWK} '!x[$0]++' > violators.tmp
+
+    ${AWK} 'ARGV[1] == FILENAME{a[$0];next} {
+        for (i in a) {
+            if(i == $0){
+                c++
+            }
+        }
+        if (c==0) {
+            c=1; print $0
+        }
+        c=0;
+    }' $QSSI_WHITELIST_FILE violators.tmp | ${AWK} '!x[$0]++' > $QSSI_VIOLATORS_OUTPUT_FILE
+
+    ${RM} -f *.tmp
+    if [ ! -s $QSSI_VIOLATORS_OUTPUT_FILE ]; then
+        ${ECHO} "QSSI: no QSSI violators found !"
+    else
+        ${ECHO} "QSSI: violators are:"
+        ${ECHO} "Start-->"
+        ${CAT} $QSSI_VIOLATORS_OUTPUT_FILE
+        ${ECHO} "<--End"
+        ${ECHO} "QSSI: violators also written to" "$QSSI_VIOLATORS_OUTPUT_FILE"
+        exit 0
+    fi
+else
+    ${ECHO} "Finding QSSI violators ..."
+    ${AWK} '!x[$0]++' violators.txt | ${TEE} $2.txt && ${ECHO} "\n\n"
+    if [ ! -s $2.txt ]; then
+        ${ECHO} "No QSSI violators found !"
+    else
+        ${ECHO} "QSSI violators written to" "$2"
+    fi
+    ${RM} violators.txt
+    exit 0
+fi
