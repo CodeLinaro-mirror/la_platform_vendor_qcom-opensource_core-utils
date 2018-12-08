@@ -103,7 +103,7 @@ process_names=(system_server cameraserver audioserver surfaceflinger vold)
 target=`getprop ro.board.platform`
 
 case "$target" in
-    "talos")
+    "sm6150")
         process_arguments $1
         ;;
     *)
