@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2019, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,19 +27,29 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <string.h>
-#include <cutils/properties.h>
+package com.qualcomm.qti;
 
-#include "vndfwk-detect.h"
+import android.util.Log;
 
-#define VALUEADD_AOSP_SUPPORT_PROPERTY "ro.vendor.qti.va_aosp.support"
+public class VndFwkDetect
+{
+    private static final String TAG = "VndFwkDetect";
 
-int isRunningWithVendorEnhancedFramework() {
-    bool va_aosp_support = false;
-    va_aosp_support = property_get_bool(VALUEADD_AOSP_SUPPORT_PROPERTY, false);
+    static {
+        try {
+            System.loadLibrary("vndfwk_detect_jni.qti");
+        } catch (Exception ex) {
+            Log.d(TAG, "Cannot load libvndfwk_detect_jni.qti shared library!!!");
+            ex.printStackTrace();
+        }
+    }
 
-    if (va_aosp_support)
-        return 1;
+    public VndFwkDetect() {
+    }
 
-    return 0;
+    public int isRunningWithVendorEnhancedFramework() {
+        return native_isRunningWithVendorEnhancedFramework();
+    }
+
+    private native int native_isRunningWithVendorEnhancedFramework();
 }
