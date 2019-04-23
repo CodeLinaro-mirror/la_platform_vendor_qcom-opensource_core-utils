@@ -131,7 +131,7 @@ int main () {
                 ALOGI("Uevent received for SUBSYS_AFTER_POWERUP notification for '%s' subsystem, uevent object = { '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d }\n", uevent.subsystem, \
         uevent.action, uevent.path, uevent.subsystem, uevent.firmware, uevent.partition_name, uevent.device_name, \
         uevent.notification, uevent.partition_num, uevent.major, uevent.minor);
-                property_set("sys.vendor.notify_after_powerup.subsys", uevent.subsystem);
+                property_set("vendor.notify_after_powerup.subsys", uevent.subsystem);
             }
         }
     }
