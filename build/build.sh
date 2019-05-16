@@ -79,7 +79,7 @@ QSSI_ARGS_WITHOUT_DIST=""
 DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("msmnile")
+DIST_ENABLED_TARGET_LIST=("sdm710" "sdm845" "msmnile" "sm6150")
 
 for ARG in $QSSI_ARGS
 do
@@ -204,11 +204,9 @@ else # For QSSI targets
 
     command "source build/envsetup.sh"
     command "lunch qssi-${TARGET_BUILD_VARIANT}"
-    command "make bootimage $QSSI_ARGS_WITHOUT_DIST"
+    command "$QTI_BUILDTOOLS_DIR/build/kheaders-dep-scanner.sh"
     command "make $QSSI_ARGS"
-
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    command "make bootimage $QSSI_ARGS_WITHOUT_DIST"
     command "make $QSSI_ARGS"
 
     # Copy Qssi system.img to target folder so that all images can be picked up from one folder
