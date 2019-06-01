@@ -519,3 +519,34 @@ endif
 ifneq ($(BOARD_RECOVERY_KERNEL_MODULES),)
 $(BOARD_RECOVERY_KERNEL_MODULES): $(INSTALLED_BOOTIMAGE_TARGET)
 endif
+
+ifeq ($(BOARD_SUPPORTS_EARLY_INIT), true)
+#----------------------------------------------------------------------
+# Generate earlyrootfs image (earlyrootfs.img)
+#----------------------------------------------------------------------
+
+TARGET_OUT_EARLY_FS := $(PRODUCT_OUT)/earlyrootfs
+
+INTERNAL_EARLY_IMAGE_FILES := \
+	$(filter $(TARGET_OUT_EARLY_FS)/%,$(ALL_DEFAULT_INSTALLED_MODULES))
+
+INSTALLED_EARLY_IMAGE_TARGET := $(PRODUCT_OUT)/earlyrootfs.img
+
+define build-earlyrootfsimage-target
+    $(call pretty,"Target earlyrootfs fs image: $(INSTALLED_EARLY_IMAGE_TARGET)")
+    @mkdir -p $(TARGET_OUT_EARLY_FS)
+    $(hide) $(MKEXTUSERIMG) $(TARGET_OUT_EARLY_FS) $@ ext4 earlyrootfs $(BOARD_EARLY_IMAGE_PARTITION_SIZE)
+    $(hide) chmod a+r $@
+    $(hide) $(call assert-max-image-size,$@,$(BOARD_EARLY_IMAGE_PARTITION_SIZE))
+endef
+
+$(INSTALLED_EARLY_IMAGE_TARGET): $(MKEXTUSERIMG) $(MAKE_EXT4FS) $(INTERNAL_EARLY_IMAGE_FILES)
+	$(build-earlyrootfsimage-target)
+
+ALL_DEFAULT_INSTALLED_MODULES += $(INSTALLED_EARLY_IMAGE_TARGET)
+ALL_MODULES.$(LOCAL_MODULE).INSTALLED += $(INSTALLED_EARLY_IMAGE_TARGET)
+
+.PHONY: earlyfsimage
+earlyrootfsimage: $(INSTALLED_EARLY_IMAGE_TARGET)
+
+endif
