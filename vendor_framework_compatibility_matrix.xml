@@ -454,6 +454,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </interface>
     </hal>
     <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.fstman</name>
+        <version>1.0</version>
+        <interface>
+            <name>IFstManager</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
         <name>vendor.qti.imsrtpservice</name>
         <version>2.0-1</version>
         <interface>
@@ -523,7 +531,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
    <hal format="hidl" optional="true">
         <name>vendor.display.config</name>
-        <version>1.0-11</version>
+        <version>1.0-15</version>
         <interface>
             <name>IDisplayConfig</name>
             <instance>default</instance>
@@ -754,6 +762,15 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <interface>
             <name>IPostProcService</name>
             <instance>camerapostprocservice</instance>
+        </interface>
+    </hal>
+    <!-- eMBMS HAL service -->
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.embmssl</name>
+        <version>1.0</version>
+        <interface>
+            <name>IEmbms</name>
+            <instance>embmsslServer0</instance>
         </interface>
     </hal>
 </compatibility-matrix>
