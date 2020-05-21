@@ -38,26 +38,41 @@ import tempfile
 from subprocess import call
 from zipfile import ZipFile
 
+'''
+Script Versioning:
+
+Version 1.0:
+  Supports the following:
+  - Generates the Super image from the given Qssi and target builds.
+  - Outputs OTA zip as well, optionally.
+  - Enforces QIIFA checks, to ensure Qssi and target builds being combined
+    and compatible with each other.
+'''
+__version__ = '1.0'
+
 logger = logging.getLogger(__name__)
 
-BUILD_TOOLS_ZIP = "buildtools/buildtools.zip"
-OUT_DIST        = "out/dist/"
-OUT_QSSI        = "out/target/product/qssi/"
-OUT_TARGET      = "" # will be set later, as per lunch
-QIIFA_DIR       = "QIIFA"
+BUILD_TOOLS_ZIP  = "buildtools/buildtools.zip"
+OUT_DIST         = "out/dist/"
+OUT_QSSI         = "out/target/product/qssi/"
+OUT_TARGET       = "" # will be set later, as per lunch
+QIIFA_DIR_QSSI   = "QIIFA_QSSI"
+QIIFA_DIR_TARGET = "QIIFA_TARGET"
 
 # QSSI build's OUT_DIST artifacts (pattern supported):
 QSSI_OUT_DIST_ARTIFACTS = (
     'otatools.zip',
-    BUILD_TOOLS_ZIP,
-    'qssi*-target_files-*.zip'
+    BUILD_TOOLS_ZIP
 )
+
+QSSI_TARGET_FILES_ZIP = "qssi*-target_files-*.zip"
 
 # TARGET build's OUT_DIST artifacts (pattern supported):
 TARGET_OUT_DIST_ARTIFACTS = (
     'merge_config_*',
-    '*-target_files-*.zip'
 )
+
+TARGET_TARGET_FILES_ZIP = "-target_files-*.zip"
 
 # MERGED build's OUT_DIST OTA related artifacts that are optionally backed up
 # along with super.img via "--output_ota" arg (pattern supported):
@@ -103,7 +118,7 @@ def copy_items(from_dir, to_dir, files, list_identifier):
         os.makedirs(copied_file_dir)
       shutil.copyfile(original_file_path, copied_file_path)
 
-def copy_pattern_items(from_dir, to_dir, patterns, list_identifier):
+def copy_pattern_items(from_dir, to_dir, patterns, list_identifier, enforce_single_item_only=False):
   file_paths = []
   for dirpath, _, filenames in os.walk(from_dir):
     file_paths.extend(
@@ -112,18 +127,30 @@ def copy_pattern_items(from_dir, to_dir, patterns, list_identifier):
 
   filtered_file_paths = set()
   for pattern in patterns:
-    filtered_file_paths.update(fnmatch.filter(file_paths, pattern))
+    filtered_file_path = fnmatch.filter(file_paths, pattern)
+    if enforce_single_item_only and len(filtered_file_path) > 1:
+      logging.error("FAILED: Multiple conflicting files found at " + from_dir  + " for "+ list_identifier + ": " +str(filtered_file_path))
+      logging.error("Please ensure there is only one valid file and re-run.")
+      sys.exit(1)
+    filtered_file_paths.update(filtered_file_path)
   if len(filtered_file_paths) == 0:
-    logging.error("FAILED: Files: "+ list_identifier + ":" +str(patterns)+ " not found")
+    logging.error("FAILED: File: "+ list_identifier + ":" +str(patterns)+ " not found")
     sys.exit(1)
   copy_items(from_dir, to_dir, filtered_file_paths, list_identifier)
 
 def fetch_build_artifacts(temp_dir, qssi_build_path, target_build_path,
                         target_lunch):
   copy_pattern_items(qssi_build_path + "/" + OUT_DIST, temp_dir + "/" + OUT_DIST, QSSI_OUT_DIST_ARTIFACTS, "QSSI_OUT_DIST_ARTIFACTS")
+  copy_pattern_items(qssi_build_path + "/" + OUT_DIST, temp_dir + "/" + OUT_DIST, (QSSI_TARGET_FILES_ZIP,), "QSSI_TARGET_FILES_ZIP", True)
   copy_pattern_items(target_build_path + "/" + OUT_DIST, temp_dir + "/" + OUT_DIST, TARGET_OUT_DIST_ARTIFACTS, "TARGET_OUT_DIST_ARTIFACTS")
+  copy_pattern_items(target_build_path + "/" + OUT_DIST, temp_dir + "/" + OUT_DIST, (target_lunch + TARGET_TARGET_FILES_ZIP,), "TARGET_TARGET_FILES_ZIP", True)
   with ZipFile(temp_dir + "/" + OUT_DIST + BUILD_TOOLS_ZIP, 'r') as zipObj:
     zipObj.extractall(temp_dir)
+
+def qiifa_abort(error_msg):
+    logging.error(error_msg)
+    logging.error("Use --skip_qiifa argument to intentionally skip Qiifa checking (but this may just defer the real Qssi and target incompatibility issues until later)")
+    sys.exit(1)
 
 def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch):
   logging.info("Starting QIIFA checks (to determine if the builds are compatible with each other):")
@@ -137,28 +164,27 @@ def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_
 
   # Fetch the QIIFA script
   QIIFA_SCRIPT = "qiifa_py2"
-  if os.path.exists(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR + "/" + QIIFA_SCRIPT):
+  if os.path.exists(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI + "/" + QIIFA_SCRIPT):
     # Check for QIIFA script from $OUT_QSSI/QIIFA path first
-    copy_items(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR + "/", QIIFA_CHECKS_DIR_PATH, [QIIFA_SCRIPT], "QIIFA_SCRIPT")
+    copy_items(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI + "/", QIIFA_CHECKS_DIR_PATH, [QIIFA_SCRIPT], "QIIFA_SCRIPT")
   elif os.path.exists(qssi_build_path + "/out/host/linux-x86/bin/" + QIIFA_SCRIPT):
     # Check for QIIFA script from host path if above one is not found
     copy_items(qssi_build_path + "/out/host/linux-x86/bin/", QIIFA_CHECKS_DIR_PATH, [QIIFA_SCRIPT], "QIIFA_SCRIPT")
   else:
-    logging.info("QIIFA script not found, skipping QIIFA check")
-    return
+    qiifa_abort("QIIFA script: " + QIIFA_SCRIPT + " not found !")
 
   # Copy QIIFA cmds:
-  if not os.path.exists(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR):
-    logging.info("QIIFA cmd on QSSI side not found, skipping QIIFA check")
-    return
+  QIIFA_DIR_QSSI_PATH = qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI
+  if not os.path.exists(QIIFA_DIR_QSSI_PATH):
+    qiifa_abort("QIIFA cmd on QSSI side not found: " + QIIFA_DIR_QSSI_PATH)
   else:
-    copy_items(qssi_build_path + "/" + OUT_QSSI, QIIFA_CHECKS_DIR_PATH_QSSI, [QIIFA_DIR], "QIIFA_QSSI")
+    copy_items(qssi_build_path + "/" + OUT_QSSI, QIIFA_CHECKS_DIR_PATH_QSSI, [QIIFA_DIR_QSSI], "QIIFA_QSSI")
 
-  if not os.path.exists(target_build_path + "/" + OUT_TARGET + "/" + QIIFA_DIR):
-    logging.info("QIIFA cmd on Target side not found, skipping QIIFA check")
-    return
+  QIIFA_DIR_TARGET_PATH = target_build_path + "/" + OUT_TARGET + "/" + QIIFA_DIR_TARGET
+  if not os.path.exists(QIIFA_DIR_TARGET_PATH):
+    qiifa_abort("QIIFA cmd on Target side not found: " + QIIFA_DIR_TARGET_PATH)
   else:
-    copy_items(target_build_path + "/" + OUT_TARGET, QIIFA_CHECKS_DIR_PATH_TARGET, [QIIFA_DIR], "QIIFA_TARGET")
+    copy_items(target_build_path + "/" + OUT_TARGET, QIIFA_CHECKS_DIR_PATH_TARGET, [QIIFA_DIR_TARGET], "QIIFA_TARGET")
 
   # Run QIIFA
   os.chdir(QIIFA_CHECKS_DIR_PATH)
@@ -170,10 +196,10 @@ def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_
     logging.info("QIIFA checks Passed, builds are compatible !")
     copy_items(temp_dir, merged_build_path, [QIIFA_CHECKS_DIR], "QIIFA_CHECKS_DIR_BACKUP")
   else:
-    logging.warning("QIIFA checks failed, Qssi and Target builds not compatible, continuing since we are in warning mode.")
+    qiifa_abort("QIIFA checks failed, Qssi and Target builds not compatible, aborting.")
 
 def build_superimage(temp_dir, qssi_build_path, target_build_path,
-                 merged_build_path, target_lunch, output_ota):
+                 merged_build_path, target_lunch, output_ota, skip_qiifa):
   logging.info("Starting up builds merge..")
   logging.info("QSSI build path = " + qssi_build_path)
   logging.info("Target build path = " + target_build_path)
@@ -190,7 +216,8 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
   assert_path_writable(merged_build_path)
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
-  run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch)
+  if not skip_qiifa:
+    run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch)
 
   # Fetch the build artifacts to temp dir
   fetch_build_artifacts(temp_dir, qssi_build_path, target_build_path,
@@ -244,6 +271,10 @@ def main():
                     help="Keep tmp dir for debugging", action='store_true')
   parser.add_argument("--output_ota",  dest='output_ota',
                     help="Outputs OTA related zips additionally", action='store_true')
+  parser.add_argument("--skip_qiifa",  dest='skip_qiifa',
+                    help="Skips QIIFA checks (but this may just defer the real Qssi and target incompatibility issues until later)", action='store_true')
+  parser.add_argument('--version', action='version', version=__version__)
+
   args = parser.parse_args()
 
   if args.image == "super":
@@ -254,7 +285,8 @@ def main():
             target_build_path=os.path.abspath(args.target_build_path),
             merged_build_path=os.path.abspath(args.merged_build_path),
             target_lunch=args.target_lunch,
-            output_ota=args.output_ota), args.keep_tmp)
+            output_ota=args.output_ota,
+            skip_qiifa=args.skip_qiifa), args.keep_tmp)
   else:
     logging.error("No support to build \"" + args.image + "\" image, exiting..")
 
