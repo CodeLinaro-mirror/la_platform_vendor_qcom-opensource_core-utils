@@ -29,7 +29,6 @@ service vendor.manifest-sku /vendor/bin/init.qti.manifest_sku.sh
     user root
     group root
     oneshot
-    seclabel u:r:vendor_init:s0
 
 on early-init
   start vendor.manifest-sku
