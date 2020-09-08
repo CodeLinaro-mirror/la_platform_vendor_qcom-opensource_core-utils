@@ -818,6 +818,16 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>camerapostprocservice</instance>
         </interface>
     </hal>
+    <!-- Audio Graph Manager service -->
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.AGMIPC</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IAGM</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <!-- eMBMS HAL service -->
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.embmssl</name>
@@ -870,5 +880,4 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            <instance>qccsyshal</instance>
        </interface>
     </hal>
-
 </compatibility-matrix>
