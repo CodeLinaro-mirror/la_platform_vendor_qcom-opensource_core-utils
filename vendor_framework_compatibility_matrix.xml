@@ -48,7 +48,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.perf</name>
-         <version>2.0-1</version>
+         <version>2.0-2</version>
          <interface>
             <name>IPerf</name>
             <instance>default</instance>
@@ -440,6 +440,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </interface>
     </hal>
     <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.qconfig</name>
+        <version>1.0</version>
+        <interface>
+            <name>IQConfig</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.dsp</name>
         <version>1.0</version>
         <interface>
@@ -519,7 +527,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.wifi.supplicant</name>
-        <version>2.0</version>
+        <version>2.0-2</version>
         <interface>
             <name>ISupplicantVendor</name>
             <instance>default</instance>
@@ -845,7 +853,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.spu</name>
-        <version>1.0</version>
+        <version>1.0-1</version>
         <interface>
             <name>ISPUManager</name>
             <instance>default</instance>
