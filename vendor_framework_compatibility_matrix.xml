@@ -337,7 +337,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
-           <version>1.0-6</version>
+           <version>1.0-7</version>
            <interface>
                <name>IImsRadio</name>
                <instance>imsradio0</instance>
@@ -373,7 +373,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.radio.qtiradio</name>
         <version>1.0</version>
-        <version>2.0-5</version>
+        <version>2.0-6</version>
         <interface>
             <name>IQtiRadio</name>
             <instance>slot1</instance>
@@ -785,7 +785,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <!-- Trusted UI HAL Service -->
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.trustedui</name>
-        <version>1.0-1</version>
+        <version>1.0-2</version>
         <interface>
             <name>ITrustedUI</name>
             <instance>default</instance>
@@ -936,4 +936,13 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        </interface>
     </hal>
 
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.qesdhal</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IQesdhal</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
