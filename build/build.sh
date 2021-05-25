@@ -488,6 +488,7 @@ function full_build () {
     fi
     merge_only
 }
+
 function nonqssi_legacy_build () {
     command "source build/envsetup.sh"
     if [ "$DP_IMAGES_OVERRIDE" = true ]; then
@@ -545,20 +546,6 @@ do
         break
     fi
 done
-
-function nonqssi_legacy_build () {
-    command "source build/envsetup.sh"
-    if [ "$DP_IMAGES_OVERRIDE" = true ]; then
-        ARGS=${ARGS//"--dp_images_path=$DYNAMIC_PARTITIONS_IMAGES_PATH"/}
-    fi
-    command "make $ARGS"
-    if [ "$DIST_ENABLED" = true ] && [ "$BOARD_DYNAMIC_PARTITION_ENABLE" = true ]; then
-        check_if_file_exists "$DIST_DIR/super.img"
-        log "${TARGET_PRODUCT} copy $DIST_DIR/super.img to $OUT/ "
-        command "cp $DIST_DIR/super.img $OUT/"
-        command "unzip -jo $LEGACY_TARGET_FILES IMAGES/*.img -d $DYNAMIC_PARTITIONS_IMAGES_PATH"
-    fi
-}
 
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
