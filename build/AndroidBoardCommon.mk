@@ -54,7 +54,7 @@ endif
 # is included before build/core/Makefile, where it is required to
 # set the dependencies on prebuilt_dtbo.img based on definition of
 # BOARD_PREBUILT_DTBOIMAGE
-ifneq ($(strip $(BOARD_KERNEL_SEPARATED_DTBO)),)
+ifeq ($(strip $(BOARD_KERNEL_SEPARATED_DTBO)),true)
 ifndef BOARD_PREBUILT_DTBOIMAGE
 BOARD_PREBUILT_DTBOIMAGE := $(PRODUCT_OUT)/prebuilt_dtbo.img
 endif
