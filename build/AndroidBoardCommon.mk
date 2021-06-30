@@ -12,8 +12,8 @@ DSP_MOUNT_POINT := $(TARGET_OUT_VENDOR)/dsp
 PERSIST_MOUNT_POINT := $(TARGET_ROOT_OUT)/persist
 ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) \
 				 $(BT_FIRMWARE_MOUNT_POINT) \
-				 $(DSP_MOUNT_POINT) \
-				 $(PERSIST_MOUNT_POINT)
+				 $(DSP_MOUNT_POINT)
+
 $(FIRMWARE_MOUNT_POINT):
 	@echo "Creating $(FIRMWARE_MOUNT_POINT)"
 	@mkdir -p $(TARGET_OUT_VENDOR)/firmware_mnt
@@ -54,7 +54,7 @@ endif
 # is included before build/core/Makefile, where it is required to
 # set the dependencies on prebuilt_dtbo.img based on definition of
 # BOARD_PREBUILT_DTBOIMAGE
-ifneq ($(strip $(BOARD_KERNEL_SEPARATED_DTBO)),)
+ifeq ($(strip $(BOARD_KERNEL_SEPARATED_DTBO)),true)
 ifndef BOARD_PREBUILT_DTBOIMAGE
 BOARD_PREBUILT_DTBOIMAGE := $(PRODUCT_OUT)/prebuilt_dtbo.img
 endif
