@@ -194,13 +194,6 @@ case "$TARGET_PRODUCT" in
         ;;
 esac
 
-
-# Export BUILD_DATETIME so that both Qssi and target images get the same timestamp
-DATE=`which date`
-DATE=${DATE:-date}
-EPOCH_TIME=`${DATE} +%s`
-export BUILD_DATETIME="$EPOCH_TIME"
-
 NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
@@ -416,7 +409,7 @@ function generate_ota_zip () {
         --framework-misc-info-keys $DIST_DIR/merge_config_system_misc_info_keys \
         --framework-item-list $DIST_DIR/merge_config_system_item_list \
         --vendor-item-list $DIST_DIR/merge_config_other_item_list \
-        --output-ota  $MERGED_OTA_ZIP"
+        --output-ota  $MERGED_OTA_ZIP --allow-duplicate-apkapex-keys"
 
     if [ "$ENABLE_AB" = false ]; then
         MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild_recovery"
@@ -453,7 +446,7 @@ function run_qiifa () {
 
 function build_qssi_only () {
     command "source build/envsetup.sh"
-    command "$QTI_BUILDTOOLS_DIR/build/kheaders-dep-scanner.sh"
+    command "$QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.sh"
     command "lunch ${TARGET_QSSI}-${TARGET_BUILD_VARIANT}"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
@@ -464,7 +457,7 @@ function build_qssi_only () {
 
 function build_target_only () {
     command "source build/envsetup.sh"
-    command "$QTI_BUILDTOOLS_DIR/build/kheaders-dep-scanner.sh"
+    command "$QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.sh"
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     if [ -n "$LIST_TECH_PACKAGE" ]; then
