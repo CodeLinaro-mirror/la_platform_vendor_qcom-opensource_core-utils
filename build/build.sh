@@ -155,7 +155,7 @@ if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
     QSSI_ONLY=1
 fi
 
-QSSI_TARGETS_LIST=("holi" "taro" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go")
+QSSI_TARGETS_LIST=("holi" "taro" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily")
 QSSI_TARGET_FLAG=0
 SKIP_ABI_CHECKS=true
 
@@ -163,6 +163,9 @@ SKIP_ABI_CHECKS=true
 case "$TARGET_PRODUCT" in
     *_32)
         TARGET_QSSI="qssi_32"
+        ;;
+    *_lily)
+        TARGET_QSSI="qssi_32go"
         ;;
     *_32go)
         TARGET_QSSI="qssi_32go"
