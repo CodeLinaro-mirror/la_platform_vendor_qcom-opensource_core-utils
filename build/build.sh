@@ -71,17 +71,8 @@
 #     option(s): --qssi_only
 #     Usage: ./build.sh dist -j32 --qssi_only or ./build.sh dist -j32. Either way the outcome will be the same
 #     Note: --target_only and --merge_only options will throw an error with lunch qssi variant
-# Version 5:
-#     Supports VSDK generation on QSSI side and VSDK installation on Vendor side.
-#     option(s): --generate_vsdk, --install_vsdk
-#     Usage: "./build.sh --generate_vsdk -j32" on QSSI side to trigger vsdk generation,
-#            "./build.sh --install_vsdk <path_to_dir_having_vsdk_package>" on vendor side to install vsdk.
-#            <path_to_dir_having_vsdk_package> defaults to "vendor/qcom/vsdk" path if not provided explicitly.
-#     Note: --generate_vsdk is applicable on QSSI side, so works only if qssi lunch is selected. Similarly, since
-#           the --install_vsdk is only for vendor side, it throws an error incase qssi lunch is selected.
 
-
-BUILD_SH_VERSION=5
+BUILD_SH_VERSION=4
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -113,16 +104,12 @@ FIND=`which find`
 FIND=${FIND:-find}
 GREP=`which grep`
 GREP=${GREP:-grep}
-REALPATH=`which realpath`
-REALPATH=${REALPATH:-realpath}
 
 MAKE_ARGUMENTS=()
 MERGE_ONLY=0
 QSSI_ONLY=0
 TARGET_ONLY=0
 FULL_BUILD=0
-GENERATE_VSDK=0
-INSTALL_VSDK=0
 
 while [[ $# -gt 0 ]]
     do
@@ -140,15 +127,6 @@ while [[ $# -gt 0 ]]
             TARGET_ONLY=1
             shift
             ;;
-        *generate_vsdk)
-            GENERATE_VSDK=1
-            shift
-            ;;
-        *install_vsdk)
-            INSTALL_VSDK=1
-            VSDK_DIR_PATH=${2:-"vendor/qcom/vsdk"}
-            shift
-            ;;
         *)  # all other option
             MAKE_ARGUMENTS+=("$1") # save it in an array to pass to make later
             shift
@@ -158,7 +136,7 @@ done
 set -- "${MAKE_ARGUMENTS[@]}" # restore the argument list ($@) to be set to MAKE_ARGUMENTS
 
 # If none of the discrete options are passed, this is a full build
-if [[ "$MERGE_ONLY" != 1 && "$QSSI_ONLY" != 1 && "$TARGET_ONLY" != 1 && "$TARGET_PRODUCT" != "qssi" && "$GENERATE_VSDK" != 1 && "$INSTALL_VSDK" != 1 ]]; then
+if [[ "$MERGE_ONLY" != 1 && "$QSSI_ONLY" != 1 && "$TARGET_ONLY" != 1 && "$TARGET_PRODUCT" != "qssi" ]]; then
     FULL_BUILD=1
 fi
 
@@ -169,27 +147,12 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
     fi
 fi
 
-if [[ "$TARGET_PRODUCT" == "qssi" && "$GENERATE_VSDK" != 1 && "$INSTALL_VSDK" != 1 ]]; then
+if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
     fi
     QSSI_ONLY=1
-fi
-
-if [[ "$GENERATE_VSDK" == 1 && "$TARGET_PRODUCT" != "qssi" ]]; then
-    echo "VSDK generation is supported only for Qssi lunch, aborting.."
-    exit 1
-fi
-
-if [[ "$INSTALL_VSDK" == 1 && "$TARGET_PRODUCT" == "qssi" ]]; then
-    echo "VSDK installation is meant for vendor lunches, since Qssi lunch is selected, aborting.."
-    exit 1
-fi
-
-if [[ "$GENERATE_VSDK" == 1 && "$INSTALL_VSDK" == 1 ]]; then
-    echo "Both VSDK generation and VSDK installation are passed as args, cannot proceed, aborting.."
-    exit 1
 fi
 
 QSSI_TARGETS_LIST=("holi" "taro" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go")
@@ -216,7 +179,7 @@ DATE=${DATE:-date}
 EPOCH_TIME=`${DATE} +%s`
 export BUILD_DATETIME="$EPOCH_TIME"
 
-NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go")
+NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$NON_AB_TARGET" ]; then
@@ -249,10 +212,11 @@ DIST_ENABLED=false
 QSSI_ARGS_WITHOUT_DIST=""
 DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
+LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_32go" "msm8937_32" "msm8937_64" "msm8953_32" "msm8953_64")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_32go" "msm8937_32" "msm8937_64" "msm8953_32" "msm8953_64" "sdm429w_law" "sdm429w" "msm8937_lily")
 VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "lahaina")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "msm8937_32go" "msm8937_32" "msm8937_64" "msm8953_32" "msm8953_64")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "msm8937_32go" "msm8937_32" "msm8937_64" "msm8953_32" "msm8953_64" "sdm429w_law" "sdm429w" "msm8937_lily")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 
@@ -487,41 +451,19 @@ function full_build () {
     fi
     merge_only
 }
-
-function generate_vsdk() {
+function nonqssi_legacy_build () {
     command "source build/envsetup.sh"
-    command "lunch ${TARGET_QSSI}-${TARGET_BUILD_VARIANT}"
-    command "make dist $QSSI_ARGS SDCLANG=true vndk VNDK_SNAPSHOT_BUILD_ARTIFACTS=true vendor-snapshot"
-}
-
-function install_vsdk() {
-    if [ -d "$VSDK_DIR_PATH" ]
-    then
-        CMD_GET_ABS_VSDK_DIR_PATH=`${REALPATH} $VSDK_DIR_PATH`
-        VSDK_DIR_PATH="$CMD_GET_ABS_VSDK_DIR_PATH"
-        log "VSDK path: $VSDK_DIR_PATH"
-    else
-        log "Error: VSDK package containing dir given as input doesn't exist or is inaccessible: $VSDK_DIR_PATH"
-        exit 1
+    if [ "$DP_IMAGES_OVERRIDE" = true ]; then
+       ARGS=${ARGS//"--dp_images_path=$DYNAMIC_PARTITIONS_IMAGES_PATH"/}
     fi
-
-    log "Installing vndk.."
-    command "mkdir -p prebuilts/vndk/v30"
-    command "source build/envsetup.sh"
-    command "lunch aosp_arm64-userdebug"
-    command "python3 development/vndk/snapshot/update.py -v --use-current-branch --local $VSDK_DIR_PATH 30"
-
-    log "Installing vendor snapshot.."
-    command "mkdir -p vendor/qcom/vendor_snapshot"
-    command "python3 development/vendor_snapshot/update.py -v --local $VSDK_DIR_PATH --install-dir vendor/qcom/vendor_snapshot/v30 --overwrite 30"
+    command "make $ARGS"
+    if [ "$DIST_ENABLED" = true ] && [ "$BOARD_DYNAMIC_PARTITION_ENABLE" = true ]; then
+      check_if_file_exists "$DIST_DIR/super.img"
+      log "${TARGET_PRODUCT} copy $DIST_DIR/super.img to $OUT/ "
+      command "cp $DIST_DIR/super.img $OUT/"
+      command "unzip -jo -DD $LEGACY_TARGET_FILES IMAGES/*.img -x IMAGES/userdata.img -d $DYNAMIC_PARTITIONS_IMAGES_PATH"
+    fi
 }
-
-
-if [[ "$INSTALL_VSDK" -eq 1 ]]; then
-    log "Installing VSDK..."
-    install_vsdk
-    exit 0
-fi
 
 # Check if qssi is supported on this target or not.
 for QSSI_TARGET in "${QSSI_TARGETS_LIST[@]}"
@@ -535,8 +477,7 @@ done
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
     log "${TARGET_PRODUCT} is not a QSSI target. Using legacy build process for compilation..."
-    command "source build/envsetup.sh"
-    command "make $ARGS"
+    nonqssi_legacy_build
 else # For QSSI targets
     log "Building Android using build.sh for ${TARGET_PRODUCT}..."
     log "QSSI_ARGS=\"$QSSI_ARGS\""
@@ -566,10 +507,5 @@ else # For QSSI targets
     if [[ "$MERGE_ONLY" -eq 1 ]]; then
         log "Executing a merge only operation ..."
         merge_only
-    fi
-
-    if [[ "$GENERATE_VSDK" -eq 1 ]]; then
-        log "Generating VSDK..."
-        generate_vsdk
     fi
 fi
