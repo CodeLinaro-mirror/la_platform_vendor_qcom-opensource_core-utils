@@ -56,7 +56,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="hidl" optional="true">
         <name>vendor.display.color</name>
-        <version>1.0-6</version>
+        <version>1.0-7</version>
         <interface>
              <name>IDisplayColor</name>
              <instance>default</instance>
@@ -336,6 +336,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            <instance>slot2</instance>
        </interface>
    </hal>
+   <hal format="aidl" optional="true">
+       <name>vendor.qti.hardware.radio.am</name>
+       <interface>
+           <name>IQcRilAudio</name>
+           <instance>slot1</instance>
+           <instance>slot2</instance>
+       </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
            <version>1.0-8</version>
@@ -523,6 +531,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </interface>
     </hal>
     <hal format="hidl" optional="true">
+        <name>vendor.qti.mstatservice</name>
+        <version>1.0</version>
+        <interface>
+            <name>IMStatService</name>
+            <instance>mstatservice</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
         <name>vendor.qti.voiceprint</name>
         <version>1.0</version>
         <interface>
@@ -685,7 +701,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    </hal>
    <hal format="hidl" optional="true">
        <name>vendor.qti.hardware.data.iwlan</name>
-       <version>1.0</version>
+       <version>1.0-1</version>
        <interface>
            <name>IIWlan</name>
            <instance>slot1</instance>
@@ -952,7 +968,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <hal format="hidl" optional="true">
        <name>vendor.qti.hardware.limits</name>
        <transport>hwbinder</transport>
-       <version>1.0</version>
+       <version>1.0-1</version>
        <interface>
            <name>ILimits</name>
            <instance>default</instance>
@@ -1003,6 +1019,15 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <name>IDisplayConfig</name>
             <instance>default</instance>
         </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+       <name>vendor.qti.hardware.wifi.wificfr</name>
+       <transport>hwbinder</transport>
+       <version>1.0</version>
+       <interface>
+           <name>IWificfr</name>
+           <instance>wificfr</instance>
+       </interface>
     </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.qesdhal</name>
