@@ -503,7 +503,6 @@ function nonqssi_legacy_build () {
     if [ "$DP_IMAGES_OVERRIDE" = true ]; then
        ARGS=${ARGS//"--dp_images_path=$DYNAMIC_PARTITIONS_IMAGES_PATH"/}
     fi
-    ARGS="$ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "make $ARGS"
     if [ "$DIST_ENABLED" = true ] && [ "$BOARD_DYNAMIC_PARTITION_ENABLE" = true ]; then
       check_if_file_exists "$DIST_DIR/super.img"
