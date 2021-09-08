@@ -80,6 +80,9 @@
 #     Supports uploading build data for analysis. It is enabled by default.
 #     Use options: --dca_disable To disable collecting build data.
 #     Usage: ./build.sh dist -j32 --dca_disable
+# Version 7:
+#     Supports rebuilding sepolicy with vendor side otatools.
+#     option : --rebuild_sepolicy_with_vendor_otatools=<path-to-vendor-otatools>
 #
 BUILD_SH_VERSION=5
 if [ "$1" == "--version" ]; then
@@ -285,17 +288,41 @@ for ARG in $QSSI_ARGS
 do
     if [ "$ARG" == "$DIST_COMMAND" ]; then
         DIST_ENABLED=true
+    elif [ "$ARG" == "BUILDING_WITH_VSDK=true" ]; then
+        BUILDING_WITH_VSDK=true
+    elif [[ "$ARG" == *"DISABLED_VSDK_SNAPSHOTS"* ]]; then
+        DISABLED_VSDK_SNAPSHOTS_ARG=$ARG
     elif [[ "$ARG" == *"--dp_images_path"* ]]; then
         DP_IMAGES_OVERRIDE=true
         DYNAMIC_PARTITIONS_IMAGES_PATH=$(${ECHO} "$ARG" | ${CUT} -d'=' -f 2)
+    elif [[ "$ARG" == *"--rebuild_sepolicy_with_vendor_otatools"* ]]; then
+        REBUILD_SEPOLICY=true
+        VENDOR_OTATOOLS=$(${ECHO} "$ARG" | ${CUT} -d'=' -f 2)
     else
         QSSI_ARGS_WITHOUT_DIST="$QSSI_ARGS_WITHOUT_DIST $ARG"
     fi
 done
 
+if [ "$BUILDING_WITH_VSDK" = true ]; then
+  TARGET_BUILD_UNBUNDLED_IMAGE_ARG="TARGET_BUILD_UNBUNDLED_IMAGE=true"
+  DISABLED_VSDK_SNAPSHOTS=(${DISABLED_VSDK_SNAPSHOTS_ARG//=/ })
+  IFS=',';for i in `echo "${DISABLED_VSDK_SNAPSHOTS[1]}"`;
+  do
+      if [ "$i" == "java" ]; then
+          TARGET_BUILD_UNBUNDLED_IMAGE_ARG=""
+      fi
+  done
+  QSSI_ARGS="$QSSI_ARGS $TARGET_BUILD_UNBUNDLED_IMAGE_ARG"
+  unset IFS;
+fi
+
 #Strip image_path if present
 if [ "$DP_IMAGES_OVERRIDE" = true ]; then
     QSSI_ARGS=${QSSI_ARGS//"--dp_images_path=$DYNAMIC_PARTITIONS_IMAGES_PATH"/}
+fi
+
+if [ "$REBUILD_SEPOLICY" = true ]; then
+    QSSI_ARGS=${QSSI_ARGS//"--rebuild_sepolicy_with_vendor_otatools=$VENDOR_OTATOOLS"/}
 fi
 
 # Check if dist is supported on this target (yet) or not, and override DIST_ENABLED flag.
@@ -415,11 +442,22 @@ function generate_ota_zip () {
         MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild_recovery"
     fi
 
+    if [ "$REBUILD_SEPOLICY" = true ]; then
+        MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild-sepolicy --vendor-otatools=$VENDOR_OTATOOLS"
+    fi
+
     command "$MERGE_TARGET_FILES_COMMAND"
 }
 
 function run_qiifa_initialization() {
-    QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_techpackage_initialization.py"
+    QIIFA_IN_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_initialization.py"
+    QIIFA_TP_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_techpackage_initialization.py"
+    QIIFA_SCRIPT = ""
+    if [[ -f $QIIFA_IN_SCRIPT ]];then
+     QIIFA_SCRIPT=$QIIFA_IN_SCRIPT
+    elif [[ -f $QIIFA_TP_SCRIPT ]];then
+      QIIFA_SCRIPT=$QIIFA_TP_SCRIPT
+    fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -f $QIIFA_SCRIPT ]]; then
      command "python $QIIFA_SCRIPT ${ADDR[0]}"
@@ -460,9 +498,7 @@ function build_target_only () {
     command "$QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.sh"
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
-    if [ -n "$LIST_TECH_PACKAGE" ]; then
-      command "run_qiifa_initialization"
-    fi
+    command "run_qiifa_initialization"
     command "make $QSSI_ARGS"
     command "run_qiifa"
 }
