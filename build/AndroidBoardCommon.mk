@@ -65,6 +65,8 @@ LIBION_HEADER_PATH_WRAPPER := $(LOCAL_PATH)/libion_header_paths/libion_path.mk
 # Dump the status of various feature enforcements into a single file.
 include $(LOCAL_PATH)/configs_enforcement.mk
 include $(LOCAL_PATH)/makefile_violation_config.mk
+# Check if enforcement override exists and include it
+-include device/qcom/$(TARGET_PRODUCT)/enforcement_override.mk
 FEATURE_ENFORCEMENT_STATUS := $(PRODUCT_OUT)/configs/enforcement_status.txt
 $(FEATURE_ENFORCEMENT_STATUS):
 	rm -rf $@
@@ -109,6 +111,11 @@ ifeq ($(BUILD_BROKEN_USES_DATETIME),true)
 else
 	echo "DATETIME_USAGE_ENFORCED=true" >> $@
 endif
+ifeq ($(BUILD_BROKEN_USES_TARGET_PRODUCT),true)
+	echo "TARGET_PRODUCT_USAGE_ENFORCED=false" >> $@
+else
+	echo "TARGET_PRODUCT_USAGE_ENFORCED=true" >> $@
+endif
 ifeq ($(PRODUCT_SET_DEBUGFS_RESTRICTIONS),true)
 	echo "PRODUCT_SET_DEBUGFS_RESTRICTIONS=true" >> $@
 else
@@ -117,3 +124,4 @@ endif
 	echo "PRODUCT_ENFORCE_COMMONSYSINTF_CHECKER=$(PRODUCT_ENFORCE_COMMONSYSINTF_CHECKER)" >> $@
 ALL_DEFAULT_INSTALLED_MODULES += $(FEATURE_ENFORCEMENT_STATUS)
 droidcore: $(FEATURE_ENFORCEMENT_STATUS)
+droidcore-unbundled: $(FEATURE_ENFORCEMENT_STATUS)
