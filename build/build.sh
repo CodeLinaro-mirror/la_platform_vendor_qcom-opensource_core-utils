@@ -180,7 +180,7 @@ if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
     QSSI_ONLY=1
 fi
 
-QSSI_TARGETS_LIST=("holi" "taro" "kalama" "parrot" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily" "neo")
+QSSI_TARGETS_LIST=("holi" "taro" "kalama" "parrot" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily" "monaco_go" "neo")
 QSSI_TARGET_FLAG=0
 SKIP_ABI_CHECKS=true
 
@@ -192,6 +192,9 @@ case "$TARGET_PRODUCT" in
     *_32go)
         TARGET_QSSI="qssi_32go"
         ;;
+    *_go)
+        TARGET_QSSI="qssi_32go"
+        ;;
     *_lily)
         TARGET_QSSI="qssi_32go"
         ;;
@@ -200,7 +203,7 @@ case "$TARGET_PRODUCT" in
         ;;
 esac
 
-NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily")
+NON_AB_TARGET_LIST=("bengal_32go" "msm8937_lily")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$NON_AB_TARGET" ]; then
@@ -235,9 +238,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily" "sdm660_64" "neo")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily" "monaco_go" "sdm660_64" "neo")
 VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "lahaina")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "msm8937_lily" "sdm660_64" "neo")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "msm8937_lily" "monaco_go" "sdm660_64" "neo")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 
