@@ -27,6 +27,41 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+#
+# Changes from Qualcomm Innovation Center are provided under the following license:
+#
+# Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted (subject to the limitations in the
+# disclaimer below) provided that the following conditions are met:
+#
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#
+#   * Redistributions in binary form must reproduce the above
+#     copyright notice, this list of conditions and the following
+#     disclaimer in the documentation and/or other materials provided
+#     with the distribution.
+#
+#   * Neither the name of Qualcomm Innovation Center, Inc. nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
+# GRANTED BY THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+# HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+# GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 # This script is mainly to compile QSSI targets. For other targets, usage
 # of regular "make" is recommended.
 #
@@ -187,9 +222,10 @@ DIST_ENABLED=false
 QSSI_ARGS_WITHOUT_DIST=""
 DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
+LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "trinket_32" "lito" "bengal" "bengal_32" "atoll" "bengal_32go")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "trinket_32" "atoll" "bengal" "bengal_32" "bengal_32go")
+DIST_ENABLED_TARGET_LIST=("lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "trinket_32" "lito" "bengal" "bengal_32" "atoll" "bengal_32go" "qcs605")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "trinket_32" "atoll" "bengal" "bengal_32" "bengal_32go" "qcs605")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 function log() {
@@ -379,6 +415,20 @@ function full_build () {
     merge_only
 }
 
+function nonqssi_legacy_build () {
+    command "source build/envsetup.sh"
+    if [ "$DP_IMAGES_OVERRIDE" = true ]; then
+       ARGS=${ARGS//"--dp_images_path=$DYNAMIC_PARTITIONS_IMAGES_PATH"/}
+    fi
+    command "make $ARGS"
+    if [ "$DIST_ENABLED" = true ] && [ "$BOARD_DYNAMIC_PARTITION_ENABLE" = true ]; then
+      check_if_file_exists "$DIST_DIR/super.img"
+      log "${TARGET_PRODUCT} copy $DIST_DIR/super.img to $OUT/ "
+      command "cp $DIST_DIR/super.img $OUT/"
+      command "unzip -jo -DD $LEGACY_TARGET_FILES IMAGES/*.img -x IMAGES/userdata.img -d $DYNAMIC_PARTITIONS_IMAGES_PATH"
+    fi
+}
+
 if [ "$TARGET_PRODUCT" == "qssi" ]; then
     log "FAILED: lunch option should not be set to qssi. Please set a target out of the following QSSI targets: ${QSSI_TARGETS_LIST[@]}"
     exit 1
@@ -396,8 +446,8 @@ done
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
     log "${TARGET_PRODUCT} is not a QSSI target. Using legacy build process for compilation..."
-    command "source build/envsetup.sh"
-    command "make $ARGS"
+    nonqssi_legacy_build
+
 else # For QSSI targets
     log "Building Android using build.sh for ${TARGET_PRODUCT}..."
     log "QSSI_ARGS=\"$QSSI_ARGS\""
