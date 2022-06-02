@@ -248,7 +248,7 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
   if not skip_qiifa:
-    if QSSI_TARGET == "qssi":
+    if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" :
       run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch)
     else:
       logging.info("Skipping QIIFA checks for 32-bit and Go targets")
@@ -321,6 +321,8 @@ def main():
     QSSI_TARGET="qssi_32go"
   elif args.target_lunch.endswith("_32"):
     QSSI_TARGET="qssi_32"
+  elif args.target_lunch.endswith("64"):
+    QSSI_TARGET="qssi_64"
   else:
     QSSI_TARGET="qssi"
 
