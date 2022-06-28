@@ -87,8 +87,12 @@
 #     Supports --techpack argument to build techpack target(s)
 #     Use options: --techpack <teckpack target(s)>
 #     Usage: ./build.sh dist --teckpack -j32 <teckpack target(s)>
+# Version 9:
+#     Supports 64 bit for qssi and vendor target(s)
+# Version 10:
+#     Modifying the existing 64 bit only configuration for qssi and vendor target(s)
 #
-BUILD_SH_VERSION=7
+BUILD_SH_VERSION=10
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -168,6 +172,17 @@ while [[ $# -gt 0 ]]
 done
 set -- "${MAKE_ARGUMENTS[@]}" # restore the argument list ($@) to be set to MAKE_ARGUMENTS
 
+# function to check if the target product is present in the list passed in
+function target_product_in_list() {
+    LIST=("$@")
+    for ELEMENT in "${LIST[@]}"; do
+        if [ "$TARGET_PRODUCT" == "$ELEMENT" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 # If none of the discrete options are passed, this is a full build
 if [[ "$MERGE_ONLY" != 1 && "$QSSI_ONLY" != 1 && "$TARGET_ONLY" != 1 && "$TARGET_PRODUCT" != "qssi" && "$TP_ONLY" != 1 ]]; then
     FULL_BUILD=1
@@ -180,35 +195,17 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
     fi
 fi
 
-if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
+if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
+" || "$TARGET_PRODUCT" == "qssi_32go" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
     fi
-    QSSI_ONLY=1
 fi
 
-QSSI_TARGETS_LIST=("holi" "taro" "kalama" "kalama64" "pineapple" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go")
-QSSI_TARGET_FLAG=0
 SKIP_ABI_CHECKS=true
 
-
-case "$TARGET_PRODUCT" in
-    *_32)
-        TARGET_QSSI="qssi_32"
-        ;;
-    *_32go)
-       TARGET_QSSI="qssi_32go"
-        ;;
-    *64)
-       TARGET_QSSI="qssi_64"
-        ;;
-    *)
-        TARGET_QSSI="qssi"
-        ;;
-esac
-
-NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go")
+NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$NON_AB_TARGET" ]; then
@@ -234,18 +231,40 @@ BOARD_DYNAMIC_PARTITION_ENABLE=false
 # Virtual-AB feature flag
 ENABLE_VIRTUAL_AB=false
 
-# OTA/Dist related variaibles
-QSSI_OUT="out/target/product/$TARGET_QSSI"
+# use these lists to pair target lunch options with their corresponding qssi type.
+TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
+TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
+TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
+
+QSSI_TARGET_FLAG=1
+# check if our TARGET_PRODUCT is in any of these lists
+if target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI[@]}"; then
+    TARGET_MATCHING_QSSI="qssi"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_64[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_64"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_32"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_32go"
+else
+    QSSI_TARGET_FLAG=0
+    TARGET_MATCHING_QSSI="qssi"
+    echo "Non QSSI mapped target. If this not a nonqssi_legacy_build, the target must be added to the TARGET_PRODUCT_MAPPING lists"
+fi
+
+# OTA/Dist related variables
+QSSI_OUT="out/target/product/$TARGET_PRODUCT"
 DIST_COMMAND="dist"
 DIST_ENABLED=false
 QSSI_ARGS_WITHOUT_DIST=""
 DIST_DIR="out/dist"
-MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
+MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
-MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "kalama64" "pineapple" "lahaina")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64")
+MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
@@ -507,7 +526,7 @@ function run_qiifa_dependency_checker() {
 function build_qssi_only () {
     command "source build/envsetup.sh"
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
-    command "lunch ${TARGET_QSSI}-${TARGET_BUILD_VARIANT}"
+    command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
     if [ -f $COMMONSYS_INTF_SCRIPT ];then
@@ -611,15 +630,6 @@ function build_techpack_only () {
     command "make $QSSI_ARGS selinux_policy"
     command "run_qiifa techpack"
 }
-
-# Check if qssi is supported on this target or not.
-for QSSI_TARGET in "${QSSI_TARGETS_LIST[@]}"
-do
-    if [ "$TARGET_PRODUCT" == "$QSSI_TARGET" ]; then
-        QSSI_TARGET_FLAG=1
-        break
-    fi
-done
 
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
