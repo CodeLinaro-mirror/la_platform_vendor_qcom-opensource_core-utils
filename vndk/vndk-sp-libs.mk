@@ -31,3 +31,4 @@ VNDK_SP_LIBRARIES := \
     libutils \
     libutilscallstack \
     libdexfile \
+    libprocessgroup \
