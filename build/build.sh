@@ -545,7 +545,7 @@ function build_target_only () {
     if [ "$BUILDING_WITH_VSDK" = true ]; then
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
-    command "run_qiifa"
+    command "run_qiifa techpack"
 }
 
 function merge_only () {
