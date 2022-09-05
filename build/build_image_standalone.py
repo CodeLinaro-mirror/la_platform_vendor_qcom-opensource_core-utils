@@ -177,7 +177,7 @@ def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_
 
   QIIFA_CHECKS_DIR = "QIIFA_CHECKS_DIR"
   QIIFA_CHECKS_DIR_PATH = temp_dir + "/" + QIIFA_CHECKS_DIR + "/"
-  QIIFA_CHECKS_DIR_PATH_QSSI = QIIFA_CHECKS_DIR_PATH + "qssi"
+  QIIFA_CHECKS_DIR_PATH_QSSI = QIIFA_CHECKS_DIR_PATH + "qssi_au"
   QIIFA_CHECKS_DIR_PATH_TARGET = QIIFA_CHECKS_DIR_PATH + target_lunch
 
   # Fetch the QIIFA script
@@ -206,7 +206,7 @@ def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_
 
   # Run QIIFA
   os.chdir(QIIFA_CHECKS_DIR_PATH)
-  cmd = ["python", QIIFA_SCRIPT, "--qssi", "qssi", "--target", target_lunch]
+  cmd = ["python", QIIFA_SCRIPT, "--qssi", "qssi_au", "--target", target_lunch]
   logging.info("Running: " + str(cmd))
   status = call(cmd)
 
@@ -248,7 +248,7 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
   if not skip_qiifa:
-    if QSSI_TARGET == "qssi":
+    if QSSI_TARGET == "qssi_au":
       run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch)
     else:
       logging.info("Skipping QIIFA checks for 32-bit and Go targets")
@@ -321,8 +321,10 @@ def main():
     QSSI_TARGET="qssi_32go"
   elif args.target_lunch.endswith("_32"):
     QSSI_TARGET="qssi_32"
+  elif args.target_lunch.endswith("_au"):
+    QSSI_TARGET="qssi_au"
   else:
-    QSSI_TARGET="qssi"
+    QSSI_TARGET="qssi_au"
 
   OUT_QSSI = OUT_PREFIX + QSSI_TARGET + "/"
   QSSI_TARGET_FILES_ZIP = QSSI_TARGET + "-target_files-*.zip"

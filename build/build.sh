@@ -180,7 +180,7 @@ if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
     QSSI_ONLY=1
 fi
 
-QSSI_TARGETS_LIST=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go")
+QSSI_TARGETS_LIST=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "msmnile_au" "sm6150" "sm6150_au" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal_32" "bengal_32go")
 QSSI_TARGET_FLAG=0
 SKIP_ABI_CHECKS=true
 
@@ -191,6 +191,9 @@ case "$TARGET_PRODUCT" in
         ;;
     *_32go)
         TARGET_QSSI="qssi_32go"
+        ;;
+    *_au)
+        TARGET_QSSI="qssi_au"
         ;;
     *)
         TARGET_QSSI="qssi"
@@ -231,9 +234,9 @@ QSSI_ARGS_WITHOUT_DIST=""
 DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "lahaina")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "msmnile_au" "sm6150" "sm6150_au" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal_32" "bengal_32go")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "lahaina" "msmnile_au" "sm6150_au")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "lahaina" "kona" "msmnile" "msmnile_au" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal" "bengal_32" "bengal_32go" "sm6150" "sm6150_au")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 
@@ -484,26 +487,26 @@ function run_qiifa () {
 
 function build_qssi_only () {
     command "source build/envsetup.sh"
-    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    #command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "lunch ${TARGET_QSSI}-${TARGET_BUILD_VARIANT}"
     command "make $QSSI_ARGS"
-    COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
-    if [ -f $COMMONSYS_INTF_SCRIPT ];then
-      command "python $COMMONSYS_INTF_SCRIPT"
-    fi
+    #COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
+    #if [ -f $COMMONSYS_INTF_SCRIPT ];then
+    #  command "python $COMMONSYS_INTF_SCRIPT"
+    #fi
 }
 
 function build_target_only () {
     command "source build/envsetup.sh"
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    #command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
-    command "run_qiifa_initialization"
+    #command "run_qiifa_initialization"
     command "make $QSSI_ARGS"
     if [ "$BUILDING_WITH_VSDK" = true ]; then
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
-    command "run_qiifa"
+    #command "run_qiifa"
 }
 
 function merge_only () {
