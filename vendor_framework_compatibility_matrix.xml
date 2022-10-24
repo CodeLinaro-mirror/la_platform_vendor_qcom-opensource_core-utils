@@ -1116,4 +1116,12 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.AMSIPC</name>
+        <version>1.0</version>
+        <interface>
+            <name>IAMS</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
