@@ -91,8 +91,10 @@
 #     Supports 64 bit for qssi and vendor target(s)
 # Version 10:
 #     Modifying the existing 64 bit only configuration for qssi and vendor target(s)
+# Version 11:
+#     Splitting OTA generation from Merge target file for all target(s)
 #
-BUILD_SH_VERSION=10
+BUILD_SH_VERSION=11
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -427,6 +429,7 @@ function generate_dynamic_partition_images () {
 }
 
 function generate_ota_zip () {
+    ENABLE_OTA_XOR_COMPRESSION=false
     log "Processing dist/ota commands:"
 
     FRAMEWORK_TARGET_FILES="$(find $DIST_DIR -name "qssi*-target_files-*.zip" -print)"
@@ -462,7 +465,7 @@ function generate_ota_zip () {
         --framework-misc-info-keys $DIST_DIR/merge_config_system_misc_info_keys \
         --framework-item-list $DIST_DIR/merge_config_system_item_list \
         --vendor-item-list $DIST_DIR/merge_config_other_item_list \
-        --output-ota  $MERGED_OTA_ZIP --allow-duplicate-apkapex-keys"
+        --allow-duplicate-apkapex-keys "
 
     if [ "$ENABLE_AB" = false ]; then
         MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild_recovery"
@@ -472,7 +475,19 @@ function generate_ota_zip () {
         MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild-sepolicy --vendor-otatools=$VENDOR_OTATOOLS"
     fi
 
+    OTA_GENERATE_COMMAND="$OTATOOLS_DIR/bin/ota_from_target_files \
+                          --verbose"
+    if [ "$ENABLE_OTA_XOR_COMPRESSION" = false ]; then
+        OTA_GENERATE_COMMAND="$OTA_GENERATE_COMMAND --enable_vabc_xor=false"
+    else
+        OTA_GENERATE_COMMAND="$OTA_GENERATE_COMMAND --enable_vabc_xor=true"
+    fi
+
+    OTA_GENERATE_COMMAND="$OTA_GENERATE_COMMAND $MERGED_TARGET_FILES \
+                          $MERGED_OTA_ZIP"
+
     command "$MERGE_TARGET_FILES_COMMAND"
+    command "$OTA_GENERATE_COMMAND"
 }
 
 function run_qiifa_initialization() {
@@ -501,6 +516,12 @@ function run_qiifa () {
     BUILD_TYPE=""
     if [ "$1" == "techpack" ]; then
         BUILD_TYPE="--techpack_build"
+        if [ -z "$2" ]; then
+            TECHPACK_BUILD_LIST=""
+        else
+            TECHPACK_BUILD_LIST="$2"
+            echo "Techpack names are provided"
+        fi
     fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -n ${ADDR[1]} && "${ADDR[1]}" == "golden" ]]; then
@@ -508,7 +529,16 @@ function run_qiifa () {
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+        if [ "$1" == "techpack" ]; then
+            if [ "$TECHPACK_BUILD_LIST" == "" ]; then
+                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                echo "No techpack_name arguments were given with build command"
+            else
+                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
+            fi
+        else
+            command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+        fi
     fi
 }
 
@@ -601,6 +631,7 @@ function run_dca() {
 # Example, Camera has main target as camera_tp, and group targets as camera_tp_hal camera_tb_dlkm camera_tb_apk camera_tb_app camera_tp_kernel
 function build_techpack_only () {
     TPARGS=()
+    TECHPACK_BUILD_LIST=""
     for tp in "${TECHPACK_LIST[@]}"
     do
       for arg in $QSSI_ARGS
@@ -608,6 +639,7 @@ function build_techpack_only () {
         if [[ "$arg" == "$tp"* ]]; then
             echo "Request to build techpack $arg"
             TPARGS+=("${arg}")
+            TECHPACK_BUILD_LIST+="$arg,"
         fi
       done
     done
@@ -628,7 +660,7 @@ function build_techpack_only () {
     command "run_qiifa_initialization"
     command "run_qiifa_dependency_checker techpack"
     command "make $QSSI_ARGS selinux_policy"
-    command "run_qiifa techpack"
+    command "run_qiifa techpack $TECHPACK_BUILD_LIST"
 }
 
 # For non-QSSI targets
