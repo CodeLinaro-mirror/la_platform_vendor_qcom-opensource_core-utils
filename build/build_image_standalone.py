@@ -248,7 +248,7 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
   if not skip_qiifa:
-    if QSSI_TARGET == "qssi":
+    if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" :
       run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch)
     else:
       logging.info("Skipping QIIFA checks for 32-bit and Go targets")
@@ -317,12 +317,25 @@ def main():
 
   global QSSI_TARGET, OUT_QSSI, QSSI_TARGET_FILES_ZIP
 
-  if args.target_lunch.endswith("_32go"):
-    QSSI_TARGET="qssi_32go"
-  elif args.target_lunch.endswith("_32"):
-    QSSI_TARGET="qssi_32"
-  else:
+  # use this dict to pair target lunch options with their corresponding qssi type.
+  vendor_qssi_mapping_dict = {
+    "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515"],
+    "qssi_32"   : ["bengal_32"],
+    "qssi_32go" : ["bengal_32go", "msm8937_lily"],
+    "qssi_64"   : ["kalama64", "pineapple"],
+  }
+
+  if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
     QSSI_TARGET="qssi"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_32go']:
+    QSSI_TARGET="qssi_32go"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_32']:
+    QSSI_TARGET="qssi_32"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_64']:
+    QSSI_TARGET="qssi_64"
+  else:
+    print("ERROR: Unrecognized target_lunch input. Need to add lunch option to the vendor_qssi_matching_dict")
+    return
 
   OUT_QSSI = OUT_PREFIX + QSSI_TARGET + "/"
   QSSI_TARGET_FILES_ZIP = QSSI_TARGET + "-target_files-*.zip"
