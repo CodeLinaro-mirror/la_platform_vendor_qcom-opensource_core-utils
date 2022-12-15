@@ -477,13 +477,17 @@ function run_qiifa_for_techpackage () {
 }
 
 function run_qiifa () {
+    BUILD_TYPE=""
+    if [ "$TARGET_PRODUCT" == "anorak" || "$TARGET_PRODUCT" == "neo" ]; then
+        BUILD_TYPE="--techpack_build"
+    fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -n ${ADDR[1]} && "${ADDR[1]}" == "golden" ]]; then
       command "run_qiifa_for_techpackage"
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --type all --enforced 1"
+     command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
     fi
 }
 
