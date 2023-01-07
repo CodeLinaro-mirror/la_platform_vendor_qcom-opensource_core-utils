@@ -26,6 +26,8 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 SHELL_WHITELIST = {
+    "vendor/qcom/proprietary/ts_firmware-noship/kalama/Android.mk",
+    "vendor/qcom/opensource/touch-drivers/Android.mk",
     "vendor/qcom/proprietary/data-noship/qcril-data-utf/test/utf/Android.mk",
     "vendor/qcom/proprietary/wigig/ftm_flows/libwigig_ftm_flows/Android.mk",
     "vendor/qcom/proprietary/wigig/debug-tools/lib/FlashAcss/Android.mk",
@@ -99,6 +101,7 @@ SHELL_WHITELIST = {
 }
 
 RM_WHITELIST = {
+    "vendor/qcom/proprietary/graphics/t-bins/Android.mk",
     "vendor/qcom/proprietary/biometrics/fingerprint/QFingerprintService/Android.mk",
     "vendor/qcom/proprietary/common/scripts/Android.mk",
     "vendor/qcom/proprietary/graphics/s-bins/Android.mk",
