@@ -83,8 +83,18 @@
 # Version 7:
 #     Supports rebuilding sepolicy with vendor side otatools.
 #     option : --rebuild_sepolicy_with_vendor_otatools=<path-to-vendor-otatools>
+# Version 8:
+#     Supports --techpack argument to build techpack target(s)
+#     Use options: --techpack <teckpack target(s)>
+#     Usage: ./build.sh dist --teckpack -j32 <teckpack target(s)>
+# Version 9:
+#     Supports 64 bit for qssi and vendor target(s)
+# Version 10:
+#     Modifying the existing 64 bit only configuration for qssi and vendor target(s)
+# Version 11:
+#     Splitting OTA generation from Merge target file for all target(s)
 #
-BUILD_SH_VERSION=7
+BUILD_SH_VERSION=11
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -152,6 +162,10 @@ while [[ $# -gt 0 ]]
             LIST_TECH_PACKAGE="$LIST_TECH_PACKAGE$arg"
             shift
             ;;
+        *techpack)
+            TP_ONLY=1
+            shift
+            ;;
         *)  # all other option
             MAKE_ARGUMENTS+=("$1") # save it in an array to pass to make later
             shift
@@ -160,8 +174,19 @@ while [[ $# -gt 0 ]]
 done
 set -- "${MAKE_ARGUMENTS[@]}" # restore the argument list ($@) to be set to MAKE_ARGUMENTS
 
+# function to check if the target product is present in the list passed in
+function target_product_in_list() {
+    LIST=("$@")
+    for ELEMENT in "${LIST[@]}"; do
+        if [ "$TARGET_PRODUCT" == "$ELEMENT" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 # If none of the discrete options are passed, this is a full build
-if [[ "$MERGE_ONLY" != 1 && "$QSSI_ONLY" != 1 && "$TARGET_ONLY" != 1 && "$TARGET_PRODUCT" != "qssi" ]]; then
+if [[ "$MERGE_ONLY" != 1 && "$QSSI_ONLY" != 1 && "$TARGET_ONLY" != 1 && "$TARGET_PRODUCT" != "qssi" && "$TP_ONLY" != 1 ]]; then
     FULL_BUILD=1
 fi
 
@@ -172,12 +197,11 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
     fi
 fi
 
-if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
+if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_au" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
     fi
-    QSSI_ONLY=1
 fi
 
 QSSI_TARGETS_LIST=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_gvmq" "sm6150" "sm6150_au" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal_32" "bengal_32go")
@@ -226,19 +250,46 @@ BOARD_DYNAMIC_PARTITION_ENABLE=false
 # Virtual-AB feature flag
 ENABLE_VIRTUAL_AB=false
 
-# OTA/Dist related variaibles
-QSSI_OUT="out/target/product/$TARGET_QSSI"
+# use these lists to pair target lunch options with their corresponding qssi type.
+TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
+TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
+TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "qssi_au" "msmnile_gvmq" "sm6150_au")
+
+QSSI_TARGET_FLAG=1
+# check if our TARGET_PRODUCT is in any of these lists
+if target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI[@]}"; then
+    TARGET_MATCHING_QSSI="qssi"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_64[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_64"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_32"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_32go"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_AU[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_au"
+else
+    QSSI_TARGET_FLAG=0
+    TARGET_MATCHING_QSSI="qssi"
+    echo "Non QSSI mapped target. If this not a nonqssi_legacy_build, the target must be added to the TARGET_PRODUCT_MAPPING lists"
+fi
+
+# OTA/Dist related variables
+QSSI_OUT="out/target/product/$TARGET_PRODUCT"
 DIST_COMMAND="dist"
 DIST_ENABLED=false
 QSSI_ARGS_WITHOUT_DIST=""
 DIST_DIR="out/dist"
-MERGED_TARGET_FILES="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-target_files.zip"
-MERGED_OTA_ZIP="$DIST_DIR/merged-qssi_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_gvmq" "sm6150" "sm6150_au" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal_32" "bengal_32go")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "lahaina" "msmnile_au" "msmnile_gvmq" "sm6150_au")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "lahaina" "kona" "msmnile" "msmnile_au" "msmnile_gvmq" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal" "bengal_32" "bengal_32go" "sm6150" "sm6150_au")
+MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
+LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
+MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_gvmq" "sm6150" "sm6150_au" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_au" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_gvmq" "sm6150_au")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "msmnile_au" "msmnile_gvmq" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_au" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sm6150_au" "sdm660_64" "msm8937_lily" "bengal_515" "monaco")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
+TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
 
 OTATOOLS_DIR="$(mktemp --directory)"
 MERGED_TARGET_FILES_DIR="$(mktemp --directory)"
@@ -307,16 +358,10 @@ do
 done
 
 if [ "$BUILDING_WITH_VSDK" = true ]; then
-  TARGET_BUILD_UNBUNDLED_IMAGE_ARG="TARGET_BUILD_UNBUNDLED_IMAGE=true"
-  DISABLED_VSDK_SNAPSHOTS=(${DISABLED_VSDK_SNAPSHOTS_ARG//=/ })
-  IFS=',';for i in `echo "${DISABLED_VSDK_SNAPSHOTS[1]}"`;
-  do
-      if [ "$i" == "java" ]; then
-          TARGET_BUILD_UNBUNDLED_IMAGE_ARG=""
-      fi
-  done
-  QSSI_ARGS="$QSSI_ARGS $TARGET_BUILD_UNBUNDLED_IMAGE_ARG"
-  unset IFS;
+  if [ -f  vendor/qcom/vsdk_snapshots_config/java_snapshot_enabled ]; then
+      TARGET_BUILD_UNBUNDLED_IMAGE_ARG="TARGET_BUILD_UNBUNDLED_IMAGE=true"
+      QSSI_ARGS="$QSSI_ARGS $TARGET_BUILD_UNBUNDLED_IMAGE_ARG"
+  fi
 fi
 
 #Strip image_path if present
@@ -404,6 +449,7 @@ function generate_dynamic_partition_images () {
 }
 
 function generate_ota_zip () {
+    ENABLE_OTA_XOR_COMPRESSION=false
     log "Processing dist/ota commands:"
 
     FRAMEWORK_TARGET_FILES="$(find $DIST_DIR -name "qssi*-target_files-*.zip" -print)"
@@ -439,7 +485,7 @@ function generate_ota_zip () {
         --framework-misc-info-keys $DIST_DIR/merge_config_system_misc_info_keys \
         --framework-item-list $DIST_DIR/merge_config_system_item_list \
         --vendor-item-list $DIST_DIR/merge_config_other_item_list \
-        --output-ota  $MERGED_OTA_ZIP --allow-duplicate-apkapex-keys"
+        --allow-duplicate-apkapex-keys "
 
     if [ "$ENABLE_AB" = false ]; then
         MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild_recovery"
@@ -449,7 +495,19 @@ function generate_ota_zip () {
         MERGE_TARGET_FILES_COMMAND="$MERGE_TARGET_FILES_COMMAND --rebuild-sepolicy --vendor-otatools=$VENDOR_OTATOOLS"
     fi
 
+    OTA_GENERATE_COMMAND="$OTATOOLS_DIR/bin/ota_from_target_files \
+                          --verbose"
+    if [ "$ENABLE_OTA_XOR_COMPRESSION" = false ]; then
+        OTA_GENERATE_COMMAND="$OTA_GENERATE_COMMAND --enable_vabc_xor=false"
+    else
+        OTA_GENERATE_COMMAND="$OTA_GENERATE_COMMAND --enable_vabc_xor=true"
+    fi
+
+    OTA_GENERATE_COMMAND="$OTA_GENERATE_COMMAND $MERGED_TARGET_FILES \
+                          $MERGED_OTA_ZIP"
+
     command "$MERGE_TARGET_FILES_COMMAND"
+    command "$OTA_GENERATE_COMMAND"
 }
 
 function run_qiifa_initialization() {
@@ -475,13 +533,43 @@ function run_qiifa_for_techpackage () {
 }
 
 function run_qiifa () {
+    BUILD_TYPE=""
+    if [ "$1" == "techpack" ]; then
+        BUILD_TYPE="--techpack_build"
+        if [ -z "$2" ]; then
+            TECHPACK_BUILD_LIST=""
+        else
+            TECHPACK_BUILD_LIST="$2"
+            echo "Techpack names are provided"
+        fi
+    fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -n ${ADDR[1]} && "${ADDR[1]}" == "golden" ]]; then
       command "run_qiifa_for_techpackage"
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --type all --enforced 1"
+        if [ "$1" == "techpack" ]; then
+            if [ "$TECHPACK_BUILD_LIST" == "" ]; then
+                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                echo "No techpack_name arguments were given with build command"
+            else
+                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
+            fi
+        else
+            command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+        fi
+    fi
+}
+
+function run_qiifa_dependency_checker() {
+    BUILD_TYPE=""
+    if [ "$1" == "techpack" ]; then
+        BUILD_TYPE="--techpack_build"
+    fi
+    QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
+    if [ -f $QIIFA_SCRIPT ]; then
+     command "python $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
     fi
 }
 
@@ -502,6 +590,7 @@ function build_target_only () {
     #command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     #command "run_qiifa_initialization"
+    #command "run_qiifa_dependency_checker target"
     command "make $QSSI_ARGS"
     if [ "$BUILDING_WITH_VSDK" = true ]; then
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
@@ -534,6 +623,20 @@ function full_build () {
     merge_only
 }
 
+function nonqssi_legacy_build () {
+    command "source build/envsetup.sh"
+    if [ "$DP_IMAGES_OVERRIDE" = true ]; then
+       ARGS=${ARGS//"--dp_images_path=$DYNAMIC_PARTITIONS_IMAGES_PATH"/}
+    fi
+    command "make $ARGS"
+    if [ "$DIST_ENABLED" = true ] && [ "$BOARD_DYNAMIC_PARTITION_ENABLE" = true ]; then
+      check_if_file_exists "$DIST_DIR/super.img"
+      log "${TARGET_PRODUCT} copy $DIST_DIR/super.img to $OUT/ "
+      command "cp $DIST_DIR/super.img $OUT/"
+      command "unzip -jo -DD $LEGACY_TARGET_FILES IMAGES/*.img -x IMAGES/userdata.img -d $DYNAMIC_PARTITIONS_IMAGES_PATH"
+    fi
+}
+
 function run_dca() {
     # Run the command in background and collect build data.
     DCA_SCRIPT="$QCPATH/common-noship/scripts/analytics_data_collection.sh"
@@ -542,20 +645,48 @@ function run_dca() {
     fi
 }
 
-# Check if qssi is supported on this target or not.
-for QSSI_TARGET in "${QSSI_TARGETS_LIST[@]}"
-do
-    if [ "$TARGET_PRODUCT" == "$QSSI_TARGET" ]; then
-        QSSI_TARGET_FLAG=1
-        break
+# This will compile techpack targets. The target naming convention:
+#    <tech team name>_tp will call main target to compile all groups, or
+#    <tech team name>_tp_<group name> to compile specific group
+# Example, Camera has main target as camera_tp, and group targets as camera_tp_hal camera_tb_dlkm camera_tb_apk camera_tb_app camera_tp_kernel
+function build_techpack_only () {
+    TPARGS=()
+    TECHPACK_BUILD_LIST=""
+    for tp in "${TECHPACK_LIST[@]}"
+    do
+      for arg in $QSSI_ARGS
+      do
+        if [[ "$arg" == "$tp"* ]]; then
+            echo "Request to build techpack $arg"
+            TPARGS+=("${arg}")
+            TECHPACK_BUILD_LIST+="$arg,"
+        fi
+      done
+    done
+    if [[ -z "${TPARGS}" ]]; then
+        echo "Please check you have specified techpack target name in the build command ..!!!"
+        echo "And techpack target name added to TECHPACK_LIST[] in build.sh ..!!!"
+        exit 1
+    else
+        for target in "${TPARGS[@]}"
+        do
+            echo Will build techpack target: $target
+        done
     fi
-done
+    command "source build/envsetup.sh"
+    command "python2 -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
+    QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
+    command "run_qiifa_initialization"
+    command "run_qiifa_dependency_checker techpack"
+    command "make $QSSI_ARGS selinux_policy"
+    command "run_qiifa techpack $TECHPACK_BUILD_LIST"
+}
 
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
     log "${TARGET_PRODUCT} is not a QSSI target. Using legacy build process for compilation..."
-    command "source build/envsetup.sh"
-    command "make $ARGS"
+    nonqssi_legacy_build
 else # For QSSI targets
     log "Building Android using build.sh for ${TARGET_PRODUCT}..."
     log "QSSI_ARGS=\"$QSSI_ARGS\""
@@ -570,7 +701,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]]; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
@@ -580,6 +711,11 @@ else # For QSSI targets
     if [[ "$TARGET_ONLY" -eq 1 ]]; then
         log "Executing a target only build for $TARGET_PRODUCT ..."
         build_target_only
+    fi
+
+    if [[ "$TP_ONLY" -eq 1 ]]; then
+        log "Executing a techpack only build for $TARGET_PRODUCT ..."
+        build_techpack_only
     fi
 
     if [[ "$MERGE_ONLY" -eq 1 ]]; then
@@ -592,3 +728,4 @@ else # For QSSI targets
         run_dca
     fi
 fi
+
