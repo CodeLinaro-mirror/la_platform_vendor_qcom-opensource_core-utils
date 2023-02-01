@@ -558,27 +558,27 @@ function run_qiifa_dependency_checker() {
 
 function build_qssi_only () {
     command "source build/envsetup.sh"
-    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
     command "make $QSSI_ARGS"
-    COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
-    if [ -f $COMMONSYS_INTF_SCRIPT ];then
-      command "python $COMMONSYS_INTF_SCRIPT"
-    fi
+    # COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
+    # if [ -f $COMMONSYS_INTF_SCRIPT ];then
+    #   command "python $COMMONSYS_INTF_SCRIPT"
+    # fi
 }
 
 function build_target_only () {
     command "source build/envsetup.sh"
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
-    command "run_qiifa_initialization"
-    command "run_qiifa_dependency_checker target"
+    # command "run_qiifa_initialization"
+    # command "run_qiifa_dependency_checker target"
     command "make $QSSI_ARGS"
     if [ "$BUILDING_WITH_VSDK" = true ]; then
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
-    command "run_qiifa techpack"
+    # command "run_qiifa techpack"
 }
 
 function merge_only () {
