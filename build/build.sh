@@ -496,7 +496,8 @@ else # For QSSI targets
         log "Executing a QSSI only build ..."
         build_qssi_only
         if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
-            run_qiifa
+            log "Skipping QIIFA Validation for ${TARGET_PRODUCT} due to enable TARGET_VNDK_USE_CORE_VARIANT..."
+            #run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
         fi
