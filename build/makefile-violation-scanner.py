@@ -25,11 +25,11 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-from __future__ import print_function
 try:
     from makefile_whitelist import *
 except ImportError:
     pass
+import io
 import os
 import subprocess
 import re
@@ -123,7 +123,7 @@ def check_datetime(line, file_name):
 
 def check_local_copy_headers(line, file_name):
     global local_copy_headers_errors
-    if re.match(r'.*LOCAL_COPY_HEADERS_TO.*', line):
+    if re.match(r'.*LOCAL_COPY_HEADERS.*', line):
         local_copy_headers_errors.add(file_name)
 
 
@@ -146,20 +146,25 @@ def check_target_product_related(line, file_name):
 
 
 def scan_files(file_list):
+    global fnd_c_include
+    global fnd_add_dep
+    global cnt_module
+
     # Scan each file
     for f in file_list:
         if f == '%s/makefile-violation-scanner.py' % QTI_BUILDTOOLS_DIR.replace(ANDROID_BUILD_TOP, ''):
             continue
         try:
-            with open(ANDROID_BUILD_TOP+f) as o_file:
-                for line in o_file:
+            with io.open(ANDROID_BUILD_TOP+f, errors='ignore') as o_file:
+                lines_itr = iter(o_file.readlines())
+                for line in lines_itr:
                     line = line.strip()
                     if not line.startswith('#'):
 
                         # Take care of backslash (\) continuation
                         while line.endswith('\\'):
                             try:
-                                line = line[:-1] + next(o_file).strip()
+                                line = line[:-1] + next(lines_itr).strip()
                             except StopIteration:
                                 line = line[:-1]
 
@@ -185,6 +190,10 @@ def scan_files(file_list):
                 # Check kernel issue at end of file (in case no CLEAR_VARS)
                 if fnd_c_include and not fnd_add_dep:
                     kernel_errors.add(str(cnt_module)+'::'+f)
+                fnd_c_include = False
+                fnd_add_dep = False
+                cnt_module = 0
+
         except IOError:
             print("Error opening file %s" % f)
 
@@ -323,8 +332,9 @@ def main():
     with open(os.devnull, 'w') as dev_null:
         files = subprocess.check_output(
             """find %s -type f \( -iname '*.mk' -o -iname '*.sh' -o -iname '*.py' \); :;""" % subdir_abspath_str, shell=True, stderr=dev_null)
-        files = files.strip().replace(ANDROID_BUILD_TOP, '').split('\n')
-
+        files = files.decode().strip()
+        files = files.replace(ANDROID_BUILD_TOP, '')
+        files = files.split('\n')
     scan_files(files)
 
     found_errors = print_messages()
