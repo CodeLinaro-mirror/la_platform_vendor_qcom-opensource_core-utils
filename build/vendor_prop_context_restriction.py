@@ -60,7 +60,7 @@ import os, sys, argparse
 #global constants
 OUT = os.getenv("OUT")
 if OUT == None:
-    print "No out directory found. skipping check"
+    print ("No out directory found. skipping check")
     sys.exit(0)
 
 PROPERTY_CONTEXT_FILE_PATH = OUT+ "/vendor/etc/selinux/vendor_property_contexts"
@@ -122,7 +122,7 @@ def check_context_restriction(prop_name_and_context):
         list_of_violator_props.append(prop_name_and_context[0] + "\t" + prop_name_and_context[1])
 
 def exit_with_warning(reason):
-    print "WARNING: " + reason
+    print ("WARNING: " + reason)
     sys.exit(0)
 
 def main():
