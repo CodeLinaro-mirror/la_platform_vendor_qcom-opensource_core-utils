@@ -223,6 +223,7 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
   logging.info("QSSI build path = " + qssi_build_path)
   logging.info("Target build path = " + target_build_path)
   logging.info("Merged build path = " + merged_build_path)
+  logging.info("Skip qiifa  = " + str(skip_qiifa))
 
   if not no_tmp:
     # Ensure there is free space on /tmp
@@ -325,6 +326,9 @@ def main():
     QSSI_TARGET="qssi_32"
   elif args.target_lunch.endswith("neo"):
     QSSI_TARGET="qssi_lite"
+  elif args.target_lunch.endswith("_2w"):
+    QSSI_TARGET="qssi"
+    args.skip_qiifa=True
   else:
     QSSI_TARGET="qssi"
 
