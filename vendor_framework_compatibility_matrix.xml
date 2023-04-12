@@ -24,6 +24,11 @@ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Changes from Qualcomm Innovation Center are provided under the following license:
+
+Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+SPDX-License-Identifier: BSD-3-Clause-Clear
 -->
 
 
@@ -912,6 +917,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      <hal format="hidl" optional="true">
          <name>vendor.qti.automotive.qcarcam</name>
          <version>1.0-1</version>
+         <version>2.0</version>
          <interface>
              <name>IQcarCamera</name>
              <instance>default</instance>
@@ -1214,6 +1220,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <version>1</version>
         <interface>
             <name>IDataChannelService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.AMSIPC</name>
+        <version>1.0</version>
+        <interface>
+            <name>IAMS</name>
             <instance>default</instance>
         </interface>
     </hal>
