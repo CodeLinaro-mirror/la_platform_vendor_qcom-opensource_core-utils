@@ -1944,6 +1944,16 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <interface>
             <name>IPowerStateUtility</name>
             <instance>default</instance>
+         </interface>
+   </hal>
+    <!-- UMD Adaptor Service -->
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.umd</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IUMDAdaptor</name>
+            <instance>default</instance>
         </interface>
     </hal>
 </compatibility-matrix>
