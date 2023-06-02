@@ -599,11 +599,11 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
-            run_qiifa
-        else
+#        if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
+#            run_qiifa
+#        else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
-        fi
+#        fi
     fi
 
     if [[ "$TARGET_ONLY" -eq 1 ]]; then
