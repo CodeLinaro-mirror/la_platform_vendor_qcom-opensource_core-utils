@@ -238,7 +238,8 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
-TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "qssi_au" "sm6150_au")
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "qssi_au" "sm6150_au")
+AVB_ENABLED_PARTITIONS="boot.img dtbo.img init_boot.img system_dlkm.img system_ext.img system.img vendor_boot.img vendor_dlkm.img vendor.img"
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -267,9 +268,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "qssi_au" "sm6150_au")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_gvmq" "sm6150_au")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "qssi_au" "sm6150_au")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "qssi_au" "sm6150_au")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "sm6150_au")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "qssi_au" "sm6150_au")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
@@ -490,6 +491,33 @@ function generate_ota_zip () {
                           $MERGED_OTA_ZIP"
 
     command "$MERGE_TARGET_FILES_COMMAND"
+
+    if [ "$DIST_ENABLED" = true ]; then
+        command "unzip $MERGED_TARGET_FILES IMAGES/* META/* */build.prop -d $MERGED_TARGET_FILES_DIR"
+        if [[ "${TARGET_PRODUCT}" == *"_gvmq" || "${TARGET_PRODUCT}" == *"_gvm" ]]; then
+            command "mkdir IMAGES"
+            FINAL_IMAGES_PATH="$MERGED_TARGET_FILES_DIR/IMAGES"
+            AVB_TOOL_COMMAND="$OTATOOLS_DIR/bin/avbtool make_vbmeta_image --output $FINAL_IMAGES_PATH/vbmeta.img --key $OTATOOLS_DIR/external/avb/test/data/testkey_rsa4096.pem --algorithm SHA256_RSA4096"
+            for file in $FINAL_IMAGES_PATH/*; do
+                file_name=$(basename $file)
+                for i in $AVB_ENABLED_PARTITIONS; do
+                    if [ "$i" == "$file_name" ] ; then
+                        VBMETA_STRING+=" --include_descriptors_from_image $file"
+                    fi
+                done
+            done
+            VBMETA_STRING+=" --padding_size 4096"
+            command "$AVB_TOOL_COMMAND $VBMETA_STRING"
+
+            # Repack the new vbmeta image with merged zip file
+            command "cp $FINAL_IMAGES_PATH/vbmeta.img IMAGES/"
+            command "zip -u $MERGED_TARGET_FILES IMAGES/vbmeta.img"
+            command "${RM} -rf IMAGES"
+        fi
+        # Remove the temporary unzipped files
+        command "${RM} -rf $MERGED_TARGET_FILES_DIR/*"
+    fi
+
     command "$OTA_GENERATE_COMMAND"
 }
 
