@@ -615,6 +615,13 @@ function nonqssi_legacy_build () {
       command "cp $DIST_DIR/super.img $OUT/"
       command "unzip -jo -DD $LEGACY_TARGET_FILES IMAGES/*.img -x IMAGES/userdata.img -d $DYNAMIC_PARTITIONS_IMAGES_PATH"
     fi
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]; then
+      #invoke the pilsplitter script after all the userspace images are created.
+      GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
+      cd "$GH_SCRIPT_PATH"
+      bash ghgvm-pilsplitter.sh
+      log "PIL splitted images are created at $OUT/scratch"
+    fi
 }
 
 function run_dca() {
