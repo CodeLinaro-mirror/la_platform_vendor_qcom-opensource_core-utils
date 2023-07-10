@@ -465,14 +465,14 @@ function run_qiifa_initialization() {
     fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -f $QIIFA_SCRIPT ]]; then
-     command "python $QIIFA_SCRIPT ${ADDR[0]}"
+     command "python -B $QIIFA_SCRIPT ${ADDR[0]}"
     fi
 }
 
 function run_qiifa_for_techpackage () {
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --create techpackage --enforced 1"
+     command "python -B $QIIFA_SCRIPT --create techpackage --enforced 1"
     fi
 }
 
@@ -487,7 +487,7 @@ function run_qiifa () {
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+     command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
     fi
 }
 
@@ -498,7 +498,7 @@ function build_qssi_only () {
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
     if [ -f $COMMONSYS_INTF_SCRIPT ];then
-      command "python $COMMONSYS_INTF_SCRIPT"
+      command "python -B $COMMONSYS_INTF_SCRIPT"
     fi
 }
 
