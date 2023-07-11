@@ -150,8 +150,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>default</instance>
         </interface>
     </hal>
-    </hal>
-        <hal format="aidl" optional="true">
+    <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.qteeconnector</name>
         <version>1</version>
         <interface>
