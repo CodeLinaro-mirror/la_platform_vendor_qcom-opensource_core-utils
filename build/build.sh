@@ -265,7 +265,7 @@ MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
 DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "monaco" "crow")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "monaco" "crow" "trinket")
 DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
@@ -501,14 +501,14 @@ function run_qiifa_initialization() {
     fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -f $QIIFA_SCRIPT ]]; then
-     command "python $QIIFA_SCRIPT ${ADDR[0]}"
+     command "python -B $QIIFA_SCRIPT ${ADDR[0]}"
     fi
 }
 
 function run_qiifa_for_techpackage () {
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --create techpackage --enforced 1"
+     command "python -B $QIIFA_SCRIPT --create techpackage --enforced 1"
     fi
 }
 
@@ -531,13 +531,13 @@ function run_qiifa () {
     if [ -f $QIIFA_SCRIPT ]; then
         if [ "$1" == "techpack" ]; then
             if [ "$TECHPACK_BUILD_LIST" == "" ]; then
-                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
                 echo "No techpack_name arguments were given with build command"
             else
-                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
+                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
             fi
         else
-            command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+            command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
         fi
     fi
 }
@@ -549,7 +549,7 @@ function run_qiifa_dependency_checker() {
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
+     command "python -B $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
     fi
 }
 
@@ -560,7 +560,7 @@ function build_qssi_only () {
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
     if [ -f $COMMONSYS_INTF_SCRIPT ];then
-      command "python $COMMONSYS_INTF_SCRIPT"
+      command "python -B $COMMONSYS_INTF_SCRIPT"
     fi
 }
 

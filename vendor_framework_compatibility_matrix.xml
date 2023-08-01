@@ -394,7 +394,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
-           <version>1.0-8</version>
+           <version>1.0-9</version>
            <interface>
                <name>IImsRadio</name>
                <instance>imsradio0</instance>
@@ -403,7 +403,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
-        <version>1-11</version>
+        <version>1-12</version>
         <interface>
             <name>IImsRadio</name>
             <instance>imsradio0</instance>
@@ -1128,36 +1128,29 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.qxr</name>
+        <version>1-2</version>
         <interface>
             <name>IQXRCoreService</name>
             <instance>default</instance>
         </interface>
-    </hal>
-    <hal format="aidl" optional="true">
-        <name>vendor.qti.hardware.qxr</name>
         <interface>
             <name>IQXRCamService</name>
             <instance>default</instance>
         </interface>
-    </hal>
-    <hal format="aidl" optional="true">
-        <name>vendor.qti.hardware.qxr</name>
         <interface>
             <name>IQXRSplitService</name>
             <instance>default</instance>
         </interface>
-    </hal>
-    <hal format="aidl" optional="true">
-        <name>vendor.qti.hardware.qxr</name>
         <interface>
             <name>IQXRModService</name>
             <instance>default</instance>
         </interface>
-    </hal>
-    <hal format="aidl" optional="true">
-        <name>vendor.qti.hardware.qxr</name>
         <interface>
             <name>IQXRAudioService</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IQXRCommService</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -1220,5 +1213,13 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <name>IUMDAdaptor</name>
             <instance>default</instance>
         </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+    <name>vendor.qti.hardware.qspa</name>
+    <version>1</version>
+    <interface>
+         <name>IQspa</name>
+         <instance>default</instance>
+    </interface>
     </hal>
 </compatibility-matrix>
