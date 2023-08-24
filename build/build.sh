@@ -239,7 +239,7 @@ TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
 TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "qssi_au" "sm6150_au")
-AVB_ENABLED_PARTITIONS="boot.img dtbo.img init_boot.img system_dlkm.img system_ext.img system.img vendor_boot.img vendor_dlkm.img vendor.img"
+AVB_ENABLED_PARTITIONS="boot.img dtbo.img init_boot.img product.img system_dlkm.img system_ext.img system.img vendor_boot.img vendor_dlkm.img vendor.img"
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
