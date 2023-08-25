@@ -146,6 +146,18 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.qteeconnector</name>
+        <version>1</version>
+        <interface>
+            <name>IAppConnector</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IGPAppConnector</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.debugutils</name>
         <version>1.0</version>
