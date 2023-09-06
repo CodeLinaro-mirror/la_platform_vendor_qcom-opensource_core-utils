@@ -1558,4 +1558,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
          <instance>default</instance>
     </interface>
     </hal>
+    <!-- AONUtility hal -->
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.aonutility</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IAONUtility</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
