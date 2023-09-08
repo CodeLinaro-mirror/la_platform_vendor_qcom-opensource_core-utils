@@ -205,7 +205,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
 fi
 
 if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
-" || "$TARGET_PRODUCT" == "qssi_32go" ]]; then
+" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qwsi_32go" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
@@ -245,6 +245,7 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "monaco_go_aon")
+TARGET_PRODUCT_MAPPING_QWSI_32GO=("qwsi_32go" "monaco_go_aon")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -256,6 +257,8 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32go"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QWSI_32GO[@]}"; then
+    TARGET_MATCHING_QSSI="qwsi_32go"
 else
     QSSI_TARGET_FLAG=0
     TARGET_MATCHING_QSSI="qssi"
@@ -271,9 +274,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "monaco_go_aon")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qwsi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "monaco_go_aon")
 VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "monaco_go_aon")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "monaco_go_aon")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qwsi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "monaco_go_aon")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp")
@@ -438,8 +441,11 @@ function generate_dynamic_partition_images () {
 function generate_ota_zip () {
     ENABLE_OTA_XOR_COMPRESSION=true
     log "Processing dist/ota commands:"
-
-    FRAMEWORK_TARGET_FILES="$(find $DIST_DIR -name "qssi*-target_files-*.zip" -print)"
+    if target_product_in_list "${TARGET_PRODUCT_MAPPING_QWSI_32GO[@]}"; then
+        FRAMEWORK_TARGET_FILES="$(find $DIST_DIR -name "qwsi*-target_files-*.zip" -print)"
+    else
+        FRAMEWORK_TARGET_FILES="$(find $DIST_DIR -name "qssi*-target_files-*.zip" -print)"
+    fi
     log "FRAMEWORK_TARGET_FILES=$FRAMEWORK_TARGET_FILES"
     check_if_file_exists "$FRAMEWORK_TARGET_FILES"
 
