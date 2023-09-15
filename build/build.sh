@@ -93,11 +93,6 @@
 #     Modifying the existing 64 bit only configuration for qssi and vendor target(s)
 # Version 11:
 #     Splitting OTA generation from Merge target file for all target(s)
-# Version 12:
-#     Remove techpack flag for Target builds and add bytcode removal of python files.
-# version 13:
-#     Default python version is set to 3. If python ver 3 not available revert to and check for python 2. 
-#     If no python is not installed in the system, Error out and echo the error.
 #
 BUILD_SH_VERSION=11
 if [ "$1" == "--version" ]; then
@@ -278,29 +273,6 @@ TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_t
 
 OTATOOLS_DIR="$(mktemp --directory)"
 MERGED_TARGET_FILES_DIR="$(mktemp --directory)"
-
-
-USE_PYTHON_VER_3=false
-PYTHON_VERSION_CHECK=$(command -v python3)
-echo $PYTHON_VERSION_CHECK
-if [  -n "$PYTHON_VERSION_CHECK" ]
-then
-    echo "python 3 is installed"
-    PYTHON_CMD="python3"
-    USE_PYTHON_VER_3=true
-else
-    echo "python 3 is not installed"
-    PYTHON_VERSION_CHECK=$(command -v python2)
-    if [ -n "$PYTHON_VERSION_CHECK" ]
-    then
-        echo "python 2 is installed"
-        PYTHON_CMD="python2"
-    else
-        echo "python 2 is not installed"
-        PYTHON_CMD="python"
-    fi
-fi
-
 cleanup() {
     rm -rf $OTATOOLS_DIR $MERGED_TARGET_FILES_DIR
 }
@@ -529,14 +501,14 @@ function run_qiifa_initialization() {
     fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -f $QIIFA_SCRIPT ]]; then
-     command "$PYTHON_CMD -B $QIIFA_SCRIPT ${ADDR[0]}"
+     command "python -B $QIIFA_SCRIPT ${ADDR[0]}"
     fi
 }
 
 function run_qiifa_for_techpackage () {
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "$PYTHON_CMD -B $QIIFA_SCRIPT --create techpackage --enforced 1"
+     command "python -B $QIIFA_SCRIPT --create techpackage --enforced 1"
     fi
 }
 
@@ -559,13 +531,13 @@ function run_qiifa () {
     if [ -f $QIIFA_SCRIPT ]; then
         if [ "$1" == "techpack" ]; then
             if [ "$TECHPACK_BUILD_LIST" == "" ]; then
-                command "$PYTHON_CMD -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
                 echo "No techpack_name arguments were given with build command"
             else
-                command "$PYTHON_CMD -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
+                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
             fi
         else
-            command "$PYTHON_CMD -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+            command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
         fi
     fi
 }
@@ -577,7 +549,7 @@ function run_qiifa_dependency_checker() {
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "$PYTHON_CMD -B $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
+     command "python -B $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
     fi
 }
 
@@ -585,19 +557,17 @@ function build_qssi_only () {
     command "source build/envsetup.sh"
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
-    command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
-    command "$PYTHON_CMD -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
     if [ -f $COMMONSYS_INTF_SCRIPT ];then
-      command "$PYTHON_CMD -B $COMMONSYS_INTF_SCRIPT"
+      command "python -B $COMMONSYS_INTF_SCRIPT"
     fi
 }
 
 function build_target_only () {
     command "source build/envsetup.sh"
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    command "$PYTHON_CMD -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
     command "run_qiifa_dependency_checker target"
@@ -686,8 +656,6 @@ function build_techpack_only () {
     command "source build/envsetup.sh"
     command "python2 -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    command "$PYTHON_CMD -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
     command "run_qiifa_dependency_checker techpack"
