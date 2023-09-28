@@ -155,7 +155,7 @@ if [[ "$TARGET_PRODUCT" == "qssi" ]]; then
     QSSI_ONLY=1
 fi
 
-QSSI_TARGETS_LIST=("holi" "taro" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "bengal_2w" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily")
+QSSI_TARGETS_LIST=("holi" "taro" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "bengal_2w" "qssi" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "msm8937_lily" "msm8937_32go")
 QSSI_TARGET_FLAG=0
 SKIP_ABI_CHECKS=true
 
@@ -182,7 +182,7 @@ DATE=${DATE:-date}
 EPOCH_TIME=`${DATE} +%s`
 export BUILD_DATETIME="$EPOCH_TIME"
 
-NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily")
+NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily" "msm8937_32go")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$NON_AB_TARGET" ]; then
