@@ -97,6 +97,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>default</instance>
          </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.perf2</name>
+         <version>1</version>
+         <interface>
+            <name>IPerf</name>
+            <instance>default</instance>
+         </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.display.color</name>
         <version>1.0-7</version>
