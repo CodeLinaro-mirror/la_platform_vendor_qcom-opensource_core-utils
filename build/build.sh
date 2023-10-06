@@ -310,9 +310,9 @@ QSSI_ARGS="$QSSI_ARGS BOARD_DYNAMIC_PARTITION_ENABLE=$BOARD_DYNAMIC_PARTITION_EN
 
 # Set Shipping API level on target basis.
 SHIPPING_API_P="28"
-SHIPPING_API_Q="29"
+SHIPPING_API_U="34"
 SHIPPING_API_P_TARGET_LIST=("sdm845")
-SHIPPING_API_LEVEL=$SHIPPING_API_Q
+SHIPPING_API_LEVEL=$SHIPPING_API_U
 for P_API_TARGET in "${SHIPPING_API_P_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$P_API_TARGET" ]; then
@@ -320,6 +320,9 @@ do
         break
     fi
 done
+
+# Below SHIPPING_API_LEVEL argument have no effect on automotive targets
+# because shipping API level is hardcoded at target make file.
 QSSI_ARGS="$QSSI_ARGS SHIPPING_API_LEVEL=$SHIPPING_API_LEVEL"
 
 for ARG in $QSSI_ARGS
