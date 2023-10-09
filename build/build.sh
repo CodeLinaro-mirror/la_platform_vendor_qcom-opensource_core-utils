@@ -239,7 +239,7 @@ TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
 TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "qssi_au" "sm6150_au")
-AVB_ENABLED_PARTITIONS="boot.img dtbo.img init_boot.img system_dlkm.img system_ext.img system.img vendor_boot.img vendor_dlkm.img vendor.img"
+AVB_ENABLED_PARTITIONS="boot.img dtbo.img init_boot.img product.img system_dlkm.img system_ext.img system.img vendor_boot.img vendor_dlkm.img vendor.img"
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -607,6 +607,13 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     # command "run_qiifa techpack"
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]; then
+        #invoke the pilsplitter script after all the userspace images are created.
+        GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
+        cd "$GH_SCRIPT_PATH"
+        bash ghgvm-pilsplitter.sh
+        log "PIL splitted images are created at $OUT/scratch"
+    fi
 }
 
 function merge_only () {
