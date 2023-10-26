@@ -33,6 +33,7 @@ except ImportError:
 import os
 import subprocess
 import re
+import io
 import sys
 
 kernel_errors = set()
@@ -151,7 +152,7 @@ def scan_files(file_list):
         if f == '%s/makefile-violation-scanner.py' % QTI_BUILDTOOLS_DIR.replace(ANDROID_BUILD_TOP, ''):
             continue
         try:
-            with open(ANDROID_BUILD_TOP+f) as o_file:
+            with io.open(ANDROID_BUILD_TOP+f, errors='ignore') as o_file:
                 for line in o_file:
                     line = line.strip()
                     if not line.startswith('#'):
@@ -323,7 +324,7 @@ def main():
     with open(os.devnull, 'w') as dev_null:
         files = subprocess.check_output(
             """find %s -type f \( -iname '*.mk' -o -iname '*.sh' -o -iname '*.py' \); :;""" % subdir_abspath_str, shell=True, stderr=dev_null)
-        files = files.strip().replace(ANDROID_BUILD_TOP, '').split('\n')
+        files = files.decode().strip().replace(ANDROID_BUILD_TOP, '').split('\n')
 
     scan_files(files)
 
