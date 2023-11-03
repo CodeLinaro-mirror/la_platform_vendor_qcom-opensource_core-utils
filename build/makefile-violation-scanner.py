@@ -65,11 +65,13 @@ try:
     if TARGET_PRODUCT == "qssi":
         print("Using legacy target whitelist for legacy qssi builds.")
         from makefile_whitelist import *
-    else:
+    elif "qssi" in TARGET_PRODUCT:
+        print("Using qssi_XY specific whitelist")
         from qssi_makefile_whitelist import *
-        if "qssi" not in TARGET_PRODUCT:
-            from target_makefile_whitelist import *
+    else:
         print("Using target specific whitelist")
+        from target_makefile_whitelist import *
+
 except ImportError:
     # Fall back to legacy
     print("Using legacy target whitelist.")
