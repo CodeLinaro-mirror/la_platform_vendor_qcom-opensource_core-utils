@@ -277,7 +277,12 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
   status = call(cmd)
 
   logging.info("Triggering Merge Process and generating merged-target-files, OTA zip and super.img...")
-  cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only", "--rebuild_sepolicy_with_vendor_otatools=out/dist/vendor/"+TARGET_OTATOOLS_ZIP]
+
+  if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]:
+	cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only"]
+  else:
+    cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only", "--rebuild_sepolicy_with_vendor_otatools=out/dist/vendor/"+TARGET_OTATOOLS_ZIP]
+
   logging.info("Running: " + str(cmd))
   status = call(cmd)
 
