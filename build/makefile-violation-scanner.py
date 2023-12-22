@@ -60,13 +60,13 @@ QSSI_VARIANT = "qssi_64"
 # Create a Vendor-QSSI mapping between targets
 # Add the qssi variant as a target to the list. This is needed for running this scanner on QSSI builds only
 vendor_qssi_mapping_dict = {
-    "qssi_64" : ["qssi_64","pineapple","sun","blair"],
+    "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti"],
     "qssi_xrM" : ["qssi_xrM","niobe"],
+    "qssi_sdg" : ["qssi_sdg","capri"],
 }
  
 for qssi,targets in vendor_qssi_mapping_dict.items():
     if TARGET_PRODUCT in vendor_qssi_mapping_dict[qssi]:
-        global QSSI_VARIANT
         QSSI_VARIANT = qssi
  
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
