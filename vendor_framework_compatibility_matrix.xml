@@ -1070,14 +1070,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </interface>
     </hal>
     <hal format="aidl" optional="true">
-        <name>vendor.qti.hardware.radio.atcmdfwd</name>
-        <version>1</version>
-        <interface>
-            <name>IAtCmdFwd</name>
-            <instance>AtCmdFwdAidl</instance>
-        </interface>
-    </hal>
-    <hal format="aidl" optional="true">
         <name>vendor.qti.data.txpwrservice</name>
         <version>1-2</version>
         <interface>
