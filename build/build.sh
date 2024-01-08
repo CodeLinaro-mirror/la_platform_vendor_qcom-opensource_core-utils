@@ -93,8 +93,10 @@
 #     Modifying the existing 64 bit only configuration for qssi and vendor target(s)
 # Version 11:
 #     Splitting OTA generation from Merge target file for all target(s)
+# Version 12:
+#     Remove techpack flag for Target builds and add bytcode removal of python files.
 #
-BUILD_SH_VERSION=11
+BUILD_SH_VERSION=12
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -507,14 +509,14 @@ function run_qiifa_initialization() {
     fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -f $QIIFA_SCRIPT ]]; then
-     command "python $QIIFA_SCRIPT ${ADDR[0]}"
+     command "python -B $QIIFA_SCRIPT ${ADDR[0]}"
     fi
 }
 
 function run_qiifa_for_techpackage () {
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --create techpackage --enforced 1"
+     command "python -B $QIIFA_SCRIPT --create techpackage --enforced 1"
     fi
 }
 
@@ -537,13 +539,13 @@ function run_qiifa () {
     if [ -f $QIIFA_SCRIPT ]; then
         if [ "$1" == "techpack" ]; then
             if [ "$TECHPACK_BUILD_LIST" == "" ]; then
-                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
                 echo "No techpack_name arguments were given with build command"
             else
-                command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
+                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
             fi
         else
-            command "python $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+            command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
         fi
     fi
 }
@@ -555,7 +557,7 @@ function run_qiifa_dependency_checker() {
     fi
     QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
     if [ -f $QIIFA_SCRIPT ]; then
-     command "python $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
+     command "python -B $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
     fi
 }
 
@@ -564,10 +566,10 @@ function build_qssi_only () {
     # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
     command "make $QSSI_ARGS"
-    # COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
-    # if [ -f $COMMONSYS_INTF_SCRIPT ];then
-    #   command "python $COMMONSYS_INTF_SCRIPT"
-    # fi
+    #COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
+    #if [ -f $COMMONSYS_INTF_SCRIPT ];then
+    #  command "python -B $COMMONSYS_INTF_SCRIPT"
+    #fi
 }
 
 function build_target_only () {
@@ -589,6 +591,7 @@ function build_target_only () {
         bash ghgvm-pilsplitter.sh
         log "PIL splitted images are created at $OUT/scratch"
     fi
+    command "run_qiifa"
 }
 
 function merge_only () {
