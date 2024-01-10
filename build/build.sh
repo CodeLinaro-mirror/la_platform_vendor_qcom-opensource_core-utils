@@ -254,7 +254,7 @@ fi
 
 SKIP_ABI_CHECKS=true
 
-NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily")
+NON_AB_TARGET_LIST=("bengal_32go" "msm8937_lily")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$NON_AB_TARGET" ]; then
