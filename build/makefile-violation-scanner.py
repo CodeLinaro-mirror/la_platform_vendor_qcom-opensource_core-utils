@@ -36,20 +36,15 @@ import re
 import sys
 import glob
 
-
 # Dynamically get whitelists from device/qcom/<target>/
 ANDROID_BUILD_TOP = os.environ.get('ANDROID_BUILD_TOP') + '/'
 TARGET_PRODUCT = os.environ.get('TARGET_PRODUCT')
 QCPATH = os.environ.get('QCPATH')
 TARGET_BOARD_PLATFORM = TARGET_PRODUCT
-sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
-sys.path.insert(1, "%sdevice/qcom/qssi_64" % ANDROID_BUILD_TOP)
-sys.path.insert(1, "%sdevice/qcom/qssi_xrM" % ANDROID_BUILD_TOP)
 board_config_files = []
 product_config_files = []
 inherited_files_product = []
 inherited_files_board = []
-
 
 #Hard coded path macros
 SRC_TARGET_DIR = "build/make/target"
@@ -60,22 +55,38 @@ ANDROID_PARTNER_GMS_HOME = "vendor/partner_gms"
 OVERLAY_PATH_VND = "vendor/qcom/proprietary/resource-overlay"
 TARGET_VENDOR = "qcom"
 PREBUILT_BOARD_PLATFORM_DIR = TARGET_PRODUCT
+QSSI_VARIANT = "qssi_64"
 
-
+# Create a Vendor-QSSI mapping between targets
+# Add the qssi variant as a target to the list. This is needed for running this scanner on QSSI builds only
+vendor_qssi_mapping_dict = {
+    "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti"],
+    "qssi_xrM" : ["qssi_xrM","niobe"],
+    "qssi_sdg" : ["qssi_sdg","capri"],
+}
+ 
+for qssi,targets in vendor_qssi_mapping_dict.items():
+    if TARGET_PRODUCT in vendor_qssi_mapping_dict[qssi]:
+        QSSI_VARIANT = qssi
+ 
+sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
+sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
+print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
+print("QSSI_VARIANT:{}".format(QSSI_VARIANT))
 try:
     if TARGET_PRODUCT == "qssi":
         print("Using legacy target whitelist for legacy qssi builds.")
         from makefile_whitelist import *
     else:
         from qssi_makefile_whitelist import *
+        print("Using {} whitelist file".format(QSSI_VARIANT))
         if "qssi" not in TARGET_PRODUCT:
             from target_makefile_whitelist import *
-        print("Using target specific whitelist")
+            print("Using target specific whitelist")
 except ImportError:
     # Fall back to legacy
     print("Using legacy target whitelist.")
     from makefile_whitelist import *
-
 
 # Enforcement sets for Android make files
 kernel_errors = set()

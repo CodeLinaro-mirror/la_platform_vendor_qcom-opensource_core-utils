@@ -205,7 +205,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
 fi
 
 if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
-" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_xrM" ]]; then
+" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_xrM" || "$TARGET_PRODUCT" == "qssi_sdg" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
@@ -242,10 +242,11 @@ ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "crow" "anorak")
-TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "pitti")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "pitti" "volcano")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
-TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
+TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go")
 TARGET_PRODUCT_MAPPING_QSSI_XRM=("qssi_xrM" "niobe")
+TARGET_PRODUCT_MAPPING_QSSI_SDG=("qssi_sdg" "capri")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -259,6 +260,8 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32go"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_XRM[@]}"; then
     TARGET_MATCHING_QSSI="qssi_xrM"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_SDG[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_sdg"
 else
     QSSI_TARGET_FLAG=0
     TARGET_MATCHING_QSSI="qssi"
@@ -274,9 +277,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_xrM" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "pitti")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "pitti" "monaco")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_xrM" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "pitti")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_xrM" "qssi_sdg" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "pitti" "pitti_32go" "volcano")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "pitti" "monaco" "volcano")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_xrM" "qssi_32" "qssi_32go" "qssi_sdg" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "pitti" "pitti_32go" "volcano")
 
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
@@ -692,7 +695,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_xrM" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_xrM" ]] || [[ "$TARGET_PRODUCT" == "qssi_sdg" ]]; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
