@@ -591,7 +591,6 @@ function build_target_only () {
         bash ghgvm-pilsplitter.sh
         log "PIL splitted images are created at $OUT/scratch"
     fi
-    command "run_qiifa"
 }
 
 function merge_only () {
