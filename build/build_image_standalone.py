@@ -322,7 +322,7 @@ def main():
     "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go"],
-    "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "pitti" "volcano"],
+    "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "pitti", "volcano"],
     "qssi_xrM"  : ["niobe"],
     "qssi_sdg"  : ["capri"],
   }

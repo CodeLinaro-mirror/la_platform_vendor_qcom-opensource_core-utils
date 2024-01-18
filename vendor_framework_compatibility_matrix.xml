@@ -1435,7 +1435,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     <hal format="hidl" optional="true">
         <name>vendor.qti.qesdhal</name>
         <transport>hwbinder</transport>
-        <version>1.0-3</version>
+        <version>1.0-4</version>
         <interface>
             <name>IQesdhal</name>
             <instance>default</instance>
