@@ -329,8 +329,6 @@ def main():
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
     QSSI_TARGET="qssi"
-    if args.target_lunch == "bengal_2w":
-      args.skip_qiifa=True
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_32go']:
     QSSI_TARGET="qssi_32go"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_32']:
