@@ -1610,4 +1610,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
    </hal>
+   <!-- SidekickMetrics hal -->
+   <hal format="hidl">
+        <name>vendor.qti.hardware.sidekickmetrics</name>
+        <transport>hwbinder</transport>
+         <version>1.0</version>
+            <interface>
+            <name>ISidekickMetrics</name>
+            <instance>default</instance>
+        </interface>
+   </hal>
 </compatibility-matrix>
