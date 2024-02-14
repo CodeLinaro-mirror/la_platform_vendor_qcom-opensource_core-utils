@@ -1589,5 +1589,15 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
              <name>IWatchOrientation</name>
              <instance>default</instance>
          </interface>
-    </hal>
+   </hal>
+    <!-- AONFwLoader hal -->
+   <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.aonfwloader</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+            <interface>
+            <name>IAONFwLoader</name>
+            <instance>default</instance>
+        </interface>
+   </hal>
 </compatibility-matrix>
