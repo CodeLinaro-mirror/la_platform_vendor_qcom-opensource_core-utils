@@ -328,11 +328,7 @@ def main():
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple"],
-<<<<<<< HEAD   (49bd01 Merge bbf8ea5b8d702c5aea0eb4526f278a565a5025b5 on remote bra)
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy"],
-=======
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u"],
->>>>>>> CHANGE (1d0665 Build : Add support for super image creation with msmnile_gv)
+    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy", "msmnile_gvmq_s_u"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
