@@ -589,13 +589,13 @@ function build_target_only () {
     command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
     #command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
-    #command "run_qiifa_initialization"
+    command "run_qiifa_initialization"
     #command "run_qiifa_dependency_checker target"
     command "make $QSSI_ARGS"
     if [ "$BUILDING_WITH_VSDK" = true ]; then
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
-    #command "run_qiifa"
+    command "run_qiifa"
 }
 
 function merge_only () {
@@ -701,7 +701,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_au" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]]; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
