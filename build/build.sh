@@ -689,6 +689,7 @@ __disregard_bp()
         echo "****** move $f to $f.disable"
         mv -f $f $f.disable
       done
+      set +x
 }
 
 # For non-QSSI targets
