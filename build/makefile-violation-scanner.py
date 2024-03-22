@@ -63,6 +63,7 @@ vendor_qssi_mapping_dict = {
     "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti"],
     "qssi_xrM" : ["qssi_xrM","niobe"],
     "qssi_sdg" : ["qssi_sdg","capri"],
+    "qssi_lite" : ["qssi_lite","neo"],
 }
  
 for qssi,targets in vendor_qssi_mapping_dict.items():
