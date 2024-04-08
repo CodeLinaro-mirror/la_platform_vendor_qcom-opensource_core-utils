@@ -512,6 +512,7 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     command "run_qiifa"
+    command "python -B $(QTI_BUILDTOOLS_DIR)/build/vendor_prop_context_restriction.py --m error"
 }
 
 function merge_only () {
