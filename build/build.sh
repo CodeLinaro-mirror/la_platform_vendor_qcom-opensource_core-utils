@@ -204,7 +204,7 @@ if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_
     fi
 fi
 
-QSSI_TARGETS_LIST=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150" "sm6150_au" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal_32" "bengal_32go" "gen4_au")
+QSSI_TARGETS_LIST=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_tb" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150" "sm6150_au" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "qssi_32" "qssi_32go" "qssi_au" "bengal_32" "bengal_32go" "gen4_au")
 QSSI_TARGET_FLAG=0
 SKIP_ABI_CHECKS=true
 
@@ -258,7 +258,7 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
-TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "qssi_au" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150_au" "gen4_au")
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_tb" "qssi_au" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150_au" "gen4_au")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -287,9 +287,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150" "sm6150_au" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_au" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "gen4_au")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150_au" "gen4_au")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_ext4" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_au" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sm6150_au" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "gen4_au")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "msmnile_au" "msmnile_tb"  "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150" "sm6150_au" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_au" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "gen4_au")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_tb" "msmnile_gvmq" "msmnile_gvmq_ext4" "sm6150_au" "gen4_au")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "msmnile_au" "msmnile_tb" "msmnile_gvmq" "msmnile_gvmq_ext4" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_au" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sm6150_au" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "gen4_au")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
