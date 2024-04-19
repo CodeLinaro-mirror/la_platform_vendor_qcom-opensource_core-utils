@@ -599,6 +599,7 @@ function build_target_only () {
         log "PIL splitted images are created at $OUT/scratch"
     fi
     command "run_qiifa"
+    command "python -B $(QTI_BUILDTOOLS_DIR)/build/vendor_prop_context_restriction.py --m error"
 }
 
 function merge_only () {
