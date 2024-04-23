@@ -84,6 +84,12 @@ try:
         if "qssi" not in TARGET_PRODUCT:
             from target_makefile_whitelist import *
             print("Using target specific whitelist")
+        try:
+            from target_specific_configs import *
+            if "qssi" not in TARGET_PRODUCT:
+                from target_specific_configs import *
+        except:
+            print("No target_specific_configs file present")
 except ImportError:
     # Fall back to legacy
     print("Using legacy target whitelist.")
@@ -92,8 +98,10 @@ except ImportError:
 # Enforcement sets for Android make files
 kernel_errors = set()
 shell_errors = set()
+target_out_headers_errors = set()
 recursive_errors = set()
 rm_errors = set()
+kernel_obj_errors = set()
 datetime_errors = set()
 local_copy_headers_errors = set()
 
@@ -120,8 +128,10 @@ fnd_add_dep = False
 # Default Android.mk enforcement variables
 BUILD_REQUIRES_KERNEL_DEPS = True
 BUILD_BROKEN_USES_SHELL = False
+BUILD_BROKEN_USES_TARGET_OUT_HEADERS = False
 BUILD_BROKEN_USES_RECURSIVE_VARS = True
 BUILD_BROKEN_USES_RM_OUT = False
+BUILD_BROKEN_USES_KERNEL_OBJ = False
 BUILD_BROKEN_USES_DATETIME = False
 BUILD_BROKEN_USES_LOCAL_COPY_HEADERS = False
 BUILD_BROKEN_USES_TARGET_PRODUCT = False
@@ -133,15 +143,22 @@ BUILD_BROKEN_USES_OVERRIDE = False
 
 
 # Set whitelist variables if not defined
-whitelist_vars = ["SHELL_WHITELIST", "RM_WHITELIST", "LOCAL_COPY_HEADERS_WHITELIST",
+whitelist_vars = ["SHELL_WHITELIST", "TARGET_OUT_HEADERS_WHITELIST", "RM_WHITELIST", "KERNEL_OBJ_WHITELIST", "LOCAL_COPY_HEADERS_WHITELIST",
                   "DATETIME_WHITELIST", "TARGET_PRODUCT_WHITELIST", "RECURSIVE_WHITELIST", "KERNEL_WHITELIST",
                   "FAILED_FILEPATHS_WHITELIST","FOREACH_WHITELIST","MACRO_WHITELIST","OVERRIDE_WHITELIST",
                   "SOONG_WHITELIST"]
+
+config_vars = ["target_deprecate_kernel_headers","target_deprecate_target_out_headers"]
+
 for w in whitelist_vars:
     if w not in globals():
         exec("%s = set()" % w, globals())
     if "VENDOR_" + w not in globals():
         exec("VENDOR_%s = set()" % w, globals())
+
+for c in config_vars:
+    if c not in globals():
+        exec("%s = set()" % c, globals())
 
 def check_kernel_deps(line, file_name):
     global cur_file_name
@@ -208,6 +225,10 @@ def check_shell(line, file_name):
     if re.match(r'.*\$\(shell.*', line):
         shell_errors.add(file_name)
 
+def check_target_out_headers(line, file_name):
+    global target_out_headers_errors
+    if re.match(r'.*TARGET_OUT_HEADERS.*', line):
+        target_out_headers_errors.add(file_name)
 
 def check_recursive(line, file_name):
     global recursive_errors
@@ -224,6 +245,10 @@ def check_rm(line, file_name):
     if re.match(r'.*([\s]+|^|@)rm[\s]+.*', line):
         rm_errors.add(file_name)
 
+def check_kernel_obj(line, file_name):
+    global kernel_obj_errors
+    if re.match(r'.*KERNEL_OBJ.*', line):
+        kernel_obj_errors.add(file_name)
 
 def check_datetime(line, file_name):
     global datetime_errors
@@ -480,9 +505,17 @@ def scan_files(file_list):
                             if (f not in SHELL_WHITELIST) and \
                                (f not in VENDOR_SHELL_WHITELIST):
                                 check_shell(line, f)
+                            if (TARGET_PRODUCT in target_deprecate_target_out_headers) and \
+                               (f not in TARGET_OUT_HEADERS_WHITELIST) and \
+                               (f not in VENDOR_TARGET_OUT_HEADERS_WHITELIST):
+                                check_target_out_headers(line, f)
                             if (f not in RM_WHITELIST) and \
                                (f not in VENDOR_RM_WHITELIST):
                                 check_rm(line, f)
+                            if (TARGET_PRODUCT in target_deprecate_kernel_headers) and \
+                               (f not in KERNEL_OBJ_WHITELIST) and \
+                               (f not in VENDOR_KERNEL_OBJ_WHITELIST):
+                                check_kernel_obj(line, f)
                             if (f not in LOCAL_COPY_HEADERS_WHITELIST) and \
                                (f not in VENDOR_LOCAL_COPY_HEADERS_WHITELIST):
                                 check_local_copy_headers(line, f)
@@ -503,9 +536,19 @@ def scan_files(file_list):
                                (f not in VENDOR_SHELL_WHITELIST):
                                check_shell(line, f)
 
+                            if (TARGET_PRODUCT in target_deprecate_target_out_headers) and \
+                               (f not in TARGET_OUT_HEADERS_WHITELIST) and \
+                               (f not in VENDOR_TARGET_OUT_HEADERS_WHITELIST):
+                               check_target_out_headers(line, f)
+
                             if (f not in FOREACH_WHITELIST) and \
                                (f not in VENDOR_FOREACH_WHITELIST):
                                check_foreach(line,f)
+
+                            if (TARGET_PRODUCT in target_deprecate_kernel_headers) and \
+                               (f not in KERNEL_OBJ_WHITELIST) and \
+                               (f not in VENDOR_KERNEL_OBJ_WHITELIST):
+                                check_kernel_obj(line, f)
 
                             if (f not in MACRO_WHITELIST) and \
                                (f not in VENDOR_MACRO_WHITELIST):
@@ -563,6 +606,14 @@ def print_messages():
             print("    %s" % file_name)
         print("-----------------------------------------------------")
         found_errors = True
+    if (not BUILD_BROKEN_USES_TARGET_OUT_HEADERS) and len(target_out_headers_errors) > 0:
+        print("-----------------------------------------------------")
+        print("cnt_target_out_headers_error : %s" % len(target_out_headers_errors))
+        print("Error: Using target_out_headers in below makefiles. This will be deprecated soon, please remove.")
+        for file_name in sorted(target_out_headers_errors):
+            print("    %s" % file_name)
+        print("-----------------------------------------------------")
+        found_errors = True
     if (not BUILD_BROKEN_USES_RECURSIVE_VARS) and len(recursive_errors) > 0:
         print("-----------------------------------------------------")
         print("cnt_recursive_error : %s" % len(recursive_errors))
@@ -580,6 +631,14 @@ def print_messages():
             print("    %s" % file_name)
         print("-----------------------------------------------------")
         found_errors = True
+    if (not BUILD_BROKEN_USES_KERNEL_OBJ) and len(kernel_obj_errors) > 0:
+       print("-----------------------------------------------------")
+       print("kernel_obj_error : %s" % len(kernel_obj_errors))
+       print("Error: Using kernel_obj_errors in below makefiles. This will be deprecated soon, please remove.")
+       for file_name in sorted(kernel_obj_errors):
+           print("    %s" % file_name)
+       print("-----------------------------------------------------")
+       found_errors = True
     if (not BUILD_BROKEN_USES_DATETIME) and len(datetime_errors) > 0:
         print("-----------------------------------------------------")
         print("cnt_datetime_error : %s" % len(datetime_errors))
@@ -678,8 +737,10 @@ def main():
     print(" Checking makefile errors ")
     print("      Checking dependency on kernel headers ......")
     print("      Checking $(shell) usage ......")
+    print("      Checking target_out_headers usage ......")
     print("      Checking recursive usage ......")
     print("      Checking rm usage ......")
+    print("      Checking kernel_obj usage ......")
     print("      Checking -Wno-error=date-time usage ......")
     print("      Checking local_copy_headers usage ......")
     print("      Checking TARGET_PRODUCT usage ......")
