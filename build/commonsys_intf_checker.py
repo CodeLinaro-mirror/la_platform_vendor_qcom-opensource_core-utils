@@ -148,6 +148,10 @@ def ignore_whitelist_projects(project_name):
             return True
     return False
 
+def is_dylib_file(filepath):
+    DYLIB_SO_EXTENSION = ".dylib.so"
+    return filepath.endswith(DYLIB_SO_EXTENSION)
+
 def find_commonsys_intf_project_paths():
     qssi_install_keywords = ["system","system_ext","product"]
     vendor_install_keywords = ["vendor"]
@@ -161,6 +165,11 @@ def find_commonsys_intf_project_paths():
             project_path = module_info_dict[module]['path'][0]
             class_type   = module_info_dict[module]['class'][0]
         except IndexError:
+            continue
+        except KeyError:
+            continue
+
+        if(is_dylib_file(install_path)):
             continue
 
         if project_path is None or install_path is None or class_type is None:

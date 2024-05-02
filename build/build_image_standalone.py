@@ -55,8 +55,11 @@ Version 1.1:
 Version 1.2:
   - Adds support for 32-bit and Go targets
   - Disable qiifa check for 32-bit and Go targets
+Verison 1.3:
+  - Add python 3 support
+  - Add toggle to check python version and change based on python version
 '''
-__version__ = '1.2'
+__version__ = '1.3'
 
 logger = logging.getLogger(__name__)
 
@@ -181,7 +184,14 @@ def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_
   QIIFA_CHECKS_DIR_PATH_TARGET = QIIFA_CHECKS_DIR_PATH + target_lunch
 
   # Fetch the QIIFA script
-  QIIFA_SCRIPT = "qiifa_py2"
+  python_version = int(sys.version_info.major)
+  QIIFA_SCRIPT = ""
+  if python_version == 2:
+      QIIFA_SCRIPT = "qiifa_py2"
+  elif python_version == 3:
+      QIIFA_SCRIPT = "qiifa_py3"
+  else:
+      QIIFA_SCRIPT = "qiifa_py3"
   if os.path.exists(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI + "/" + QIIFA_SCRIPT):
     # Check for QIIFA script from $OUT_QSSI/QIIFA path first
     copy_items(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI + "/", QIIFA_CHECKS_DIR_PATH, [QIIFA_SCRIPT], "QIIFA_SCRIPT")
@@ -324,10 +334,10 @@ def main():
 
   # use this dict to pair target lunch options with their corresponding qssi type.
   vendor_qssi_mapping_dict = {
-    "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515"],
+    "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
-    "qssi_64"   : ["kalama64", "pineapple"],
+    "qssi_64"   : ["kalama64", "pineapple" "blair", "sun", "niobe"],
     "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy"],
   }
 

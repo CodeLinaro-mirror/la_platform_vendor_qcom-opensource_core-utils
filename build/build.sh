@@ -27,6 +27,11 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+# Changes from Qualcomm Innovation Center are provided under the following license:
+# Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+#
+#
 # This script is mainly to compile QSSI targets. For other targets, usage
 # of regular "make" is recommended.
 #
@@ -136,9 +141,19 @@ TARGET_ONLY=0
 FULL_BUILD=0
 LIST_TECH_PACKAGE=""
 
+# Explicitly unset the PLATFORM_VERSION to avoid getting stale value from previous build
+# run in the same session.
+unset PLATFORM_VERSION
+
 # set below flag to 0 to disable build performance data collection.
 DCA_ENABLED=1
 DCA_OUT="out/dca"
+
+QIIFA_PYTHON="python"
+QIIFA_SANDBOX_ENABLED=0
+QIIFA_MAIN_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
+QIIFA_TARGET_BASH_CONFIG_FILEPATH="$QCPATH/QIIFA-cmd-vendor/qiifa_bash_configs"
+QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_config/qiifa_bash_configs"
 
 while [[ $# -gt 0 ]]
     do
@@ -185,6 +200,31 @@ function target_product_in_list() {
         fi
     done
     return 1
+}
+
+function check_sandbox_configuration() {
+    if [ -f "$QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH" ];then
+        command ". $QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH"
+        if [[ "$ENABLE_SANDBOX" == 1 ]];then
+            if [ -f "$QIIFA_TARGET_BASH_CONFIG_FILEPATH" ];then
+                command ". $QIIFA_TARGET_BASH_CONFIG_FILEPATH"
+                if [[ "$ENABLE_SANDBOX" == 1 ]];then
+                    QIIFA_SANDBOX_ENABLED=1
+                    log "QIIFA Sandbox enabled"
+                else
+                    QIIFA_SANDBOX_ENABLED=0
+                    log "QIIFA Sandbox disabled"
+                fi
+            else
+                # Handles QSSI side scenario as QIIFA-cmd is not present on QSSI
+                QIIFA_SANDBOX_ENABLED=1
+                log "QIIFA Sandbox enabled"
+            fi
+        else
+            QIIFA_SANDBOX_ENABLED=0
+            log "QIIFA Sandbox disabled"
+        fi
+    fi
 }
 
 # If none of the discrete options are passed, this is a full build
@@ -236,8 +276,8 @@ BOARD_DYNAMIC_PARTITION_ENABLE=false
 ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
-TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515")
-TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
+TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "crow" "anorak")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "niobe")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
 TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "qssi_au" "sm6150_au")
@@ -269,12 +309,13 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "qssi_au" "sm6150_au")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "sm6150_au")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "qssi_au" "sm6150_au")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "qssi_au" "sm6150_au")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "sm6150_au")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_gy" "qssi_au" "sm6150_au")
+
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
-TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
+TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp")
 
 OTATOOLS_DIR="$(mktemp --directory)"
 MERGED_TARGET_FILES_DIR="$(mktemp --directory)"
@@ -437,7 +478,7 @@ function generate_dynamic_partition_images () {
 }
 
 function generate_ota_zip () {
-    ENABLE_OTA_XOR_COMPRESSION=false
+    ENABLE_OTA_XOR_COMPRESSION=true
     log "Processing dist/ota commands:"
 
     FRAMEWORK_TARGET_FILES="$(find $DIST_DIR -name "qssi*-target_files-*.zip" -print)"
@@ -499,9 +540,13 @@ function generate_ota_zip () {
 }
 
 function run_qiifa_initialization() {
+    command "check_sandbox_configuration"
+    if [[ "$QIIFA_SANDBOX_ENABLED" -eq 1 ]]; then
+        command "locate_qiifa_dependencies"
+    fi
     QIIFA_IN_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_initialization.py"
     QIIFA_TP_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_techpackage_initialization.py"
-    QIIFA_SCRIPT = ""
+    QIIFA_SCRIPT=""
     if [[ -f $QIIFA_IN_SCRIPT ]];then
      QIIFA_SCRIPT=$QIIFA_IN_SCRIPT
     elif [[ -f $QIIFA_TP_SCRIPT ]];then
@@ -509,18 +554,31 @@ function run_qiifa_initialization() {
     fi
     IFS=':' read -ra ADDR <<< "${LIST_TECH_PACKAGE:15}"
     if [[ -f $QIIFA_SCRIPT ]]; then
-     command "python -B $QIIFA_SCRIPT ${ADDR[0]}"
+     command "$QIIFA_PYTHON -B $QIIFA_SCRIPT ${ADDR[0]}"
     fi
 }
 
 function run_qiifa_for_techpackage () {
-    QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
-    if [ -f $QIIFA_SCRIPT ]; then
-     command "python -B $QIIFA_SCRIPT --create techpackage --enforced 1"
+    if [ -f $QIIFA_MAIN_SCRIPT ]; then
+     command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --create techpackage --enforced 1"
+    fi
+}
+
+function locate_qiifa_dependencies(){
+    QIIFA_TOOLS_PYTHON="/pkg/QIIFA/sandbox/QIIFA-tools/qiifa-python/Python-3.12.1/bin/python3.12"
+    if [[ -f $QIIFA_TOOLS_PYTHON ]];then
+     QIIFA_PYTHON="$QIIFA_TOOLS_PYTHON"
+     log "QIIFA using Python Interpretor found in QIIFA tools at $QIIFA_PYTHON"
+    else
+     log "QIIFA-tools python not found using userspace python"
     fi
 }
 
 function run_qiifa () {
+    command "check_sandbox_configuration"
+    if [[ "$QIIFA_SANDBOX_ENABLED" -eq 1 ]]; then
+        command "locate_qiifa_dependencies"
+    fi
     BUILD_TYPE=""
     if [ "$1" == "techpack" ]; then
         BUILD_TYPE="--techpack_build"
@@ -535,36 +593,42 @@ function run_qiifa () {
     if [[ -n ${ADDR[1]} && "${ADDR[1]}" == "golden" ]]; then
       command "run_qiifa_for_techpackage"
     fi
-    QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
-    if [ -f $QIIFA_SCRIPT ]; then
+    if [ -f $QIIFA_MAIN_SCRIPT ]; then
         if [ "$1" == "techpack" ]; then
             if [ "$TECHPACK_BUILD_LIST" == "" ]; then
-                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type all --enforced 1 $BUILD_TYPE"
                 echo "No techpack_name arguments were given with build command"
             else
-                command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
+                command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type api_management --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
             fi
         else
-            command "python -B $QIIFA_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+            command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type all --enforced 1 $BUILD_TYPE"
         fi
     fi
 }
 
 function run_qiifa_dependency_checker() {
+    command "check_sandbox_configuration"
+    if [[ "$QIIFA_SANDBOX_ENABLED" -eq 1 ]]; then
+        command "locate_qiifa_dependencies"
+    fi
     BUILD_TYPE=""
     if [ "$1" == "techpack" ]; then
         BUILD_TYPE="--techpack_build"
     fi
-    QIIFA_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
-    if [ -f $QIIFA_SCRIPT ]; then
-     command "python -B $QIIFA_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
+    if [ -f $QIIFA_MAIN_SCRIPT ]; then
+     command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type api_dep --enforced 1 $BUILD_TYPE"
     fi
 }
 
 function build_qssi_only () {
     command "source build/envsetup.sh"
+    if [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
+      command "lunch ${TARGET_PRODUCT}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
+    else
+      command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
+    fi
     # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
-    command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
     command "make $QSSI_ARGS"
     #COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
     #if [ -f $COMMONSYS_INTF_SCRIPT ];then
@@ -574,13 +638,17 @@ function build_qssi_only () {
 
 function build_target_only () {
     command "source build/envsetup.sh"
-    command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
-    # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    if [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
+      command "lunch ${TARGET}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
+    else
+      command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
+    fi
+    #command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
     # command "run_qiifa_dependency_checker target"
     command "make $QSSI_ARGS"
-    if [ "$BUILDING_WITH_VSDK" = true ]; then
+    if [[ "$BUILDING_WITH_VSDK" = true && "$BOARD_VNDK_VERSION" != "current" ]]; then
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     # command "run_qiifa techpack"
@@ -671,8 +739,12 @@ function build_techpack_only () {
         done
     fi
     command "source build/envsetup.sh"
-    command "python2 -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
-    command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
+    if [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
+      command "lunch ${TARGET}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
+    else
+      command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
+    fi
+    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
     command "run_qiifa_dependency_checker techpack"
@@ -708,7 +780,6 @@ else # For QSSI targets
         log "Executing a full build ..."
         full_build
     fi
-
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
