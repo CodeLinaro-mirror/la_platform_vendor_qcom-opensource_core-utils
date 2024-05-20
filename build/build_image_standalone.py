@@ -319,7 +319,7 @@ def main():
 
   # use this dict to pair target lunch options with their corresponding qssi type.
   vendor_qssi_mapping_dict = {
-    "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak", "bengal_2w"],
+    "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak", "bengal_2w", "bengal_2w_v2"],
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "pitti", "volcano"],
