@@ -240,7 +240,7 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
-TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u")
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_tb" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -269,9 +269,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_tb" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "msmnile_au" "msmnile_tb" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "msmnile_au" "msmnile_tb" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_microdroid" "gen4_gvm_gy" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
@@ -585,6 +585,13 @@ function build_target_only () {
     fi
     # command "run_qiifa techpack"
     if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]; then
+        #invoke the pilsplitter script after all the userspace images are created.
+        GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
+        cd "$GH_SCRIPT_PATH"
+        bash ghgvm-pilsplitter.sh
+        log "PIL splitted images are created at $OUT/scratch"
+    fi
+    if [ "$TARGET_PRODUCT" == "gen5_gvm_gy" ]; then
         #invoke the pilsplitter script after all the userspace images are created.
         GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
         cd "$GH_SCRIPT_PATH"
