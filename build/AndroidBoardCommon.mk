@@ -89,9 +89,9 @@ else
 	echo "PREBUILT_ELF_FILES_DEPENDENCY_ENFORCED=true" >> $@
 endif
 ifeq ($(BUILD_BROKEN_USES_KERNEL_OBJ),true)
-        echo "KERNEL_OBJ_USAGE_ENFORCED=false" >> $@
+	echo "KERNEL_OBJ_USAGE_ENFORCED=false" >> $@
 else
-        echo "KERNEL_OBJ_USAGE_ENFORCED=true" >> $@
+	echo "KERNEL_OBJ_USAGE_ENFORCED=true" >> $@
 endif
 ifeq ($(BUILD_BROKEN_USES_LOCAL_COPY_HEADERS),true)
 	echo "BUILD_COPY_HEADERS_ENFORCED=false" >> $@
@@ -104,9 +104,9 @@ else
 	echo "SHELL_USAGE_ENFORCED=true" >> $@
 endif
 ifeq ($(BUILD_BROKEN_USES_TARGET_OUT_HEADERS),true)
-        echo "TARGET_OUT_HEADERS_ENFORCED=false" >> $@
+	echo "TARGET_OUT_HEADERS_ENFORCED=false" >> $@
 else
-        echo "TARGET_OUT_HEADERS_ENFORCED=true" >> $@
+	echo "TARGET_OUT_HEADERS_ENFORCED=true" >> $@
 endif
 ifeq ($(BUILD_BROKEN_USES_RECURSIVE_VARS),true)
 	echo "RECURSIVE_VAR_USAGE_ENFORCED=false" >> $@
