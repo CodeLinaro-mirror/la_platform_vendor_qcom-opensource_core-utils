@@ -25,7 +25,7 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Changes from Qualcomm Innovation Center are provided under the following license:
+# Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
 # Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause-Clear
 #
@@ -60,40 +60,45 @@ QSSI_VARIANT = "qssi_64"
 # Create a Vendor-QSSI mapping between targets
 # Add the qssi variant as a target to the list. This is needed for running this scanner on QSSI builds only
 vendor_qssi_mapping_dict = {
-    "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti"],
+    "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti","anorak61"],
     "qssi_xrM" : ["qssi_xrM","niobe"],
     "qssi_sdg" : ["qssi_sdg","capri"],
     "qssi_lite" : ["qssi_lite","neo"],
+    "qssi" : ["qssi","anorak"],
 }
- 
+
 for qssi,targets in vendor_qssi_mapping_dict.items():
     if TARGET_PRODUCT in vendor_qssi_mapping_dict[qssi]:
         QSSI_VARIANT = qssi
- 
+
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
 print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
 print("QSSI_VARIANT:{}".format(QSSI_VARIANT))
 try:
-    if TARGET_PRODUCT == "qssi":
+    if QSSI_VARIANT == "qssi":
         print("Using legacy target whitelist for legacy qssi builds.")
         from makefile_whitelist import *
     else:
         from qssi_makefile_whitelist import *
         print("Using {} whitelist file".format(QSSI_VARIANT))
-        if "qssi" not in TARGET_PRODUCT:
-            from target_makefile_whitelist import *
-            print("Using target specific whitelist")
-        try:
-            from target_specific_configs import *
-            if "qssi" not in TARGET_PRODUCT:
-                from target_specific_configs import *
-        except:
-            print("No target_specific_configs file present")
-except ImportError:
+
+    if "qssi" not in TARGET_PRODUCT:
+        from target_makefile_whitelist import *
+        print("Using target specific whitelist")
+except:
     # Fall back to legacy
     print("Using legacy target whitelist.")
     from makefile_whitelist import *
+
+try:
+    from target_specific_configs import *
+    print("using QSSI specific_configs")
+    if "qssi" not in TARGET_PRODUCT:
+        from target_specific_configs import *
+        print("Using target specific configs")
+except:
+    print("No target_specific_configs file present")
 
 # Enforcement sets for Android make files
 kernel_errors = set()
