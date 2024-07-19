@@ -69,6 +69,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
          </interface>
     </hal>
     <hal format="aidl" optional="true">
+        <name>vendor.qti.snapdragonServices.qape</name>
+         <version>1</version>
+         <interface>
+            <name>IQape</name>
+            <instance>default</instance>
+         </interface>
+    </hal>
+    <hal format="aidl" optional="true">
         <name>vendor.qti.MemHal</name>
          <version>1</version>
          <interface>
@@ -138,10 +146,6 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1</version>
         <interface>
             <name>IMinkServer</name>
-            <instance>default</instance>
-        </interface>
-        <interface>
-            <name>IMinkTransact</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -586,7 +590,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.qtiradio</name>
-        <version>1-13</version>
+        <version>1-14</version>
         <interface>
             <name>IQtiRadioStable</name>
             <instance>slot1</instance>
@@ -1002,7 +1006,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
    </hal>
    <hal format="aidl" optional="true">
        <name>vendor.qti.hardware.data.iwlandata</name>
-       <version>1</version>
+       <version>1-2</version>
        <interface>
            <name>IIWlan</name>
            <instance>slot1</instance>
@@ -1037,6 +1041,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
        <interface>
            <name>IComponentStore</name>
            <instance>default</instance>
+           <instance>software</instance>
        </interface>
    </hal>
    <hal format="hidl" optional="true">
@@ -1473,6 +1478,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.qasr</name>
+        <version>1</version>
+        <interface>
+            <name>IQasr</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.wifi.wifimyftm</name>
         <transport>hwbinder</transport>
@@ -1537,6 +1550,30 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1-2</version>
         <interface>
             <name>IQesdhal</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+     <hal format="aidl" optional="true">
+        <name>vendor.qti.snapdragonServices</name>
+        <version>1</version>
+        <interface>
+            <name>ISnapdragonServices</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.snapdragonServices.sanityService</name>
+        <version>1</version>
+        <interface>
+            <name>ISanityService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.snapdragonServices.sanityService</name>
+        <version>1</version>
+        <interface>
+            <name>ISanityADK</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -1659,10 +1696,17 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
-
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.qvirtvendor</name>
+        <version>1</version>
+        <interface>
+            <name>IVendorVM</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.qvirt</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IVirtualizationService</name>
             <instance>default</instance>
@@ -1764,6 +1808,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1</version>
         <interface>
             <name>IQmsSatelliteService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl">
+    <name>vendor.qti.hardware.paleventnotifier</name>
+        <version>1</version>
+        <interface>
+            <name>IPALEventNotifier</name>
             <instance>default</instance>
         </interface>
     </hal>
