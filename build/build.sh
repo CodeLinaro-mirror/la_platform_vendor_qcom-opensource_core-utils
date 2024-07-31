@@ -102,8 +102,10 @@
 #     Remove techpack flag for Target builds and add bytcode removal of python files.
 # Version 13:
 #     Remove Android.mk/Android.bp files from Kernel Platform out.
-#
-BUILD_SH_VERSION=13
+# Version 14:
+#     Adding QIIFA API Management scan qc directory support
+
+BUILD_SH_VERSION=14
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -568,6 +570,7 @@ function locate_qiifa_dependencies(){
      log "QIIFA-tools python not found using userspace python"
     fi
 }
+QIIFA_SCAN_ALL_ARG="--scan_all_component 1"
 
 function run_qiifa () {
     command "check_sandbox_configuration"
@@ -591,7 +594,7 @@ function run_qiifa () {
     if [ -f $QIIFA_MAIN_SCRIPT ]; then
         if [ "$1" == "techpack" ]; then
             if [ "$TECHPACK_BUILD_LIST" == "" ]; then
-                command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type all --enforced 1 $BUILD_TYPE"
+                command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type all --enforced 1 $BUILD_TYPE $QIIFA_SCAN_ALL_ARG"
                 echo "No techpack_name arguments were given with build command"
             else
                 command "$QIIFA_PYTHON -B $QIIFA_MAIN_SCRIPT --type api_management --enforced 1 $BUILD_TYPE --techpack_names $TECHPACK_BUILD_LIST"
