@@ -863,6 +863,15 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
            <instance>software</instance>
        </interface>
    </hal>
+   <hal format="aidl" optional="true">
+       <name>android.hardware.media.c2</name>
+       <version>1</version>
+       <interface>
+           <name>IComponentStore</name>
+           <instance>default</instance>
+           <instance>software</instance>
+       </interface>
+   </hal>
    <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.display.allocator</name>
         <version>1.0</version>
