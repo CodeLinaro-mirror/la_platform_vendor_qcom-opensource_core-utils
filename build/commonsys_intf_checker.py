@@ -103,7 +103,8 @@ def print_violations_to_file(project_list):
         for module_metadata in project_list[violator_project]["module_list"]:
             violation_file_handler.writelines("Module name : " + module_metadata["module_name"])
             violation_file_handler.writelines("\n")
-            violation_file_handler.writelines("Module path : " + module_metadata["install_path"])
+            ## join the install path list of module to str
+            violation_file_handler.writelines("Module path : " + ','.join(module_metadata["install_path_list"]))
             violation_file_handler.writelines("\n")
         violation_file_handler.writelines("\n################################################# \n\n")
     violation_file_handler.close()
@@ -175,7 +176,11 @@ def enforce_commonsys_intf_groups_checker(prj_list_build):
             violation_flag = True
             print("Project should be marked as commonsys-intf in manifest : " + str(prj))
             for module in prj_list_build[prj]["module_list"]:
-                print(module["install_path"])
+                if(not module["install_path_list"]):
+                    # no install path module
+                    print(module["module_name"])
+                else:
+                    print(module["install_path_list"][0])
     if commonsys_intf_enforcement and violation_flag:
         return violation_flag
     else:
@@ -197,9 +202,16 @@ def find_commonsys_intf_project_paths_from_build_system():
     commonsys_intf_project_list = {}
     ## Only interested in projects which starts with vendor
     project_interest_prefix = "vendor"
+    relative_out_path = out_path.split(croot + "/")[1]
     for module in module_info_dict:
+        flag_module_without_path = False
         try:
-            install_path = module_info_dict[module]['installed'][0]
+            ## enhance code to process case that module may have multiple install path and no install path
+            if ('installed' in module_info_dict[module]):
+                install_path_list = module_info_dict[module]['installed']
+            else:
+                install_path_list = []
+                flag_module_without_path = True
             project_path = module_info_dict[module]['path'][0]
             class_type   = module_info_dict[module]['class'][0]
         except IndexError:
@@ -207,15 +219,30 @@ def find_commonsys_intf_project_paths_from_build_system():
         except KeyError:
             continue
 
-        if(is_dylib_file(install_path)):
+        if project_path is None or install_path_list is None or class_type is None:
+            continue
+        flag_is_dylib_file = False
+        ## iterate to check install path in list
+        for install_path in install_path_list:
+            if is_dylib_file(install_path):
+                flag_is_dylib_file = True
+                break
+        if flag_is_dylib_file:
             continue
 
-        if project_path is None or install_path is None or class_type is None:
-            continue
-        relative_out_path = out_path.split(croot + "/")[1]
-        ## Ignore host and other paths
-        if not relative_out_path in install_path:
-            continue
+        if flag_module_without_path:
+            if class_type not in ["HEADER_LIBRARIES", "STATIC_LIBRARIES"]:
+                continue
+        else:
+            ## Ignore host and other paths
+            contain_relative_out_path = False
+            for install_path in install_path_list:
+                if relative_out_path in install_path:
+                    contain_relative_out_path = True
+                    break
+            if not contain_relative_out_path:
+                continue
+
         if not project_path.startswith(project_interest_prefix) or project_path.startswith("vendor/widevine"):
             continue
 
@@ -226,7 +253,7 @@ def find_commonsys_intf_project_paths_from_build_system():
             project_metadata["module_list"] = module_list
             project_modules_map[project_path]= project_metadata
         module_metadata = {}
-        module_metadata["install_path"] = install_path
+        module_metadata["install_path_list"] = install_path_list
         module_metadata["class_type"] = class_type
         module_metadata["module_name"] = module
         project_modules_map[project_path]["module_list"].append(module_metadata)
@@ -241,6 +268,8 @@ def filter_interface_projects(commonsys_intf_project_list):
     for project in commonsys_intf_project_list:
         interface_project_flag = True
         for module_metadata in commonsys_intf_project_list[project]["module_list"]:
+            if not module_metadata["install_path_list"]:
+                continue
             if not check_for_hidl_aidl_intermediate_libs(module_metadata["module_name"],module_metadata["class_type"]):
                 interface_project_flag = False
                 break
@@ -251,19 +280,30 @@ def filter_interface_projects(commonsys_intf_project_list):
 def check_if_project_is_commonsys_intf(project_metadata):
     qssi_path = False
     vendor_path = False
+    ## update logic to check project with multiple install path modules
+    relative_out_path = out_path.split(croot + "/")[1]
     for module_metadata in project_metadata["module_list"]:
-        module_install_path = module_metadata["install_path"]
-        installed_image = module_install_path.split(out_path.split(croot+"/")[1] + "/")[1]
-        for qssi_keyword in qssi_install_keywords:
-            if installed_image.startswith(qssi_keyword):
-                qssi_path = True
-
-        for vendor_keyword in vendor_install_keywords:
-            if installed_image.startswith(vendor_keyword):
-                vendor_path = True
-
-        if qssi_path and vendor_path:
-            return True
+        for module_install_path in module_metadata["install_path_list"]:
+            ## only check the path starts with relative output path
+            if relative_out_path in module_install_path:
+                installed_image = module_install_path.split(relative_out_path + "/")[1]
+                for qssi_keyword in qssi_install_keywords:
+                    if installed_image.startswith(qssi_keyword):
+                        qssi_path = True
+                        break
+                for vendor_keyword in vendor_install_keywords:
+                    if installed_image.startswith(vendor_keyword):
+                        vendor_path = True
+                        break
+                if qssi_path and vendor_path:
+                    return True
+    ## new logic for checking header, static libraries without install path in module-info.json
+    for module_metadata in project_metadata["module_list"]:
+        if module_metadata["class_type"] in ["HEADER_LIBRARIES", "STATIC_LIBRARIES"]:
+            module_name = module_metadata["module_name"]
+            for module_vendor_metadata in project_metadata["module_list"]:
+                if module_name + ".vendor" == module_vendor_metadata["module_name"]:
+                    return True
     return False
 
 def start_commonsys_intf_checker():
