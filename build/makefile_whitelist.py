@@ -25,7 +25,33 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+
+FAILED_FILEPATHS_WHITELIST = {
+    "vendor/qcom/opensource/audio-hal/primary-hal/configs/qssi/qssi.mk",
+    "vendor/qcom/proprietary/prebuilt_grease/target/product/qssi/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/qssi/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY22/target/product/qssi/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/common/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY22/target/common/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_grease/target/common/prebuilt.mk",
+    "vendor/qcom/proprietary/qrdplus/China/ChinaMobile/products.mk",
+    "vendor/qcom/proprietary/qrdplus/China/ChinaTelecom/products.mk",
+    "vendor/qcom/proprietary/qrdplus/China/ChinaUnicom/products.mk",
+    "vendor/qcom/proprietary/qrdplus/China/CTA/products.mk",
+    "vendor/qcom/proprietary/qrdplus/Extension/products.mk",
+    "vendor/qcom/proprietary/commonsys/qrdplus/sva/products.mk",
+    "vendor/qcom/proprietary/commonsys/voiceui/products.mk",
+    "vendor/qcom/proprietary/resource-overlay/overlay.mk",
+    "vendor/qcom/proprietary/chi-cdk/product.mk",
+    "vendor/qcom/proprietary/prebuilt_ASAN/target/product/qssi/prebuilt.mk",
+    "vendor/qcom/proprietary/android-perf/profiles.mk",
+    "vendor/qcom/proprietary/mm-audio-internal/dolby/dax/device/dax2_common_hw.mk",
+    "vendor/qcom/proprietary/qrdplus/InternalUseOnly/DuerosSDK/products.mk",
+}
+
 SHELL_WHITELIST = {
+    "device/qcom/common/init/Android.mk",
+    "device/qcom/sepolicy/SEPolicy.mk",
     "vendor/qcom/proprietary/ts_firmware-noship/kalama/Android.mk",
     "vendor/qcom/opensource/touch-drivers/Android.mk",
     "vendor/qcom/proprietary/data-noship/qcril-data-utf/test/utf/Android.mk",
@@ -98,6 +124,7 @@ SHELL_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
+    "vendor/qcom/proprietary/common/create_files.mk",
 }
 
 RM_WHITELIST = {
@@ -146,3 +173,36 @@ RECURSIVE_WHITELIST = {
 
 KERNEL_WHITELIST = {
 }
+
+OVERRIDE_WHITELIST = {
+    "device/qcom/qssi/qssi.mk",
+    "device/qcom/qssi/qssi_whitelist.mk",
+}
+
+SOONG_WHITELIST = {
+    "device/qcom/qssi/base.mk",
+    "vendor/qcom/opensource/commonsys/display/config/display-product-commonsys.mk",
+    "vendor/qcom/proprietary/commonsys-intf/bluetooth/bt-system-proprietary-product.mk",
+}
+
+FOREACH_WHITELIST = {
+    "vendor/qcom/opensource/core-utils/build/utils.mk",
+    "vendor/qcom/proprietary/common-noship/build/generate_extra_images_prop.mk",
+    "vendor/qcom/proprietary/common/config/device-vendor-SDM845-pureAOSP.mk",
+    "vendor/qcom/proprietary/common/config/device-vendor-qssi.mk",
+}
+
+MACRO_WHITELIST = {
+    "device/qcom/sepolicy/SEPolicy.mk",
+    "vendor/qcom/opensource/commonsys/display/config/display-product-commonsys.mk",
+    "vendor/qcom/proprietary/common-noship/etc/device-vendor-noship-SDM845-pureAOSP.mk",
+    "vendor/qcom/proprietary/common-noship/etc/device-vendor-noship.mk",
+    "vendor/qcom/proprietary/common-noship/etc/device-vendor-qssi-noship.mk",
+    "vendor/qcom/proprietary/common/config/device-vendor-SDM845-pureAOSP.mk",
+    "vendor/qcom/proprietary/common/config/device-vendor-qssi.mk",
+    "vendor/qcom/proprietary/commonsys-intf/data/dpm_system_product_noship.mk",
+    "vendor/qcom/proprietary/commonsys/android-perf-noship/config/perf-product-system-proprietary.mk",
+    "vendor/qcom/proprietary/commonsys/telephony-build/build/telephony_system_product.mk",
+}
+
+
