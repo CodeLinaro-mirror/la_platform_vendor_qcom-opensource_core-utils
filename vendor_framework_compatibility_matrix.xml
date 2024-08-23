@@ -1273,7 +1273,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     <!-- Offline Camera service -->
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.camera.offlinecamera</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IOfflineCameraService</name>
             <instance>default</instance>
