@@ -324,9 +324,9 @@ def main():
   vendor_qssi_mapping_dict = {
     "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32"],
-    "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go"],
+    "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go", "bengal_515_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "pitti", "volcano", "anorak61"],
-    "qssi_xrM"  : ["niobe"],
+    "qssi_xrM"  : ["niobe", "neo61"],
     "qssi_sdg"  : ["capri"],
     "qssi_lite"  : ["neo"],
   }
