@@ -480,7 +480,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
-        <version>1-12</version>
+        <version>1-15</version>
         <interface>
             <name>IImsRadio</name>
             <instance>imsradio0</instance>
