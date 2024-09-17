@@ -1821,7 +1821,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl">
     <name>vendor.qti.hardware.paleventnotifier</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IPALEventNotifier</name>
             <instance>default</instance>
