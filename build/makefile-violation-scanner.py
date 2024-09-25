@@ -65,6 +65,7 @@ vendor_qssi_mapping_dict = {
     "qssi_sdg" : ["qssi_sdg","capri"],
     "qssi_lite" : ["qssi_lite","neo"],
     "qssi" : ["qssi","anorak"],
+    "qssi_xrl" : ["qssi_xrl","seraph"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():
