@@ -630,10 +630,10 @@ function build_qssi_only () {
     fi
     # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "make $QSSI_ARGS"
-    #COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
-    #if [ -f $COMMONSYS_INTF_SCRIPT ];then
-    #  command "python -B $COMMONSYS_INTF_SCRIPT"
-    #fi
+    COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
+    if [ -f $COMMONSYS_INTF_SCRIPT ];then
+      command "python -B $COMMONSYS_INTF_SCRIPT"
+    fi
 }
 
 function build_target_only () {
