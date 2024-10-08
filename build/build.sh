@@ -280,7 +280,7 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "niobe")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
-TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_gy" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au")
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_gy" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -309,10 +309,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_gy" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_gy" "gen4_gvm_sdvcomm" "sm6150_au")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_gy" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au")
-
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_gy" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_gy" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "sm6150_au")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "gen4_gvm" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_gy" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp")
@@ -381,6 +380,8 @@ do
     elif [[ "$ARG" == *"--rebuild_sepolicy_with_vendor_otatools"* ]]; then
         REBUILD_SEPOLICY=true
         VENDOR_OTATOOLS=$(${ECHO} "$ARG" | ${CUT} -d'=' -f 2)
+    elif [ "$ARG" = "TARGET_AUTO_RBVM=true"  ]; then
+        TARGET_AUTO_RBVM=true
     else
         QSSI_ARGS_WITHOUT_DIST="$QSSI_ARGS_WITHOUT_DIST $ARG"
     fi
@@ -621,14 +622,33 @@ function run_qiifa_dependency_checker() {
     fi
 }
 
+function is_qssi_15_2_0() {
+    pushd .repo/manifests/.git/
+    QSSI_1520="LA_AU.QSSI.15.2.0"
+    FOUND=`git branch -a | grep -i LA_AU.QSSI.15.2.0`
+    popd
+    if [[ $FOUND =~ $QSSI_1520  ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 function build_qssi_only () {
     command "source build/envsetup.sh"
-    if [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
+    is_qssi_15_2_0
+    if [[ "$?" -eq 1 ]]; then
+        TARGET_RELEASE="trunk_staging"
+        TARGET_AUTO_RBVM=true
+        QSSI_ARGS="$QSSI_ARGS TARGET_AUTO_RBVM=true"
+        command "lunch ${TARGET_PRODUCT}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
+    elif [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
       command "lunch ${TARGET_PRODUCT}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
     else
       command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
     fi
     # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    log "QSSI_ARGS is $QSSI_ARGS"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
     if [ -f $COMMONSYS_INTF_SCRIPT ];then
@@ -638,7 +658,10 @@ function build_qssi_only () {
 
 function build_target_only () {
     command "source build/envsetup.sh"
-    if [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
+    if [ "$TARGET_AUTO_RBVM" = true ];then
+      TARGET_RELEASE="trunk_staging"
+      command "lunch ${TARGET_PRODUCT}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
+    elif [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
       command "lunch ${TARGET}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
     else
       command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
