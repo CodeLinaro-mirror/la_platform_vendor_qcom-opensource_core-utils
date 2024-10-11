@@ -480,7 +480,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
-        <version>1-15</version>
+        <version>1-16</version>
         <interface>
             <name>IImsRadio</name>
             <instance>imsradio0</instance>
@@ -560,7 +560,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.qtiradioconfig</name>
-        <version>1-4</version>
+        <version>1-6</version>
         <interface>
             <name>IQtiRadioConfig</name>
             <instance>default</instance>
@@ -1368,7 +1368,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.ListenSoundModel</name>
         <transport>hwbinder</transport>
-        <version>1.0</version>
+        <version>1.0-2</version>
         <interface>
             <name>IListenSoundModel</name>
             <instance>default</instance>
