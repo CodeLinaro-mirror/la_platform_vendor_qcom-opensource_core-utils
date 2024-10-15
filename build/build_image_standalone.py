@@ -185,13 +185,8 @@ def run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_
 
   # Fetch the QIIFA script
   python_version = int(sys.version_info.major)
-  QIIFA_SCRIPT = ""
-  if python_version == 2:
-      QIIFA_SCRIPT = "qiifa_py2"
-  elif python_version == 3:
-      QIIFA_SCRIPT = "qiifa_py3"
-  else:
-      QIIFA_SCRIPT = "qiifa_py3"
+  QIIFA_SCRIPT = "qiifa_py3"
+
   if os.path.exists(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI + "/" + QIIFA_SCRIPT):
     # Check for QIIFA script from $OUT_QSSI/QIIFA path first
     copy_items(qssi_build_path + "/" + OUT_QSSI + QIIFA_DIR_QSSI + "/", QIIFA_CHECKS_DIR_PATH, [QIIFA_SCRIPT], "QIIFA_SCRIPT")
