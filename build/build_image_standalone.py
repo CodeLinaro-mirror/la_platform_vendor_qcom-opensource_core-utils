@@ -27,6 +27,10 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
+# Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
 
 import argparse
 import fnmatch
@@ -338,7 +342,7 @@ def main():
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple" "blair", "sun", "niobe"],
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy"],
+    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_cdccomm", "gen4_gvm_gy","gen4_gvm_sdvcomm"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
