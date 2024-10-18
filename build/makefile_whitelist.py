@@ -98,6 +98,12 @@ SHELL_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/qssi_au/Android.mk",
+    "vendor/qcom/opensource/ais-kernel/include/uapi/Android.mk",
+    "vendor/qcom/opensource/ais-kernel/Android.mk",
+    "vendor/qcom/proprietary/chi-cdk/vendor/chioverride/default/msmnile/build/android/Android.mk",
+    "vendor/qcom/proprietary/chi-cdk/cdk/generated/build/android/Android.mk",
+    "vendor/qcom/proprietary/chi-cdk/vendor/chioverride/default/sm6150/build/android/Android.mk",
 }
 
 RM_WHITELIST = {
@@ -106,6 +112,7 @@ RM_WHITELIST = {
     "vendor/qcom/proprietary/common/scripts/Android.mk",
     "vendor/qcom/proprietary/graphics/s-bins/Android.mk",
     "vendor/qcom/proprietary/biometrics/fingerprint/QFPCalibration/Android.mk",
+    "vendor/qcom/proprietary/chi-cdk/cdk/generated/build/android/Android.mk",
 }
 
 LOCAL_COPY_HEADERS_WHITELIST = {
@@ -123,6 +130,21 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/qssi_au/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/msmnile_au/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/sm6150_au/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/msmnile_gvmq/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/msmnile_gvmq_s_u/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/msmnile_gvmq_vcu/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_au/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_gy/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_gy_ccu/Android.mk",
+    "vendor/qcom/proprietary/mm-hab/uhab/Android.mk",
+    "vendor/qcom/proprietary/sysprofiler/Android.mk",
+    "vendor/qcom/proprietary/mm-bufferq/fence_queue/Android.mk",
+    "vendor/qcom/proprietary/mm-bufferq/src/Android.mk",
 }
 
 DATETIME_WHITELIST = {
@@ -139,6 +161,7 @@ TARGET_PRODUCT_WHITELIST = {
     "vendor/qcom/opensource/core-utils/build/QSSI_violators",
     "vendor/qcom/opensource/core-utils/build/build.sh",
     "vendor/qcom/opensource/core-utils/build/build_image_standalone.py",
+    "vendor/qcom/proprietary/camx/src/core/build/android/Android.mk",
 }
 
 RECURSIVE_WHITELIST = {
