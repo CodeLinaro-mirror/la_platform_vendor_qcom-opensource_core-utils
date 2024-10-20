@@ -326,10 +326,10 @@ def main():
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go", "bengal_515_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "pitti", "volcano", "anorak61"],
-    "qssi_xrM"  : ["niobe", "neo61"],
+    "qssi_xrM"  : ["niobe"],
     "qssi_sdg"  : ["capri"],
     "qssi_lite"  : ["neo"],
-    "qssi_xrl" : ["seraph"],
+    "qssi_xrl" : ["seraph", "neo61"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:

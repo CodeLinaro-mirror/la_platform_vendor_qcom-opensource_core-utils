@@ -245,10 +245,10 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "pitti" "volcano" "anorak61")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go" "bengal_515_32go")
-TARGET_PRODUCT_MAPPING_QSSI_XRM=("qssi_xrM" "niobe" "neo61")
+TARGET_PRODUCT_MAPPING_QSSI_XRM=("qssi_xrM" "niobe")
 TARGET_PRODUCT_MAPPING_QSSI_SDG=("qssi_sdg" "capri")
 TARGET_PRODUCT_MAPPING_QSSI_LITE=("qssi_lite" "neo")
-TARGET_PRODUCT_MAPPING_QSSI_XRL=("qssi_xrl" "seraph")
+TARGET_PRODUCT_MAPPING_QSSI_XRL=("qssi_xrl" "seraph" "neo61")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
