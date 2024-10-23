@@ -340,6 +340,26 @@ def main():
     print("ERROR: Unrecognized target_lunch input. Need to add lunch option to the vendor_qssi_matching_dict")
     return
 
+  file_path_single_tree = './out/single_tree_support.txt'
+  if os.path.isfile(file_path_single_tree):
+  # Open the file in read mode
+    with open(file_path_single_tree, 'r') as file:
+      # Iterate over each line in the file
+      for line in file:
+        # Split the line into key and value
+        key, value = line.split('=')
+        # Check if the key matches the desired variable
+        if key.strip() == 'TARGET_SINGLE_TREE':
+            TARGET_SINGLE_TREE = value.strip()
+
+    if TARGET_SINGLE_TREE == "true":
+      print("This is Single tree build hence skipping super image")
+      os.remove(file_path_single_tree)
+      print("removed file: " + file_path_single_tree)
+      return
+  else:
+    print("file not found: " + file_path_single_tree)
+
   OUT_QSSI = OUT_PREFIX + QSSI_TARGET + "/"
   QSSI_TARGET_FILES_ZIP = QSSI_TARGET + "-target_files-*.zip"
 
