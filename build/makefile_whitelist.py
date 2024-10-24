@@ -104,6 +104,9 @@ SHELL_WHITELIST = {
     "vendor/qcom/proprietary/chi-cdk/vendor/chioverride/default/msmnile/build/android/Android.mk",
     "vendor/qcom/proprietary/chi-cdk/cdk/generated/build/android/Android.mk",
     "vendor/qcom/proprietary/chi-cdk/vendor/chioverride/default/sm6150/build/android/Android.mk",
+    "hardware/qcom/camera/msm8998/QCamera2/Android.mk",
+    "hardware/qcom/camera/msm8998/QCamera2/HAL/test/Android.mk",
+    "hardware/qcom/camera/msm8998/QCamera2/stack/mm-camera-interface/Android.mk",
 }
 
 RM_WHITELIST = {
@@ -145,6 +148,8 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/sysprofiler/Android.mk",
     "vendor/qcom/proprietary/mm-bufferq/fence_queue/Android.mk",
     "vendor/qcom/proprietary/mm-bufferq/src/Android.mk",
+    "hardware/qcom/camera/msm8998/QCamera2/Android.mk",
+    "hardware/qcom/camera/msm8998/QCamera2/stack/mm-camera-interface/Android.mk",
 }
 
 DATETIME_WHITELIST = {
@@ -168,4 +173,5 @@ RECURSIVE_WHITELIST = {
 }
 
 KERNEL_WHITELIST = {
+    "hardware/qcom/camera/msm8998/QCamera2/HAL3/test/Android.mk",
 }
