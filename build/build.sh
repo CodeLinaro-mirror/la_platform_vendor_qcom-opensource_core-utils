@@ -345,6 +345,8 @@ do
     elif [[ "$ARG" == *"--rebuild_sepolicy_with_vendor_otatools"* ]]; then
         REBUILD_SEPOLICY=true
         VENDOR_OTATOOLS=$(${ECHO} "$ARG" | ${CUT} -d'=' -f 2)
+    elif [ "$ARG" == "TARGET_SINGLE_TREE=true" ]; then
+        TARGET_SINGLE_TREE=true
     else
         QSSI_ARGS_WITHOUT_DIST="$QSSI_ARGS_WITHOUT_DIST $ARG"
     fi
@@ -750,4 +752,12 @@ else # For QSSI targets
         mkdir -p $DCA_OUT
         run_dca
     fi
+fi
+
+#Single tree support
+if [ "$TARGET_SINGLE_TREE" = true ]; then
+    echo "single tree build"
+
+    # Add a line to the file
+    echo "TARGET_SINGLE_TREE = $TARGET_SINGLE_TREE" > ./out/single_tree_support.txt
 fi
