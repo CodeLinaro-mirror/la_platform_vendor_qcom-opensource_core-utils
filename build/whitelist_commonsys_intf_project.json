@@ -6,6 +6,7 @@
 "vendor/qcom/opensource/commonsys-intf/display/libqdmetadata",
 "vendor/widevine/libwvdrmengine",
 "vendor/google_clockwork/samples/ModernDecompWatchfaces",
+"vendor/google/display_safety/service/harry-prebuilt",
 "vendor/widevine/libwvdrmengine/apex",
 "vendor/widevine/libwvdrmengine/apex/nonupdatable/lazy",
 "vendor/qcom/proprietary/interfaces/virtualization/aidl",
