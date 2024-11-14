@@ -251,7 +251,7 @@ fi
 
 SKIP_ABI_CHECKS=true
 
-NON_AB_TARGET_LIST=("qssi_32go" "bengal_32go" "msm8937_lily")
+NON_AB_TARGET_LIST=("bengal_32go" "msm8937_lily")
 for NON_AB_TARGET in "${NON_AB_TARGET_LIST[@]}"
 do
     if [ "$TARGET_PRODUCT" == "$NON_AB_TARGET" ]; then
@@ -313,7 +313,7 @@ VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64
 DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "pitti" "pitti_32go")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
-TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp")
+TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp" "hexlp_tp")
 
 OTATOOLS_DIR="$(mktemp --directory)"
 MERGED_TARGET_FILES_DIR="$(mktemp --directory)"
