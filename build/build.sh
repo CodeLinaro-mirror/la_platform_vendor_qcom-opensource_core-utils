@@ -623,12 +623,13 @@ function run_qiifa_dependency_checker() {
     fi
 }
 
-function is_qssi_15_2_0() {
+function is_qssi_rbvm() {
     pushd .repo/manifests/.git/
     QSSI_1520="LA_AU.QSSI.15.2.0"
-    FOUND=`git branch -a | grep -i LA_AU.QSSI.15.2.0`
+    QSSI_1620="LA_AU.QSSI.16.2.0"
+    FOUND=`git branch -a | grep -i "LA_AU.QSSI.15.2.0\|LA_AU.QSSI.16.2.0"`
     popd
-    if [[ $FOUND =~ $QSSI_1520  ]]; then
+    if [[ $FOUND =~ $QSSI_1520  ]] || [[ $FOUND =~ $QSSI_1620  ]]; then
         return 1
     else
         return 0
@@ -637,8 +638,8 @@ function is_qssi_15_2_0() {
 
 function build_qssi_only () {
     command "source build/envsetup.sh"
-    is_qssi_15_2_0
-    if [[ "$?" -eq 1 ]]; then
+    is_qssi_rbvm
+    if [[ "$?" -eq 1 ]] || [ "$TARGET_AUTO_RBVM" = true ]; then
         TARGET_RELEASE="trunk_staging"
         TARGET_AUTO_RBVM=true
         QSSI_ARGS="$QSSI_ARGS TARGET_AUTO_RBVM=true"
