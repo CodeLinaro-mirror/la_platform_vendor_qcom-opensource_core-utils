@@ -640,7 +640,7 @@ function build_qssi_only () {
     command "source build/envsetup.sh"
     is_qssi_rbvm
     if [[ "$?" -eq 1 ]] || [ "$TARGET_AUTO_RBVM" = true ]; then
-        TARGET_RELEASE="trunk_staging"
+        TARGET_RELEASE="next"
         TARGET_AUTO_RBVM=true
         QSSI_ARGS="$QSSI_ARGS TARGET_AUTO_RBVM=true"
         command "lunch ${TARGET_PRODUCT}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
@@ -661,7 +661,7 @@ function build_qssi_only () {
 function build_target_only () {
     command "source build/envsetup.sh"
     if [ "$TARGET_AUTO_RBVM" = true ];then
-      TARGET_RELEASE="trunk_staging"
+      TARGET_RELEASE="next"
       command "lunch ${TARGET_PRODUCT}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
     elif [ "$TARGET_RELEASE" = "next" ] || [ "$TARGET_RELEASE" = "trunk_food" ];then
       command "lunch ${TARGET}-${TARGET_RELEASE}-${TARGET_BUILD_VARIANT}"
