@@ -340,7 +340,7 @@ def main():
     print("ERROR: Unrecognized target_lunch input. Need to add lunch option to the vendor_qssi_matching_dict")
     return
 
-  file_path_single_tree = './out/single_tree_support.txt'
+  file_path_single_tree = os.path.join(args.target_build_path, 'single_tree_support.txt')
   if os.path.isfile(file_path_single_tree):
   # Open the file in read mode
     with open(file_path_single_tree, 'r') as file:

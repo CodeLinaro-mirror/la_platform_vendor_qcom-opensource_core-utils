@@ -759,5 +759,6 @@ if [ "$TARGET_SINGLE_TREE" = true ]; then
     echo "single tree build"
 
     # Add a line to the file
-    echo "TARGET_SINGLE_TREE = $TARGET_SINGLE_TREE" > ./out/single_tree_support.txt
+    echo "single tree: $TARGET_SINGLE_TREE"
+    echo "TARGET_SINGLE_TREE = $TARGET_SINGLE_TREE" > $ANDROID_BUILD_TOP/single_tree_support.txt
 fi
