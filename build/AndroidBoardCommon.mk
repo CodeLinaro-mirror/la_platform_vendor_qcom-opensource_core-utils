@@ -21,6 +21,12 @@ ifeq ($(TARGET_BOARD_PLATFORM),qssi)
  endif
 endif
 
+# create symlink system/lib/modules -> system_dlkm/lib/modules
+ifeq ($(CREATE_SYSTEM_DLKM_SYMLINK),true)
+$(call symlink-file,,/system_dlkm/lib/modules,$(TARGET_OUT)/lib/modules)
+ALL_DEFAULT_INSTALLED_MODULES += $(TARGET_OUT)/lib/modules
+endif
+
 ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) \
 				 $(BT_FIRMWARE_MOUNT_POINT) \
 				 $(DSP_MOUNT_POINT)
