@@ -107,6 +107,9 @@ SHELL_WHITELIST = {
     "hardware/qcom/camera/msm8998/QCamera2/Android.mk",
     "hardware/qcom/camera/msm8998/QCamera2/HAL/test/Android.mk",
     "hardware/qcom/camera/msm8998/QCamera2/stack/mm-camera-interface/Android.mk",
+    "vendor/qcom/proprietary/cdk_qcx/core/chiframework/common/build/android/Android.mk",
+    "vendor/qcom/proprietary/camx-lib/system/statsalgo/autoawb/build/android/Android.mk",
+    "vendor/qcom/proprietary/cdk_qcx/api/generated/build/android/Android.mk",
 }
 
 RM_WHITELIST = {
@@ -151,6 +154,7 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/mm-bufferq/src/Android.mk",
     "hardware/qcom/camera/msm8998/QCamera2/Android.mk",
     "hardware/qcom/camera/msm8998/QCamera2/stack/mm-camera-interface/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen5_gvm_gy/Android.mk",
 }
 
 DATETIME_WHITELIST = {
@@ -168,6 +172,7 @@ TARGET_PRODUCT_WHITELIST = {
     "vendor/qcom/opensource/core-utils/build/build.sh",
     "vendor/qcom/opensource/core-utils/build/build_image_standalone.py",
     "vendor/qcom/proprietary/camx/src/core/build/android/Android.mk",
+    "vendor/qcom/proprietary/power/pasr-vendor-board.mk",
 }
 
 RECURSIVE_WHITELIST = {
@@ -175,4 +180,6 @@ RECURSIVE_WHITELIST = {
 
 KERNEL_WHITELIST = {
     "hardware/qcom/camera/msm8998/QCamera2/HAL3/test/Android.mk",
+    "vendor/qcom/proprietary/fadas-noship/fadas/Android.mk",
+    "vendor/qcom/proprietary/fadas-noship/fadas_dev/Android.mk",
 }
