@@ -70,6 +70,20 @@ class USB_uevent{
     }
 };
 
+std::string get_file_contents(const std::string &file_path){
+  std::fstream file_handler;
+  file_handler.open(file_path,std::fstream::in);
+  std::string data;
+  if ( file_handler.is_open() ) {
+      file_handler >> data;
+      return data;
+  }else{
+    ALOGE("Unable to read file at %s\n",file_path.c_str());
+    ALOGE("Error is : %s\n",strerror(errno));
+  }
+  return "";
+}
+
 static void parse_uevent( char *msg, int n,USB_uevent &uevent){
     if (msg == NULL)
       return;
@@ -161,6 +175,15 @@ static void update_routing_table(){
   if(rval==0) ALOGE("Successfully updated routing Table");
 }
 
+bool is_peripheral_connected(){
+  std::string usb_gadget_vendor_id = get_file_contents(USB_GADGET_VENDOR_ID_PATH);
+  trim_string_back(usb_gadget_vendor_id);
+  if(usb_gadget_vendor_id!=PERIPHERAL_VENDOR_ID_PROC) return false;
+  std::string usb_gadget_product_id = get_file_contents(USB_GADGET_PRODUCT_ID_PATH);
+  trim_string_back(usb_gadget_product_id);
+  return usb_gadget_product_id == PERIPHERAL_PRODUCT_ID;
+}
+
 static void handle_usb_uevent(char *msg, int n){
   std::regex bind_xhci_hcd_regex("bind@(/devices/platform/soc/.*dwc3/xhci-hcd\\.\\d\\.auto/"
                               "usb\\d/\\d-\\d(?:/[\\d\\.-]+)*)");
@@ -184,8 +207,10 @@ static void start_uevent_client() {
       ALOGE("uevent_open_socket failed\n");
       return;
     }
-    set_device_ip();
-    update_routing_table();
+    if(is_peripheral_connected()){
+        set_device_ip();
+        update_routing_table();
+    }
     while ((buff_length = uevent_kernel_multicast_recv(uevent_fd, msg, UEVENT_MSG_LEN)) > 0) {
       if (buff_length >= UEVENT_MSG_LEN) { // overflow -- discard
         continue;
