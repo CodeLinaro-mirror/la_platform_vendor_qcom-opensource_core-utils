@@ -12,5 +12,6 @@
 "vendor/qcom/proprietary/commonsys/securemsm-noship",
 "vendor/qcom/proprietary/commonsys/bt/bt_adv_audio",
 "vendor/qcom/proprietary/commonsys/display-tests",
-"vendor/qcom/proprietary/commonsys-intf/adsprpc_ship"
+"vendor/qcom/proprietary/commonsys-intf/adsprpc_ship",
+"vendor/qcom/proprietary/system_release"
 ]
