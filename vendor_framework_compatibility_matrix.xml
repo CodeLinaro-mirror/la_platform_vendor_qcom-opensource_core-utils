@@ -69,6 +69,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
          </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.bluetooth_fmd</name>
+         <version>1</version>
+         <interface>
+            <name>IBtFmd</name>
+            <instance>default</instance>
+         </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.display.color</name>
         <version>1.0-7</version>
@@ -277,6 +285,26 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.wifidisplaysession</name>
         <version>1.0</version>
+        <interface>
+            <name>IWifiDisplaySession</name>
+            <instance>wifidisplaysession</instance>
+        </interface>
+        <interface>
+            <name>IWifiDisplaySessionVideoTrack</name>
+            <instance>wifidisplaysessionvideotrack</instance>
+        </interface>
+        <interface>
+            <name>IWifiDisplaySessionAudioTrack</name>
+            <instance>wifidisplaysessionaudiotrack</instance>
+        </interface>
+        <interface>
+            <name>IWifiDisplaySessionImageTrack</name>
+            <instance>wifidisplaysessionimagetrack</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.wifidisplaysession</name>
+        <version>2.0</version>
         <interface>
             <name>IWifiDisplaySession</name>
             <instance>wifidisplaysession</instance>
@@ -1668,5 +1696,38 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
                 <name>IPALEventNotifier</name>
                 <instance>default</instance>
             </interface>
+    </hal>
+    <!-- SEC Platform Service -->
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.sec.featuremanager</name>
+        <version>1</version>
+        <interface>
+            <name>IFeatureManager</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.sec.provisioningmanager</name>
+        <version>1</version>
+        <interface>
+            <name>IProvisioningManager</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.sec.datamanager</name>
+        <version>1</version>
+        <interface>
+            <name>IDataManager</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.sec.cloudagent</name>
+        <version>1</version>
+        <interface>
+            <name>ICloudAgent</name>
+            <instance>default</instance>
+        </interface>
     </hal>
 </compatibility-matrix>
