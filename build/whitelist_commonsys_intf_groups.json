@@ -14,5 +14,6 @@
 "vendor/google_keystone_androidmk",
 "vendor/widevine",
 "vendor/google_shared/ndk_translation_prebuilt",
-"vendor/google_shared/satellite/common"
+"vendor/google_shared/satellite/common",
+"vendor/qcom/proprietary/system_release"
 ]
