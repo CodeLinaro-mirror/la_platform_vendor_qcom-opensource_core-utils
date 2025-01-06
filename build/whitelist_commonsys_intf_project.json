@@ -5,5 +5,13 @@
 "vendor/qcom/opensource/commonsys/audio",
 "vendor/qcom/proprietary/common",
 "vendor/qcom/proprietary/commonsys-intf/data",
-"vendor/qcom/proprietary/commonsys/noship-cne/common"
+"vendor/qcom/proprietary/commonsys-intf/adsprpc",
+"vendor/qcom/proprietary/commonsys/securemsm",
+"vendor/qcom/proprietary/commonsys/noship-cne/common",
+"vendor/qcom/proprietary/commonsys/coretech-config-commonsys",
+"vendor/qcom/proprietary/commonsys/securemsm-noship",
+"vendor/qcom/proprietary/commonsys/bt/bt_adv_audio",
+"vendor/qcom/proprietary/commonsys/display-tests",
+"vendor/qcom/proprietary/commonsys-intf/adsprpc_ship",
+"vendor/qcom/proprietary/system_release"
 ]
