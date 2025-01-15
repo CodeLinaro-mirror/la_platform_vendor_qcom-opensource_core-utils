@@ -106,7 +106,12 @@
 #     Adding QIIFA API Management scan qc directory support
 # Version 15:
 #     Adding Kernel script cleanup
-BUILD_SH_VERSION=15
+# Version 16:
+#     Adding build_techpack_only_non_qssi
+#     Supports --techpack argument to build techpack target(s)
+#     Use options: --techpack <teckpack target(s)>
+#     Usage: ./build.sh dist --teckpack -j32 <teckpack target(s)>
+BUILD_SH_VERSION=16
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -814,10 +819,44 @@ function build_techpack_only () {
     command "run_qiifa techpack $TECHPACK_BUILD_LIST"
 }
 
+function build_techpack_only_non_qssi () {
+    TPARGS=()
+    TECHPACK_BUILD_LIST=""
+    for tp in "${TECHPACK_LIST[@]}"
+    do
+      for arg in $ARGS
+      do
+        if [[ "$arg" == "$tp"* ]]; then
+            echo "Request to build techpack $arg"
+            TPARGS+=("${arg}")
+            TECHPACK_BUILD_LIST+="$arg,"
+        fi
+      done
+    done
+    if [[ -z "${TPARGS}" ]]; then
+        echo "Please check you have specified techpack target name in the build command ..!!!"
+        echo "And techpack target name added to TECHPACK_LIST[] in build.sh ..!!!"
+        exit 1
+    else
+        for target in "${TPARGS[@]}"
+        do
+            echo Will build techpack target: $target
+        done
+    fi
+    command "source build/envsetup.sh"
+    command "make $ARGS"
+}
+
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
     log "${TARGET_PRODUCT} is not a QSSI target. Using legacy build process for compilation..."
-    nonqssi_legacy_build
+    if [[ "$TP_ONLY" -eq 1 ]]; then
+        log "Executing a techpack only build for $TARGET_PRODUCT ..."
+        build_techpack_only_non_qssi
+    else
+        nonqssi_legacy_build
+    fi
+
 else # For QSSI targets
     log "Building Android using build.sh for ${TARGET_PRODUCT}..."
     log "QSSI_ARGS=\"$QSSI_ARGS\""
