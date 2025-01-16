@@ -95,6 +95,15 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
              <instance>default</instance>
          </interface>
      </hal>
+    <!-- UXOffload hal -->
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.uxoffload</name>
+        <version>1</version>
+        <interface>
+            <name>IUXOffload</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.display.color</name>
         <version>1</version>
