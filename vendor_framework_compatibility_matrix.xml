@@ -519,7 +519,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.ims</name>
-        <version>1-19</version>
+        <version>1-20</version>
         <interface>
             <name>IImsRadio</name>
             <instance>imsradio0</instance>
@@ -847,7 +847,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.gnss</name>
-        <version>1-7</version>
+        <version>1-8</version>
         <interface>
             <name>ILocAidlGnss</name>
             <instance>default</instance>
@@ -1480,7 +1480,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.qasr</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IQasr</name>
             <instance>default</instance>

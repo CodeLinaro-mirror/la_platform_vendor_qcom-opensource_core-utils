@@ -15,5 +15,6 @@
 "vendor/widevine",
 "vendor/google_shared/ndk_translation_prebuilt",
 "vendor/google_shared/satellite/common",
-"vendor/qcom/proprietary/system_release"
+"vendor/qcom/proprietary/system_release",
+"vendor/qcom/proprietary/wear"
 ]
