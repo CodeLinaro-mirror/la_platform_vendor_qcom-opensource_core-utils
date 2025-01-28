@@ -1188,4 +1188,20 @@ SPDX-License-Identifier: BSD-3-Clause-Clear
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.vst</name>
+        <version>1-2</version>
+        <interface>
+            <name>ICameraVstSys</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>ICameraVstSysFactory</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>ICameraVstSysCallback</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
