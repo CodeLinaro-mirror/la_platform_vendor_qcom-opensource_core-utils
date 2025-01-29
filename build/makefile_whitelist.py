@@ -183,6 +183,7 @@ SOONG_WHITELIST = {
     "device/qcom/qssi/base.mk",
     "vendor/qcom/opensource/commonsys/display/config/display-product-commonsys.mk",
     "vendor/qcom/proprietary/commonsys-intf/bluetooth/bt-system-proprietary-product.mk",
+    "vendor/qcom/proprietary/perf-core/configs/perf-core-product-vendor.mk",
 }
 
 FOREACH_WHITELIST = {
@@ -190,6 +191,7 @@ FOREACH_WHITELIST = {
     "vendor/qcom/proprietary/common-noship/build/generate_extra_images_prop.mk",
     "vendor/qcom/proprietary/common/config/device-vendor-SDM845-pureAOSP.mk",
     "vendor/qcom/proprietary/common/config/device-vendor-qssi.mk",
+    "vendor/qcom/proprietary/perf-core/profiles.mk",
 }
 
 MACRO_WHITELIST = {
@@ -203,6 +205,7 @@ MACRO_WHITELIST = {
     "vendor/qcom/proprietary/commonsys-intf/data/dpm_system_product_noship.mk",
     "vendor/qcom/proprietary/commonsys/android-perf-noship/config/perf-product-system-proprietary.mk",
     "vendor/qcom/proprietary/commonsys/telephony-build/build/telephony_system_product.mk",
+    "vendor/qcom/proprietary/perf-core/configs/perf-core-product-vendor.mk",
 }
 
 
