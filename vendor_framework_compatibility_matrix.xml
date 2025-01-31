@@ -730,6 +730,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <interface>
             <name>IHexlpService</name>
             <instance>default</instance>
+            <instance>unsigned</instance>
         </interface>
     </hal>
     <hal format="hidl" optional="true">
