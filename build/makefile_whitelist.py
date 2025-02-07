@@ -155,6 +155,7 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "hardware/qcom/camera/msm8998/QCamera2/Android.mk",
     "hardware/qcom/camera/msm8998/QCamera2/stack/mm-camera-interface/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen5_gvm_gy/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/gen4_gvm/Android.mk",
 }
 
 DATETIME_WHITELIST = {
