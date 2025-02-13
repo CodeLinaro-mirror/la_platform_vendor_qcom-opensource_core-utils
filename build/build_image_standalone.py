@@ -333,7 +333,7 @@ def main():
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "pitti"],
-    "qssi_wear" : ["monaco_aon_64"],
+    "qssi_wear" : ["monaco_aon_64", "vienna64"],
   }
 
 
