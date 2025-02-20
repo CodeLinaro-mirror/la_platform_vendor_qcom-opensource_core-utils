@@ -156,6 +156,12 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "hardware/qcom/camera/msm8998/QCamera2/stack/mm-camera-interface/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen5_gvm_gy/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/gen4_gvm/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_au/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/sm6150_au/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_au_s_u/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq_s_u/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq_vcu/Android.mk"
 }
 
 DATETIME_WHITELIST = {
