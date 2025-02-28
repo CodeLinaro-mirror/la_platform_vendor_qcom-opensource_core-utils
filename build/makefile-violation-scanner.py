@@ -69,12 +69,13 @@ vendor_qssi_mapping_dict = {
      "qssi" : ["qssi","anorak"],
      "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
      "qssi_wear" : ["qssi_wear"],
+     "qssi_au": ["qssi_au", "msmnile_au","msmnile_gvmq","gen4_gvm","gen4_gvm_gy"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():
      if TARGET_PRODUCT in vendor_qssi_mapping_dict[qssi]:
          QSSI_VARIANT = qssi
- 
+
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
 print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
@@ -88,7 +89,7 @@ try:
     else:
         from qssi_makefile_whitelist import *
         print("Using {} whitelist file".format(QSSI_VARIANT))
-    
+
     if "qssi" not in TARGET_PRODUCT:
          from target_makefile_whitelist import *
          print("Using target specific whitelist")
@@ -96,7 +97,7 @@ except:
     # Fall back to legacy
     print("Using legacy target whitelist.")
     from makefile_whitelist import *
- 
+
 try:
     from target_specific_configs import *
     print("using QSSI specific_configs")
