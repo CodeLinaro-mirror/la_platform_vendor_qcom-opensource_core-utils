@@ -80,6 +80,27 @@ sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
 print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
 print("QSSI_VARIANT:{}".format(QSSI_VARIANT))
 
+# Create a Vendor-QSSI mapping between targets
+# Add the qssi variant as a target to the list. This is needed for running this scanner on QSSI builds only
+vendor_qssi_mapping_dict = {
+     "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti","anorak61"],
+     "qssi_xrM" : ["qssi_xrM","niobe"],
+     "qssi_sdg" : ["qssi_sdg","capri"],
+     "qssi_lite" : ["qssi_lite","neo"],
+     "qssi" : ["qssi","anorak"],
+     "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
+     "qssi_wear" : ["qssi_wear"],
+     "qssi_au": ["qssi_au", "msmnile_au","msmnile_gvmq","gen4_gvm","gen4_gvm_gy"],
+}
+
+for qssi,targets in vendor_qssi_mapping_dict.items():
+     if TARGET_PRODUCT in vendor_qssi_mapping_dict[qssi]:
+         QSSI_VARIANT = qssi
+
+sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
+sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
+print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
+print("QSSI_VARIANT:{}".format(QSSI_VARIANT))
 
 try:
     if QSSI_VARIANT == "qssi":
@@ -87,6 +108,12 @@ try:
         from makefile_whitelist import *
     else:
         from qssi_makefile_whitelist import *
+        if "qssi" not in TARGET_PRODUCT:
+            from target_makefile_whitelist import *
+        print("Using target specific whitelist")
+except ImportError:
+        print("Using {} whitelist file".format(QSSI_VARIANT))
+
         print("Using {} whitelist file".format(QSSI_VARIANT))
     
     if "qssi" not in TARGET_PRODUCT:
@@ -106,6 +133,14 @@ try:
 except:
     print("No target_specific_configs file present")
 
+try:
+    from target_specific_configs import *
+    print("using QSSI specific_configs")
+    if "qssi" not in TARGET_PRODUCT:
+        from target_specific_configs import *
+        print("Using target specific configs")
+except:
+    print("No target_specific_configs file present")
 
 # Enforcement sets for Android make files
 kernel_errors = set()
