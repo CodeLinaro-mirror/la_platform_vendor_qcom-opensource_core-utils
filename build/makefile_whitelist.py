@@ -179,6 +179,8 @@ KERNEL_WHITELIST = {
 OVERRIDE_WHITELIST = {
     "device/qcom/qssi/qssi.mk",
     "device/qcom/qssi/qssi_whitelist.mk",
+    "device/qcom/qssi_au/qssi_au.mk",
+    "device/qcom/qssi_au/qssi_au_whitelist.mk",
 }
 
 SOONG_WHITELIST = {
