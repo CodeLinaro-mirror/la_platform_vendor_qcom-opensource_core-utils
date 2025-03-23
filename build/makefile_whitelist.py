@@ -51,6 +51,7 @@ FAILED_FILEPATHS_WHITELIST = {
 
 SHELL_WHITELIST = {
     "device/qcom/common/init/Android.mk",
+    "device/qcom/common/utils.mk",
     "device/qcom/sepolicy/SEPolicy.mk",
     "vendor/qcom/proprietary/ts_firmware-noship/kalama/Android.mk",
     "vendor/qcom/opensource/touch-drivers/Android.mk",
@@ -178,6 +179,8 @@ KERNEL_WHITELIST = {
 OVERRIDE_WHITELIST = {
     "device/qcom/qssi/qssi.mk",
     "device/qcom/qssi/qssi_whitelist.mk",
+    "device/qcom/qssi_au/qssi_au.mk",
+    "device/qcom/qssi_au/qssi_au_whitelist.mk",
 }
 
 SOONG_WHITELIST = {
@@ -188,6 +191,7 @@ SOONG_WHITELIST = {
 }
 
 FOREACH_WHITELIST = {
+    "device/qcom/common/utils.mk",
     "vendor/qcom/opensource/core-utils/build/utils.mk",
     "vendor/qcom/proprietary/common-noship/build/generate_extra_images_prop.mk",
     "vendor/qcom/proprietary/common/config/device-vendor-SDM845-pureAOSP.mk",
