@@ -248,7 +248,7 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
   if not skip_qiifa:
-    if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" or QSSI_TARGET == "qssi_au" :
+    if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" or QSSI_TARGET == "qssi_au" or QSSI_TARGET == "qssi_au_64" :
       run_qiifa_checks(temp_dir, qssi_build_path, target_build_path, merged_build_path, target_lunch)
     else:
       logging.info("Skipping QIIFA checks for 32-bit and Go targets")
@@ -323,7 +323,8 @@ def main():
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple"],
-    "qssi_au"   : ["msmnile_au", "msmnile_au_s_u", "msmnile_tb", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "gen5_gvm_gy"],
+    "qssi_au"   : ["msmnile_au", "msmnile_au_s_u", "msmnile_tb", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u"],
+    "qssi_au_64"   : ["gen5_gvm_gy"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
@@ -336,9 +337,31 @@ def main():
     QSSI_TARGET="qssi_64"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_au']:
     QSSI_TARGET="qssi_au"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_au_64']:
+    QSSI_TARGET="qssi_au_64"
   else:
     print("ERROR: Unrecognized target_lunch input. Need to add lunch option to the vendor_qssi_matching_dict")
     return
+
+  file_path_single_tree = os.path.join(args.target_build_path, 'single_tree_support.txt')
+  if os.path.isfile(file_path_single_tree):
+  # Open the file in read mode
+    with open(file_path_single_tree, 'r') as file:
+      # Iterate over each line in the file
+      for line in file:
+        # Split the line into key and value
+        key, value = line.split('=')
+        # Check if the key matches the desired variable
+        if key.strip() == 'TARGET_SINGLE_TREE':
+            TARGET_SINGLE_TREE = value.strip()
+
+    if TARGET_SINGLE_TREE == "true":
+      print("This is Single tree build hence skipping super image")
+      os.remove(file_path_single_tree)
+      print("removed file: " + file_path_single_tree)
+      return
+  else:
+    print("file not found: " + file_path_single_tree)
 
   OUT_QSSI = OUT_PREFIX + QSSI_TARGET + "/"
   QSSI_TARGET_FILES_ZIP = QSSI_TARGET + "-target_files-*.zip"
