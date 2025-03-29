@@ -1,0 +1,33 @@
+Changes from Qualcomm Technologies, Inc. are provided under the following license:
+Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+SPDX-License-Identifier: BSD-3-Clause-Clear
+
+From e7c195c7b47ea068b1060d70f452f96ac1f8d5cd Mon Sep 17 00:00:00 2001
+From: Gaurav Singh <sgaurav@qti.qualcomm.com>
+Date: Mon, 17 Mar 2025 15:45:54 +0530
+Subject: [PATCH] android_webview: Use LTO max optimization for AOSP webview
+
+Use Link Time Optimization max optimization and not default
+for compiling AOSP webview
+---
+ android_webview/BUILD.gn | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/android_webview/BUILD.gn b/android_webview/BUILD.gn
+index b6372b59b792b..cee76f60deebd 100644
+--- a/android_webview/BUILD.gn
++++ b/android_webview/BUILD.gn
+@@ -397,6 +397,10 @@ template("libwebviewchromium_tmpl") {
+       "//build/config/compiler:chrome_orderfile_config",
+       "//build/config/compiler:prevent_unsafe_narrowing",
+     ]
++    # ThinLTO optimizations save a few bytes of binary size.
++    configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
++    configs += [ "//build/config/compiler:thinlto_optimize_max" ]
++
+     java_targets = webview_java_for_jni_targets
+ 
+     # WebView's native side has more JNI present than the Java side. This is
+-- 
+2.48.1
+
