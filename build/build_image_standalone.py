@@ -290,6 +290,8 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
 
   if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]:
     cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only"]
+  elif [ "$TARGET_PRODUCT" == "gen5_gvm_gy" ]:
+    cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only"]
   else:
     cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only", "--rebuild_sepolicy_with_vendor_otatools=out/dist/vendor/"+TARGET_OTATOOLS_ZIP]
 
@@ -337,8 +339,8 @@ def main():
     "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
-    "qssi_64"   : ["kalama64", "pineapple" "blair", "sun", "niobe"],
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy", "gen4_gvm_sdv", "gen4_gvm_sdvcomm"],
+    "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "niobe"],
+    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "gen5_gvm_gy"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
