@@ -168,7 +168,8 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_au_s_u/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq_s_u/Android.mk",
-    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq_vcu/Android.mk"
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/msmnile_gvmq_vcu/Android.mk",
+    "vendor/qcom/proprietary/mm-hab/uhab/Android.mk",
 }
 
 DATETIME_WHITELIST = {
