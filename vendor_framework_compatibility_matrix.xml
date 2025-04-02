@@ -871,9 +871,17 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.wifi.supplicant</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>ISupplicantVendor</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.wifi.hostapd</name>
+        <version>1</version>
+        <interface>
+            <name>IHostapdVendor</name>
             <instance>default</instance>
         </interface>
     </hal>
