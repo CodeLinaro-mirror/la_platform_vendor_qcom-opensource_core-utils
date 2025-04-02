@@ -324,7 +324,7 @@ def main():
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple"],
     "qssi_au"   : ["msmnile_au", "msmnile_au_s_u", "msmnile_tb", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_gy", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u"],
-    "qssi_au_64"   : ["gen5_gvm_gy"],
+    "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
