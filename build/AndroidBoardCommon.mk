@@ -10,6 +10,7 @@ FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/firmware_mnt
 BT_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/bt_firmware
 DSP_MOUNT_POINT := $(TARGET_OUT_VENDOR)/dsp
 PERSIST_MOUNT_POINT := $(TARGET_ROOT_OUT)/persist
+SOCCP_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/soccp_firmware
 
 ifeq ($(TARGET_BOARD_PLATFORM),qssi)
  ifeq ($(TARGET_BOARD_SUFFIX),_64)
@@ -29,7 +30,8 @@ endif
 
 ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) \
 				 $(BT_FIRMWARE_MOUNT_POINT) \
-				 $(DSP_MOUNT_POINT)
+				 $(DSP_MOUNT_POINT) \
+				 $(SOCCP_FIRMWARE_MOUNT_POINT)
 
 $(FIRMWARE_MOUNT_POINT):
 	@echo "Creating $(FIRMWARE_MOUNT_POINT)"
@@ -56,6 +58,13 @@ $(PERSIST_MOUNT_POINT):
 	@echo "Creating $(PERSIST_MOUNT_POINT)"
 ifneq ($(TARGET_MOUNT_POINTS_SYMLINKS),false)
 	@ln -sf /mnt/vendor/persist $(TARGET_ROOT_OUT)/persist
+endif
+
+$(SOCCP_FIRMWARE_MOUNT_POINT):
+	@echo "Creating $(SOCCP_FIRMWARE_MOUNT_POINT)"
+	@mkdir -p $(TARGET_OUT_VENDOR)/soccp_firmware
+ifneq ($(TARGET_MOUNT_POINTS_SYMLINKS),false)
+	@ln -sf /vendor/soccp_firmware $(TARGET_ROOT_OUT)/soccp_firmware
 endif
 
 # Defining BOARD_PREBUILT_DTBOIMAGE here as AndroidBoardCommon.mk
