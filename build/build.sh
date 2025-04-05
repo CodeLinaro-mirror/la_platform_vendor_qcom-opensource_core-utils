@@ -592,19 +592,22 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     # command "run_qiifa techpack"
-    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]; then
-        #invoke the pilsplitter script after all the userspace images are created.
+    if [ "$TARGET_PRODUCT" == "gen5_gvm_gy" ] || [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]; then
+        echo "------ Creating vm-bootloader.img ------"
         GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
-        cd "$GH_SCRIPT_PATH"
-        bash ghgvm-pilsplitter.sh
-        log "PIL splitted images are created at $OUT/scratch"
-    fi
-    if [ "$TARGET_PRODUCT" == "gen5_gvm_gy" ]; then
-        #invoke the pilsplitter script after all the userspace images are created.
-        GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
-        cd "$GH_SCRIPT_PATH"
-        bash ghgvm-pilsplitter.sh
-        log "PIL splitted images are created at $OUT/scratch"
+        ORIGINAL_DIR=$(pwd)  # Save the current directory
+        if [ -d "$GH_SCRIPT_PATH" ]; then
+            cd $GH_SCRIPT_PATH
+            if [ -f "ghgvm-pilsplitter.sh" ]; then
+                bash ghgvm-pilsplitter.sh
+                echo "vm-bootloader.img is created in $OUT"
+            else
+                echo "Script not found in $GH_SCRIPT_PATH"
+            fi
+            cd $ORIGINAL_DIR  # Return to the original directory
+        else
+            echo "Directory $GH_SCRIPT_PATH does not exist"
+        fi
     fi
     command "run_qiifa"
     command "python -B $QTI_BUILDTOOLS_DIR/build/vendor_prop_context_restriction.py --m error"
