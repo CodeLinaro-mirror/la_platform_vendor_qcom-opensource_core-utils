@@ -1562,6 +1562,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.qesdsys</name>
+        <version>1-4</version>
+        <interface>
+            <name>IQesdSys</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
      <hal format="aidl" optional="true">
         <name>vendor.qti.snapdragonServices</name>
         <version>1</version>
@@ -1676,6 +1684,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1</version>
         <interface>
             <name>IXpanProvider</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.bluetooth.btavsprovider</name>
+        <version>1</version>
+        <interface>
+            <name>IBtAVsProvider</name>
             <instance>default</instance>
         </interface>
     </hal>
