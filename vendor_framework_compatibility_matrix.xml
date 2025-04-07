@@ -1746,6 +1746,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         </interface>
     </hal>
     <hal format="aidl" optional="true">
+        <name>vendor.qti.AvfQcvmManager</name>
+        <version>1</version>
+        <interface>
+            <name>IAvfQcvmManager</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.data.connectionaidl</name>
         <version>1</version>
         <interface>
