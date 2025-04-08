@@ -647,7 +647,7 @@ function build_qssi_only () {
     else
       command "lunch ${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT}"
     fi
-    # command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     log "QSSI_ARGS is $QSSI_ARGS"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
@@ -666,7 +666,7 @@ function build_target_only () {
     else
       command "lunch ${TARGET}-${TARGET_BUILD_VARIANT}"
     fi
-    #command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
+    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
     # command "run_qiifa_dependency_checker target"
