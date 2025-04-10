@@ -159,6 +159,7 @@ def find_commonsys_intf_project_paths():
     qssi_path_project_list={}
     vendor_path_project_list={}
     violation_list = {}
+    project_interest_prefix = "vendor"
     for module in module_info_dict:
         try:
             install_path = module_info_dict[module]['installed'][0]
@@ -178,6 +179,8 @@ def find_commonsys_intf_project_paths():
         relative_out_path = out_path.split(croot + "/")[1]
         ## Ignore host and other paths
         if not relative_out_path in install_path:
+            continue
+        if not project_path.startswith(project_interest_prefix) or project_path.startswith("vendor/widevine"):
             continue
         ## We are interested in only source paths which are
         ## starting with vendor for now.
