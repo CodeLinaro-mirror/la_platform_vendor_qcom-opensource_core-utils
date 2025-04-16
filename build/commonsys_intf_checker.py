@@ -49,6 +49,10 @@ aidl_metadata_file = croot + "/out/soong/.intermediates/system/tools/aidl/build/
 noship_project_marker = os.path.join(croot,os.getenv("QCPATH"),"interfaces-noship")
 aidl_metadata_dict = {}
 manifest_artifacts = {}
+# Whitelist to handle special projects, key: project path, value: violation flag
+whitelist_project_dict = {
+    "vendor/qcom/proprietary/commonsys-intf/embms" : False
+}
 
 def parse_xml_file(path):
     xml_element = None
@@ -167,6 +171,9 @@ def enforce_commonsys_intf_groups_checker(prj_list_build):
     prj_list_manifest = manifest_artifacts["commonsys_intf_group"]
     violation_flag = False
     for prj in prj_list_manifest:
+        if prj in whitelist_project_dict.keys() and not whitelist_project_dict[prj]:
+           # Pass the check of special projects.
+           continue
         if prj not in prj_list_build and "QIIFA" not in prj and prj not in whitelist_groups_list:
            violation_flag = True
            print("Project cannot be classified as commonsys-intf : " + str(prj))
@@ -221,6 +228,12 @@ def find_commonsys_intf_project_paths_from_build_system():
 
         if project_path is None or install_path_list is None or class_type is None:
             continue
+
+        for whitelist_project in whitelist_project_dict.keys():
+            if project_path.startswith(whitelist_project + "/") and not whitelist_project_dict[whitelist_project]:
+                whitelist_project_dict[whitelist_project] = True
+                print("Project " + whitelist_project + " not empty, violate the special case rule, resume the check")
+
         flag_is_dylib_file = False
         ## iterate to check install path in list
         for install_path in install_path_list:
