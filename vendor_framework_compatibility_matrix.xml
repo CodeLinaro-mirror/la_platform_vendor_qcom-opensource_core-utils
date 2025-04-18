@@ -598,7 +598,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.qtiradio</name>
-        <version>1-14</version>
+        <version>1-16</version>
         <interface>
             <name>IQtiRadioStable</name>
             <instance>slot1</instance>
@@ -1874,6 +1874,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1</version>
         <interface>
             <name>ICloudAgent</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.qrs.qrsprovider</name>
+        <version>1</version>
+        <interface>
+            <name>IQrsProvider</name>
             <instance>default</instance>
         </interface>
     </hal>
