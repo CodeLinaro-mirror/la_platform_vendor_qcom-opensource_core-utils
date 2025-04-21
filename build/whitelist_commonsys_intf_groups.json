@@ -17,6 +17,8 @@
 "vendor/google_shared/satellite/common",
 "vendor/qcom/proprietary/system_release",
 "vendor/qcom/proprietary/wear",
+"vendor/qcom/proprietary/android-wear",
+"vendor/qcom/proprietary/wear-internal",
 "vendor/qcom/proprietary/common-noship",
 "vendor/google/qcom-chre"
 ]
