@@ -182,6 +182,7 @@ OVERRIDE_WHITELIST = {
     "device/qcom/qssi/qssi_whitelist.mk",
     "device/qcom/qssi_au/qssi_au.mk",
     "device/qcom/qssi_au/qssi_au_whitelist.mk",
+    "device/qcom/gen4_gvm/gen4_gvm.mk",
 }
 
 SOONG_WHITELIST = {
