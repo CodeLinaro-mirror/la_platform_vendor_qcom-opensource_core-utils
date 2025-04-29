@@ -145,6 +145,8 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY11/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/taro/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/msmnile_gvmq/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_cdccomm/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY22/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY22/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY22/Android.mk",
