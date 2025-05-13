@@ -157,6 +157,7 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/mm-hab/uhab/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_sdvcomm/Android.mk",
+    "vendor/qcom/proprietary/sysprofiler/Android.mk",
 }
 
 DATETIME_WHITELIST = {
@@ -194,6 +195,7 @@ SOONG_WHITELIST = {
     "vendor/qcom/opensource/commonsys/display/config/display-product-commonsys.mk",
     "vendor/qcom/proprietary/commonsys-intf/bluetooth/bt-system-proprietary-product.mk",
     "vendor/qcom/proprietary/perf-core/configs/perf-core-product-vendor.mk",
+    "vendor/qcom/proprietary/video/ship/video-vendor-modules.mk",
 }
 
 FOREACH_WHITELIST = {
@@ -203,6 +205,7 @@ FOREACH_WHITELIST = {
     "vendor/qcom/proprietary/common/config/device-vendor-SDM845-pureAOSP.mk",
     "vendor/qcom/proprietary/common/config/device-vendor-qssi.mk",
     "vendor/qcom/proprietary/perf-core/profiles.mk",
+    "vendor/qcom/proprietary/video/ship/video-vendor-modules.mk",
 }
 
 MACRO_WHITELIST = {
@@ -217,6 +220,23 @@ MACRO_WHITELIST = {
     "vendor/qcom/proprietary/commonsys/android-perf-noship/config/perf-product-system-proprietary.mk",
     "vendor/qcom/proprietary/commonsys/telephony-build/build/telephony_system_product.mk",
     "vendor/qcom/proprietary/perf-core/configs/perf-core-product-vendor.mk",
+    "vendor/qcom/opensource/bt-kernel/bt_kernel_vendor_board.mk",
+    "vendor/qcom/opensource/dataipa/dataipa_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/datarmnet-ext/datarmnet_ext_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/datarmnet/datarmnet_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/dsp-kernel/dsp_kernel_board.mk",
+    "vendor/qcom/opensource/graphics-kernel/gfx_kernel_board.mk",
+    "vendor/qcom/opensource/platform-kernel/platform_kernel_board.mk",
+    "vendor/qcom/opensource/platform-kernel/platform_kernel_product.mk",
+    "vendor/qcom/opensource/video-driver/video_kernel_board.mk",
+    "vendor/qcom/proprietary/dspservices_ship/dspservices_vendor_product.mk",
+    "vendor/qcom/proprietary/dspservices_ship/remote_debug_agent_vendor_board.mk",
+    "vendor/qcom/proprietary/gles/adreno_buildcfg/build/android/adreno-product.mk",
+    "vendor/qcom/proprietary/kernel-scripts/kernel-platform/kernel-platform-board.mk",
+    "vendor/qcom/proprietary/msmirqbalance/msm_irqbalance.mk",
+    "vendor/qcom/proprietary/securemsm-internal/securemsm_internal_vendor_product.mk",
+    "vendor/qcom/proprietary/video/binship/media-product.mk",
+    "vendor/qcom/proprietary/video/ship/video-vendor-modules.mk",
 }
 
 
