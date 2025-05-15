@@ -14,5 +14,7 @@
 "vendor/qcom/proprietary/commonsys/display-tests",
 "vendor/qcom/proprietary/commonsys-intf/adsprpc_ship",
 "vendor/qcom/proprietary/system_release",
-"vendor/qcom/proprietary/wear"
+"vendor/qcom/proprietary/wear",
+"vendor/qcom/proprietary/android-wear",
+"vendor/qcom/proprietary/wear-internal"
 ]
