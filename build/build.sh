@@ -328,8 +328,10 @@ TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_t
 
 OTATOOLS_DIR="$(mktemp --directory)"
 MERGED_TARGET_FILES_DIR="$(mktemp --directory)"
+FRAMEWORK_TARGET_FILES_DIR="$(mktemp --directory)"
+VENDOR_TARGET_FILES_DIR="$(mktemp --directory)"
 cleanup() {
-    rm -rf $OTATOOLS_DIR $MERGED_TARGET_FILES_DIR
+    rm -rf $OTATOOLS_DIR $MERGED_TARGET_FILES_DIR $FRAMEWORK_TARGET_FILES_DIR $VENDOR_TARGET_FILES_DIR
 }
 trap cleanup EXIT
 
@@ -511,6 +513,16 @@ function generate_ota_zip () {
     log "Unpacking otatools.zip to $OTATOOLS_DIR"
     UNZIP_OTATOOLS_COMMAND="unzip -d $OTATOOLS_DIR $DIST_DIR/otatools.zip"
     command "$UNZIP_OTATOOLS_COMMAND"
+
+    command "unzip $FRAMEWORK_TARGET_FILES "IMAGES/*" -d $FRAMEWORK_TARGET_FILES_DIR"
+    command "unzip $VENDOR_TARGET_FILES "IMAGES/*" -d $VENDOR_TARGET_FILES_DIR"
+
+    if [ -f $FRAMEWORK_TARGET_FILES_DIR/IMAGES/init_boot.img ] && [ -f $VENDOR_TARGET_FILES_DIR/IMAGES/init_boot.img ]; then
+        command "mkdir IMAGES"
+        command "cp $FRAMEWORK_TARGET_FILES_DIR/IMAGES/init_boot.img IMAGES/init_boot.img"
+        command "zip -u $VENDOR_TARGET_FILES IMAGES/init_boot.img"
+	command "rm -rf IMAGES"
+    fi
 
     MERGE_TARGET_FILES_COMMAND="$OTATOOLS_DIR/bin/merge_target_files \
         --path $OTATOOLS_DIR \
