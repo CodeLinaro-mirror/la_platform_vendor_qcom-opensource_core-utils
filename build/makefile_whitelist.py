@@ -155,6 +155,8 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/gen4_gvm/Android.mk",
     "vendor/qcom/proprietary/mm-hab/uhab/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_sdvcomm/Android.mk",
 }
 
 DATETIME_WHITELIST = {
