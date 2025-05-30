@@ -1,3 +1,5 @@
+soong_namespace {
+}
 soong_config_module_type {
     name: "qssi_vs_vendor_cc_base",
     module_type: "cc_defaults",
