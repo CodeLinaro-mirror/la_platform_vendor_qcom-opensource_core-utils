@@ -126,6 +126,9 @@ SHELL_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
     "vendor/qcom/proprietary/common/create_files.mk",
+    "device/qcom/common/base.mk",
+    "device/qcom/msmnile_gvmq/BoardConfig.mk",
+    "vendor/qcom/proprietary/display-tests/config/display-product-tests-system.mk",
 }
 
 RM_WHITELIST = {
@@ -157,6 +160,7 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/mm-hab/uhab/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_sdvcomm/Android.mk",
+    "vendor/qcom/proprietary/sysprofiler/Android.mk",
 }
 
 DATETIME_WHITELIST = {
@@ -187,6 +191,7 @@ OVERRIDE_WHITELIST = {
     "device/qcom/qssi_au/qssi_au.mk",
     "device/qcom/qssi_au/qssi_au_whitelist.mk",
     "device/qcom/gen4_gvm/gen4_gvm.mk",
+    "device/qcom/msmnile_gvmq/msmnile_gvmq.mk",
 }
 
 SOONG_WHITELIST = {
@@ -194,6 +199,12 @@ SOONG_WHITELIST = {
     "vendor/qcom/opensource/commonsys/display/config/display-product-commonsys.mk",
     "vendor/qcom/proprietary/commonsys-intf/bluetooth/bt-system-proprietary-product.mk",
     "vendor/qcom/proprietary/perf-core/configs/perf-core-product-vendor.mk",
+    "vendor/qcom/proprietary/video/ship/video-vendor-modules.mk",
+    "device/qcom/common/base.mk",
+    "device/qcom/msmnile_gvmq/BoardConfig.mk",
+    "hardware/qcom/display/config/display-product.mk",
+    "vendor/qcom/opensource/audio-hal/primary-hal/configs/msmnile_au/msmnile_au.mk",
+    "vendor/qcom/opensource/audio-hal/primary-hal/configs/msmsteppe_au/msmsteppe_au.mk",
 }
 
 FOREACH_WHITELIST = {
@@ -203,6 +214,8 @@ FOREACH_WHITELIST = {
     "vendor/qcom/proprietary/common/config/device-vendor-SDM845-pureAOSP.mk",
     "vendor/qcom/proprietary/common/config/device-vendor-qssi.mk",
     "vendor/qcom/proprietary/perf-core/profiles.mk",
+    "vendor/qcom/proprietary/video/ship/video-vendor-modules.mk",
+    "vendor/qcom/proprietary/media-external/media-external-product.mk",
 }
 
 MACRO_WHITELIST = {
@@ -217,6 +230,56 @@ MACRO_WHITELIST = {
     "vendor/qcom/proprietary/commonsys/android-perf-noship/config/perf-product-system-proprietary.mk",
     "vendor/qcom/proprietary/commonsys/telephony-build/build/telephony_system_product.mk",
     "vendor/qcom/proprietary/perf-core/configs/perf-core-product-vendor.mk",
+    "vendor/qcom/opensource/bt-kernel/bt_kernel_vendor_board.mk",
+    "vendor/qcom/opensource/dataipa/dataipa_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/datarmnet-ext/datarmnet_ext_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/datarmnet/datarmnet_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/dsp-kernel/dsp_kernel_board.mk",
+    "vendor/qcom/opensource/graphics-kernel/gfx_kernel_board.mk",
+    "vendor/qcom/opensource/platform-kernel/platform_kernel_board.mk",
+    "vendor/qcom/opensource/platform-kernel/platform_kernel_product.mk",
+    "vendor/qcom/opensource/video-driver/video_kernel_board.mk",
+    "vendor/qcom/proprietary/dspservices_ship/dspservices_vendor_product.mk",
+    "vendor/qcom/proprietary/dspservices_ship/remote_debug_agent_vendor_board.mk",
+    "vendor/qcom/proprietary/gles/adreno_buildcfg/build/android/adreno-product.mk",
+    "vendor/qcom/proprietary/kernel-scripts/kernel-platform/kernel-platform-board.mk",
+    "vendor/qcom/proprietary/msmirqbalance/msm_irqbalance.mk",
+    "vendor/qcom/proprietary/securemsm-internal/securemsm_internal_vendor_product.mk",
+    "vendor/qcom/proprietary/video/binship/media-product.mk",
+    "vendor/qcom/proprietary/video/ship/video-vendor-modules.mk",
+    "device/qcom/common/base.mk",
+    "device/qcom/sepolicy_vndr/SEPolicy.mk",
+    "hardware/qcom/media/product.mk",
+    "vendor/qcom/opensource/audio-hal-ar/primary-hal/configs/audio_ar_vendor_product.mk",
+    "vendor/qcom/opensource/audio-hal/primary-hal/configs/audio_vendor_product.mk",
+    "vendor/qcom/opensource/audio-kernel/audio_kernel_modules.mk",
+    "vendor/qcom/opensource/audio-kernel/audio_kernel_product_board.mk",
+    "vendor/qcom/opensource/bt-kernel/bt_kernel_vendor_board.mk",
+    "vendor/qcom/opensource/data-ipa-cfg-mgr/ipacm_vendor_product.mk",
+    "vendor/qcom/opensource/dataipa/dataipa_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/datarmnet-ext/datarmnet_ext_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/datarmnet/datarmnet_dlkm_vendor_board.mk",
+    "vendor/qcom/opensource/display-drivers/display_driver_board.mk",
+    "vendor/qcom/opensource/dsp-kernel/dsp_kernel_board.mk",
+    "vendor/qcom/opensource/graphics-kernel/gfx_kernel_board.mk",
+    "vendor/qcom/opensource/limits-noship/thermal-stats_board.mk",
+    "vendor/qcom/opensource/limits-noship/thermal-stats_product.mk",
+    "vendor/qcom/opensource/platform-kernel/platform_kernel_board.mk",
+    "vendor/qcom/opensource/platform-kernel/platform_kernel_product.mk",
+    "vendor/qcom/proprietary/cne/dpm-ship/dpm_vendor_product_noship.mk",
+    "vendor/qcom/proprietary/data/data_prop_vendor_product.mk",
+    "vendor/qcom/proprietary/dspservices_ship/dspservices_vendor_product.mk",
+    "vendor/qcom/proprietary/dspservices_ship/remote_debug_agent_vendor_board.mk",
+    "vendor/qcom/proprietary/gles/adreno_buildcfg/build/android/adreno-product.mk",
+    "vendor/qcom/proprietary/ims-ship/ims_vendor_product_noship.mk",
+    "vendor/qcom/proprietary/kernel-scripts/kernel-platform/kernel-platform-board.mk",
+    "vendor/qcom/proprietary/media-external/media-external-product.mk",
+    "vendor/qcom/proprietary/media-noship/media-noship-product.mk",
+    "vendor/qcom/proprietary/media/media-product.mk",
+    "vendor/qcom/proprietary/msmirqbalance/msm_irqbalance.mk",
+    "vendor/qcom/proprietary/qcril-data-hal/datamodule/module/qcril-data-product.mk",
+    "vendor/qcom/proprietary/qmi/qmi_data_vendor_product.mk",
+    "vendor/qcom/proprietary/securemsm-internal/securemsm_internal_vendor_product.mk",
 }
 
 
