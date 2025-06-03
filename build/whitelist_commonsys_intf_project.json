@@ -16,5 +16,6 @@
 "vendor/qcom/proprietary/system_release",
 "vendor/qcom/proprietary/wear",
 "vendor/qcom/proprietary/android-wear",
-"vendor/qcom/proprietary/wear-internal"
+"vendor/qcom/proprietary/wear-internal",
+"vendor/st/opensource/commonsys/packages/modules/Nfc"
 ]

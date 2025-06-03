@@ -20,5 +20,6 @@
 "vendor/qcom/proprietary/android-wear",
 "vendor/qcom/proprietary/wear-internal",
 "vendor/qcom/proprietary/common-noship",
-"vendor/google/qcom-chre"
+"vendor/google/qcom-chre",
+"vendor/st/opensource/commonsys/packages/modules/Nfc"
 ]
