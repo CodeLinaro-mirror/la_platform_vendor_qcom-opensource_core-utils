@@ -235,9 +235,11 @@ ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "bengal_515s" "crow" "qcs605")
+TARGET_PRODUCT_MAPPING_QSSI_TINY=("bengal_515tiny")
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "qssi_64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "msm8937_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_32go" "msm8937_lily" "bengal_515_32go" "bengal_515s_32go")
+TARGET_PRODUCT_MAPPING_QSSI_TINY_32GO=("bengal_515tiny_32go")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -249,6 +251,10 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32go"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_TINY[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_tiny"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_TINY_32GO[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_tiny_32go"
 else
     QSSI_TARGET_FLAG=0
     TARGET_MATCHING_QSSI="qssi"
@@ -264,9 +270,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "msm8937_32go" "msm8937_32" "bengal_515" "bengal_515s" "bengal_515_32go" "bengal_515s_32go" "monaco" "crow" "qcs605")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "bengal_515s" "bengal_515_32go" "bengal_515s_32go" "monaco" "crow" "trinket" "qcs605")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "msm8937_32go" "msm8937_32" "bengal_515" "bengal_515s" "bengal_515_32go" "bengal_515s_32go" "monaco" "crow" "qcs605")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "msm8937_32go" "msm8937_32" "bengal_515" "bengal_515s" "bengal_515tiny" "bengal_515_32go" "bengal_515s_32go" "bengal_515tiny_32go" "monaco" "crow" "qcs605")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "bengal_515" "bengal_515s" "bengal_515tiny" "bengal_515_32go" "bengal_515s_32go" "bengal_515tiny_32go" "monaco" "crow" "trinket" "qcs605")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "msm8937_32go" "msm8937_32" "bengal_515" "bengal_515s" "bengal_515tiny" "bengal_515_32go" "bengal_515s_32go" "bengal_515tiny_32go" "monaco" "crow" "qcs605")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp")
