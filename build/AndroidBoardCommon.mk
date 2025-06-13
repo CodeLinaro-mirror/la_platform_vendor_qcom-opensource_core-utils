@@ -18,6 +18,8 @@ ifeq ($(TARGET_BOARD_PLATFORM),qssi)
   TARGET_SUPPORT_VM := true
  else ifeq ($(TARGET_BOARD_SUFFIX),_xrM)
   TARGET_SUPPORT_VM := true
+ else ifeq ($(TARGET_BOARD_SUFFIX),_xrl)
+  TARGET_SUPPORT_VM := true
  endif
 endif
 
