@@ -725,14 +725,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>default</instance>
         </interface>
     </hal>
-    <hal format="hidl" optional="true">
-        <name>vendor.qti.hardware.fingerprint</name>
-        <version>1.0</version>
-        <interface>
-            <name>IQtiExtendedFingerprint</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
     <!-- Memory PASR HAL -->
     <hal format="aidl" optional="true">
         <name>vendor.qti.memory.pasrmanager</name>
