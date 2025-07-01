@@ -41,13 +41,15 @@ INSTALLED_USBIMAGE_TARGET := $(PRODUCT_OUT)/usbdisk.img
 FIRMWARE_MOUNT_POINT := $(TARGET_ROOT_OUT)/firmware
 BT_FIRMWARE_MOUNT_POINT := $(TARGET_ROOT_OUT)/bt_firmware
 SOCCP_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/soccp_firmware
+DCP_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/dcp_firmware
 DSP_MOUNT_POINT := $(TARGET_ROOT_OUT)/dsp
 PERSIST_MOUNT_POINT := $(TARGET_ROOT_OUT)/persist
 ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) \
 				 $(BT_FIRMWARE_MOUNT_POINT) \
 				 $(DSP_MOUNT_POINT) \
 				 $(PERSIST_MOUNT_POINT) \
-				 $(SOCCP_FIRMWARE_MOUNT_POINT)
+				 $(SOCCP_FIRMWARE_MOUNT_POINT) \
+				 $(DCP_FIRMWARE_MOUNT_POINT)
 $(FIRMWARE_MOUNT_POINT):
 	@echo "Creating $(FIRMWARE_MOUNT_POINT)"
 	@mkdir -p $(TARGET_ROOT_OUT)/firmware
@@ -72,6 +74,11 @@ $(SOCCP_FIRMWARE_MOUNT_POINT):
 	@echo "Creating $(SOCCP_FIRMWARE_MOUNT_POINT)"
 	@mkdir -p $(TARGET_ROOT_OUT)/soccp_firmware
 	@mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/soccp_firmware
+
+$(DCP_FIRMWARE_MOUNT_POINT):
+	@echo "Creating $(DCP_FIRMWARE_MOUNT_POINT)"
+	@mkdir -p $(TARGET_ROOT_OUT)/dcp_firmware
+	@mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/dcp_firmware
 
 #----------------------------------------------------------------------
 # Generate persist image (persist.img)
