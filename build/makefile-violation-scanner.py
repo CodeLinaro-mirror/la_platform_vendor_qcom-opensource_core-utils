@@ -65,6 +65,7 @@ vendor_qssi_mapping_dict = {
     "qssi_sdg" : ["qssi_sdg","capri"],
     "qssi_lite" : ["qssi_lite","neo"],
     "qssi" : ["qssi","anorak"],
+    "qssi_tiny" : ["qssi_tiny","bengal_515tiny"],
     "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
 }
 
