@@ -654,8 +654,8 @@ function build_qssi_only () {
         log "Cleaning Bazel Cache for incremental builds..."
         chmod -R 0755 "${KP_OUT_DIR}"
 
-        # Remove METADATA files present inside Bazel-Cache
-        find "${KP_OUT_DIR}" \( -name METADATA \) -delete
+        # Remove METADATA and TEST_MAPPING files present inside Bazel-Cache
+        find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
@@ -692,8 +692,8 @@ function build_target_only () {
         log "Cleaning Bazel Cache for incremental builds..."
         chmod -R 0755 "${KP_OUT_DIR}"
 
-        # Remove METADATA files present inside Bazel-Cache
-        find "${KP_OUT_DIR}" \( -name METADATA \) -delete
+        # Remove METADATA and TEST_MAPPING files present inside Bazel-Cache
+        find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
@@ -756,8 +756,8 @@ function nonqssi_legacy_build () {
         log "Cleaning Bazel Cache for incremental builds..."
         chmod -R 0755 "${KP_OUT_DIR}"
 
-        # Remove METADATA files present inside Bazel-Cache
-        find "${KP_OUT_DIR}" \( -name METADATA \) -delete
+        # Remove METADATA and TEST_MAPPING files present inside Bazel-Cache
+        find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
     command "make $ARGS"
