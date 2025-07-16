@@ -28,7 +28,7 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Changes from Qualcomm Innovation Center are provided under the following license:
-# Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: BSD-3-Clause-Clear
 #
 #
@@ -249,7 +249,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
     fi
 fi
 
-if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
+if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_64go" || "$TARGET_PRODUCT" == "qssi_32
 " || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_wear" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
@@ -288,6 +288,7 @@ ENABLE_VIRTUAL_AB=false
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "crow" "anorak")
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "pitti" "lahaina612" "art")
+TARGET_PRODUCT_MAPPING_QSSI_64GO=( "qssi_64go" "bengal_515_64go")
 TARGET_PRODUCT_MAPPING_QSSI_WEAR=("qssi_wear" "monaco_aon_64" "vienna64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go")
@@ -298,6 +299,8 @@ if target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI[@]}"; then
     TARGET_MATCHING_QSSI="qssi"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_64[@]}"; then
     TARGET_MATCHING_QSSI="qssi_64"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_64GO[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_64go"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_WEAR[@]}"; then
     TARGET_MATCHING_QSSI="qssi_wear"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
@@ -319,9 +322,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_64go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "bengal_515_64go" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_64go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp" "hexlp_tp" "graphics_tp" )
@@ -870,7 +873,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_64go" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]]; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
