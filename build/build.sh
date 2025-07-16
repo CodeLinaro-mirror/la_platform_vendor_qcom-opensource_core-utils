@@ -113,7 +113,9 @@
 #     Usage: ./build.sh dist --teckpack -j32 <teckpack target(s)>
 # Version 17:
 #     Build utilizes the TARGET_RELEASE set by the lunch without overriding.
-BUILD_SH_VERSION=17
+# Version 18:
+#     Remove TEST_MAPPING files from bazel-cache.
+BUILD_SH_VERSION=18
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -656,8 +658,8 @@ function build_qssi_only () {
         log "Cleaning Bazel Cache for incremental builds..."
         chmod -R 0755 "${KP_OUT_DIR}"
 
-        # Remove METADATA files present inside Bazel-Cache
-        find "${KP_OUT_DIR}" \( -name METADATA \) -delete
+        # Remove METADATA and TEST_MAPPING files present inside Bazel-Cache
+        find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
@@ -694,8 +696,8 @@ function build_target_only () {
         log "Cleaning Bazel Cache for incremental builds..."
         chmod -R 0755 "${KP_OUT_DIR}"
 
-        # Remove METADATA files present inside Bazel-Cache
-        find "${KP_OUT_DIR}" \( -name METADATA \) -delete
+        # Remove METADATA and TEST_MAPPING files present inside Bazel-Cache
+        find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
@@ -758,8 +760,8 @@ function nonqssi_legacy_build () {
         log "Cleaning Bazel Cache for incremental builds..."
         chmod -R 0755 "${KP_OUT_DIR}"
 
-        # Remove METADATA files present inside Bazel-Cache
-        find "${KP_OUT_DIR}" \( -name METADATA \) -delete
+        # Remove METADATA and TEST_MAPPING files present inside Bazel-Cache
+        find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
     command "make $ARGS"
