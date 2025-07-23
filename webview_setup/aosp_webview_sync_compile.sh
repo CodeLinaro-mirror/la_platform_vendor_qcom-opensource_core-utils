@@ -10,7 +10,7 @@ DEPOT_TOOLS_URL="https://chromium.googlesource.com/chromium/tools/depot_tools.gi
 WEBVIEW_WORKSPACE="webview_chromium"
 WEBVIEW_BUILD_OPTIONS_FILE="webview_build_options.txt"
 BUILD_OUT_DIR="android_def"
-VALIDATED_WEBVIEW_VERSION="134.0.6998.13"
+VALIDATED_WEBVIEW_VERSION="137.0.7151.72"
 
 
 #==================== Color codes =========================#
@@ -19,7 +19,7 @@ GEN="\e[32m"   #general message
 URL="\e[4m"    #url text
 END="\e[0m"    #reset to normal at end
 
-echo -e "${IMP}Refer details on AOSP Webview @${URL}https://chromium.googlesource.com/chromium/src/+/lkgr/android_webview/docs/aosp-system-integration.md#adding-your-webview-to-the-system-image${END}"
+echo -e "${IMP}Refer details on AOSP Webview @${URL}https://chromium.googlesource.com/chromium/src/+/lkgr/android_webview/docs/aosp-system-integration.md${END}"
 echo -e "${IMP}Execute this script in a new folder on Ubuntu 22.x or above platform by passing Webview version as first parameter like ./<script> ddd.d.ddd.ddd (validated on version ${VALIDATED_WEBVIEW_VERSION})${END}"
 
 if [ $# -eq 0 ]
