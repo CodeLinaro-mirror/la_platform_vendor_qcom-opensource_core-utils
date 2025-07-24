@@ -215,8 +215,9 @@ def run_qiifa_checks(temp_dir, qssi_build_path, merged_build_path, target_lunch)
   target_files_zip = get_matching_files(target_pattern)
 
   # Run QIIFA
+  current_dir = os.getcwd()
   os.chdir(QIIFA_CHECKS_DIR_PATH)
-  cmd = ["python", QIIFA_SCRIPT, "--qssi", temp_dir + "/" + OUT_DIST+ qssi_files_zip , "--target", temp_dir + "/" + OUT_DIST+target_files_zip]
+  cmd = [current_dir + "/prebuilts/build-tools/linux-x86/bin/py3-cmd", QIIFA_SCRIPT, "--qssi", temp_dir + "/" + OUT_DIST+ qssi_files_zip , "--target", temp_dir + "/" + OUT_DIST+target_files_zip]
   logging.info("Running: " + str(cmd))
   status = call(cmd)
 
