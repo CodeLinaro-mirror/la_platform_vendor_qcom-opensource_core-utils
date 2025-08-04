@@ -26,7 +26,7 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
-# Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: BSD-3-Clause-Clear
 #
 import io
@@ -67,6 +67,7 @@ vendor_qssi_mapping_dict = {
     "qssi" : ["qssi","anorak"],
     "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
     "qssi_wear" : ["qssi_wear", "vienna64"],
+    "qssi_64go" : ["qssi_64go", "bengal_515_64go"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():
