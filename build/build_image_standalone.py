@@ -26,6 +26,10 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Changes from Qualcomm Technologies, Inc. are provided under the following license:
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
 
 
 import argparse
@@ -333,6 +337,7 @@ def main():
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "pitti", "lahaina612", "art"],
+    "qssi_64go" : ["bengal_515_64go"],
     "qssi_wear" : ["monaco_aon_64", "vienna64"],
   }
 
@@ -345,6 +350,8 @@ def main():
     QSSI_TARGET="qssi_32"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_64']:
     QSSI_TARGET="qssi_64"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_64go']:
+    QSSI_TARGET="qssi_64go"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_wear']:
     QSSI_TARGET="qssi_wear"
   else:
