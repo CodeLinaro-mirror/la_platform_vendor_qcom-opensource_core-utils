@@ -698,7 +698,7 @@ __disregard_bp()
 {
       set -x
       DISREGARD_ANDROID_BP=$(sort -u <( \
-                              test -d disregard && find -L disregard -maxdepth 10  -type f -name "Android.bp" \
+                              test -d disregard && find -L disregard -maxdepth 20  -type f -name "Android.bp" \
                               ) 2> /dev/null)
       for f in ${DISREGARD_ANDROID_BP}; do
         echo "****** move $f to $f.disable"
@@ -710,6 +710,9 @@ __disregard_bp()
 # For non-QSSI targets
 if [ $QSSI_TARGET_FLAG -eq 0 ]; then
     log "${TARGET_PRODUCT} is not a QSSI target. Using legacy build process for compilation..."
+    if [[ "$TARGET_PRODUCT" == "gen3_gvm_coqos" ]]; then
+        __disregard_bp
+    fi
     nonqssi_legacy_build
 else # For QSSI targets
     log "Building Android using build.sh for ${TARGET_PRODUCT}..."
