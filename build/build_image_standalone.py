@@ -260,11 +260,11 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
                         target_lunch)
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
-  '''if not skip_qiifa:
+  if not skip_qiifa:
     if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" or QSSI_TARGET == "qssi_wear" or QSSI_TARGET == "qssi_au" or QSSI_TARGET == "qssi_au_64" :
       run_qiifa_checks(temp_dir, qssi_build_path, merged_build_path, target_lunch)
     else:
-      logging.info("Skipping QIIFA checks for 32-bit and Go targets")'''
+      logging.info("Skipping QIIFA checks for 32-bit and Go targets")
 
   # Setup environment
   logging.info("Setting up environment...")
@@ -342,9 +342,8 @@ def main():
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "niobe"],
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u"],
-    "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm", "gen4_gvm"],
-
+    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u"],
+    "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm"],
   }
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
