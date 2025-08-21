@@ -47,6 +47,20 @@ FAILED_FILEPATHS_WHITELIST = {
     "vendor/qcom/proprietary/android-perf/profiles.mk",
     "vendor/qcom/proprietary/mm-audio-internal/dolby/dax/device/dax2_common_hw.mk",
     "vendor/qcom/proprietary/qrdplus/InternalUseOnly/DuerosSDK/products.mk",
+    "vendor/qcom/opensource/commonsys/audio/configs/qssi/qssi.mk",
+    "vendor/qcom/proprietary/keystone-config/config.mk",
+    "vendor/qcom/proprietary/common-noship/etc/device-vendor-qssi-noship.mk",
+    "vendor/qcom/proprietary/prebuilt_grease/target/product/qssi_au/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/qssi_au/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/product/qssi_au/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY22/target/product/qssi_au/prebuilt.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11-HWASAN/target/common/prebuilt.mk",
+    "vendor/qcom/proprietary/commonsys/qrdplus/China/ChinaMobile/products.mk",
+    "vendor/qcom/proprietary/commonsys/qrdplus/Extension/products.mk",
+    "vendor/qcom/proprietary/common-noship/build/generate_extra_images_prop.mk",
+    "vendor/qcom/proprietary/commonsys/resource-overlay/overlay.mk",
+    "vendor/qcom/proprietary/common-noship/etc/device-vendor-noship.mk",
+    "vendor/qcom/proprietary/prebuilt_ASAN/target/product/qssi_au/prebuilt.mk",
 }
 
 SHELL_WHITELIST = {
@@ -129,6 +143,8 @@ SHELL_WHITELIST = {
     "device/qcom/common/base.mk",
     "device/qcom/msmnile_gvmq/BoardConfig.mk",
     "vendor/qcom/proprietary/display-tests/config/display-product-tests-system.mk",
+    "device/qcom/gen3_gvm_coqos/BoardConfig.mk",
+    "device/qcom/gen3_gvm_coqos/base.mk",
 }
 
 RM_WHITELIST = {
@@ -150,6 +166,7 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/msmnile_gvmq/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_cdccomm/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen3_gvm_coqos/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY22/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY22/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY22/Android.mk",
@@ -205,6 +222,8 @@ SOONG_WHITELIST = {
     "hardware/qcom/display/config/display-product.mk",
     "vendor/qcom/opensource/audio-hal/primary-hal/configs/msmnile_au/msmnile_au.mk",
     "vendor/qcom/opensource/audio-hal/primary-hal/configs/msmsteppe_au/msmsteppe_au.mk",
+    "device/qcom/gen3_gvm_coqos/BoardConfig.mk",
+    "device/qcom/gen3_gvm_coqos/base.mk",
 }
 
 FOREACH_WHITELIST = {
@@ -280,6 +299,6 @@ MACRO_WHITELIST = {
     "vendor/qcom/proprietary/qcril-data-hal/datamodule/module/qcril-data-product.mk",
     "vendor/qcom/proprietary/qmi/qmi_data_vendor_product.mk",
     "vendor/qcom/proprietary/securemsm-internal/securemsm_internal_vendor_product.mk",
+    "device/qcom/gen3_gvm_coqos/BoardConfig.mk",
+    "device/qcom/gen3_gvm_coqos/base.mk",
 }
-
-
