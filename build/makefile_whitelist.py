@@ -150,6 +150,7 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/qssi/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/target/product/taro/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY33/Android.mk",
+    "vendor/qcom/proprietary/prebuilt_HY11/target/product/qssi_auto/Android.mk",
 }
 
 DATETIME_WHITELIST = {
