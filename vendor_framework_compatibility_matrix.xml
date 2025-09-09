@@ -1606,10 +1606,17 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
-
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.qvirtvendor</name>
+        <version>1</version>
+        <interface>
+            <name>IVendorVM</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.qvirt</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IVirtualizationService</name>
             <instance>default</instance>
