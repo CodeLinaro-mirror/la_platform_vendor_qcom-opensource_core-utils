@@ -718,7 +718,7 @@ function build_target_only () {
     CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
 
     if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
-    GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/bin"
+    GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/etc/camera"
     GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
     command "mkdir -p $GEN_PREAMBLE_DIR"
     log "Run camx preamble generation......."
