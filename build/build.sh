@@ -709,6 +709,21 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     command "run_qiifa techpack"
+
+    log "Set camx preamble generation script......."
+    if [ -z "${CAMX_PATH_PREFIX}" ]; then
+        log "CAMX_PATH_PREFIX is $QCPATH"
+        CAMX_PATH_PREFIX=$QCPATH
+    fi
+    CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
+
+    if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
+    GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/bin"
+    GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
+    command "mkdir -p $GEN_PREAMBLE_DIR"
+    log "Run camx preamble generation......."
+    command "python3 $CAMX_PREAMBLE_PYTHON_SCRIPT -o $GEN_PREAMBLE_OUTPUT -d $ANDROID_PRODUCT_OUT/obj"
+    fi
 }
 
 function merge_only () {
@@ -907,7 +922,7 @@ else # For QSSI targets
     fi
     if [[ ${DCA_ENABLED} -eq 1 ]]; then
         log "Capturing build performance data..."
-        mkdir -p $DCA_OUT
+        command "mkdir -p $DCA_OUT"
         run_dca
     fi
 fi
