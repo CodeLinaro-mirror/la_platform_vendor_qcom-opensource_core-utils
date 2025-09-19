@@ -1193,7 +1193,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     <!-- Secure image data processor HAL Service -->
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.secureprocessor.device</name>
-        <version>1.0</version>
+        <version>1.0-1</version>
         <interface>
             <name>ISecureProcessor</name>
             <instance>qti-tee</instance>
