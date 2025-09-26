@@ -1546,6 +1546,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.display.snapallocext</name>
+        <version>1</version>
+        <interface>
+            <name>ISnapAllocExt</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.wifi.wificfr</name>
         <transport>hwbinder</transport>
