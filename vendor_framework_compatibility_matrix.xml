@@ -1343,7 +1343,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.qccvndhal_aidl</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IQccvndhal</name>
             <instance>qccvndhal</instance>
