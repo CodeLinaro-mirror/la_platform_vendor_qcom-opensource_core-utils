@@ -607,7 +607,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.qtiradioconfig</name>
-        <version>1-8</version>
+        <version>1-9</version>
         <interface>
             <name>IQtiRadioConfig</name>
             <instance>default</instance>
