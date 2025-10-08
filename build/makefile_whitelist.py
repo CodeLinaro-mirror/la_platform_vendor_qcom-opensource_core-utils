@@ -129,6 +129,7 @@ SHELL_WHITELIST = {
     "device/qcom/common/base.mk",
     "device/qcom/msmnile_gvmq/BoardConfig.mk",
     "vendor/qcom/proprietary/display-tests/config/display-product-tests-system.mk",
+    "device/qcom/gen4_gvm/BoardConfig.mk",
 }
 
 RM_WHITELIST = {
@@ -162,6 +163,8 @@ LOCAL_COPY_HEADERS_WHITELIST = {
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm/Android.mk",
     "vendor/qcom/proprietary/prebuilt_HY11/target/product/gen4_gvm_sdvcomm/Android.mk",
     "vendor/qcom/proprietary/sysprofiler/Android.mk",
+    "vendor/qcom/proprietary/mm-bufferq/fence_queue/Android.mk",
+    "vendor/qcom/proprietary/mm-bufferq/src/Android.mk",
 }
 
 DATETIME_WHITELIST = {
@@ -206,6 +209,7 @@ SOONG_WHITELIST = {
     "hardware/qcom/display/config/display-product.mk",
     "vendor/qcom/opensource/audio-hal/primary-hal/configs/msmnile_au/msmnile_au.mk",
     "vendor/qcom/opensource/audio-hal/primary-hal/configs/msmsteppe_au/msmsteppe_au.mk",
+    "device/qcom/gen4_gvm/BoardConfig.mk",
 }
 
 FOREACH_WHITELIST = {
@@ -281,6 +285,7 @@ MACRO_WHITELIST = {
     "vendor/qcom/proprietary/qcril-data-hal/datamodule/module/qcril-data-product.mk",
     "vendor/qcom/proprietary/qmi/qmi_data_vendor_product.mk",
     "vendor/qcom/proprietary/securemsm-internal/securemsm_internal_vendor_product.mk",
+    "vendor/qcom/proprietary/vpp/config/vpp-vendor-board.mk",
 }
 
 
