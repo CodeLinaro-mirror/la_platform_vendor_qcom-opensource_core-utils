@@ -68,6 +68,8 @@ vendor_qssi_mapping_dict = {
     "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
     "qssi_wear" : ["qssi_wear", "vienna64"],
     "qssi_64go" : ["qssi_64go", "bengal_515_64go"],
+    "qssi_tiny" : ["qssi_tiny","bengal_515tiny"],
+    "qssi_tiny_32go" : ["qssi_tiny_32go","bengal_515tiny_32go"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():
