@@ -12,6 +12,10 @@ DSP_MOUNT_POINT := $(TARGET_OUT_VENDOR)/dsp
 PERSIST_MOUNT_POINT := $(TARGET_ROOT_OUT)/persist
 SOCCP_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/soccp_firmware
 
+ifeq ($(TARGET_SUPPORTS_WEARABLES), true)
+  DCP_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/dcp_firmware
+endif
+
 ifeq ($(TARGET_BOARD_PLATFORM),qssi)
  ifeq ($(TARGET_BOARD_SUFFIX),_64)
   VM_SYSTEM_MOUNT_POINT := $(TARGET_OUT_PRODUCT)/vm-system
@@ -32,6 +36,10 @@ ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) \
 				 $(BT_FIRMWARE_MOUNT_POINT) \
 				 $(DSP_MOUNT_POINT) \
 				 $(SOCCP_FIRMWARE_MOUNT_POINT)
+
+ifeq ($(TARGET_SUPPORTS_WEARABLES), true)
+  ALL_DEFAULT_INSTALLED_MODULES += $(DCP_FIRMWARE_MOUNT_POINT)
+endif
 
 $(FIRMWARE_MOUNT_POINT):
 	@echo "Creating $(FIRMWARE_MOUNT_POINT)"
@@ -65,6 +73,15 @@ $(SOCCP_FIRMWARE_MOUNT_POINT):
 	@mkdir -p $(TARGET_OUT_VENDOR)/soccp_firmware
 ifneq ($(TARGET_MOUNT_POINTS_SYMLINKS),false)
 	@ln -sf /vendor/soccp_firmware $(TARGET_ROOT_OUT)/soccp_firmware
+endif
+
+ifeq ($(TARGET_SUPPORTS_WEARABLES), true)
+  $(DCP_FIRMWARE_MOUNT_POINT):
+	  @echo "Creating $(DCP_FIRMWARE_MOUNT_POINT)"
+	  @mkdir -p $(TARGET_OUT_VENDOR)/dcp_firmware
+  ifneq ($(TARGET_MOUNT_POINTS_SYMLINKS),false)
+	  @ln -sf /vendor/dcp_firmware $(TARGET_ROOT_OUT)/dcp_firmware
+  endif
 endif
 
 # Defining BOARD_PREBUILT_DTBOIMAGE here as AndroidBoardCommon.mk
