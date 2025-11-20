@@ -311,7 +311,7 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_XRL=[@]}"; then
     TARGET_MATCHING_QSSI="qssi_xrl"
 else
-    QSSI_TARGET_FLAG=1
+    QSSI_TARGET_FLAG=0
     TARGET_MATCHING_QSSI="qssi"
     echo "Non QSSI mapped target. If this not a nonqssi_legacy_build, the target must be added to the TARGET_PRODUCT_MAPPING lists"
 fi
