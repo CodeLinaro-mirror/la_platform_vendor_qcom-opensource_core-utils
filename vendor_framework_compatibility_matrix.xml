@@ -1439,7 +1439,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.display.config</name>
-        <version>1-11</version>
+        <version>1-15</version>
         <interface>
             <name>IDisplayConfig</name>
             <instance>default</instance>
@@ -1550,7 +1550,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.data.txpwrservice</name>
-        <version>1-6</version>
+        <version>1-8</version>
         <interface>
             <name>ITxPwrService</name>
             <instance>default</instance>
@@ -1760,6 +1760,19 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1-2</version>
         <interface>
             <name>IQrsProvider</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!-- Power State HAL -->
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.powerstateservice</name>
+        <version>1</version>
+        <interface>
+            <name>IPowerStateService</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IPowerStateUtility</name>
             <instance>default</instance>
         </interface>
     </hal>
