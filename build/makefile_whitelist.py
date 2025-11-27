@@ -165,6 +165,7 @@ TARGET_PRODUCT_WHITELIST = {
     "vendor/qcom/opensource/core-utils/build/AndroidBoardCommon.mk",
     "vendor/qcom/opensource/core-utils/build/QSSI_violators",
     "vendor/qcom/opensource/core-utils/build/build.sh",
+    "vendor/qcom/opensource/core-utils/build/build_parallel.sh",
     "vendor/qcom/opensource/core-utils/build/build_image_standalone.py",
 }
 
