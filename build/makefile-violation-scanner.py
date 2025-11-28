@@ -442,13 +442,14 @@ def extract_product_board_makefile():
             """find %s -iname "*.mk" -exec readlink -f {} \\;""" % product_path_str, shell=True)
     split_product_config_files = split_product_config_files.decode().strip()
     split_product_config_files = split_product_config_files.replace(ANDROID_BUILD_TOP, '')
-    split_product_config_files = split_product_config_files.split('\n')
+    split_product_config_files = split_product_config_files.splitlines()
 
     split_board_config_files = subprocess.check_output(
-            """find %s -iname "*.mk" -exec readlink -f {} \\;""" % board_path_str, shell=True)
+            """find %s -iname "*.mk" -exec readlink -f {} \\; 2>/dev/null || true""" % board_path_str, shell=True)
+
     split_board_config_files = split_board_config_files.decode().strip()
     split_board_config_files = split_board_config_files.replace(ANDROID_BUILD_TOP, '')
-    split_board_config_files = split_board_config_files.split('\n')
+    split_board_config_files = split_board_config_files.splitlines()
 
     #Chaining the two lists together
     board_config_files = board_config_files+split_board_config_files
