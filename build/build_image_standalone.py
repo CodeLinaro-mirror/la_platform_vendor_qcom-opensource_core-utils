@@ -261,7 +261,7 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
 
   # Run QIIFA checks to ensure these builds are compatible, before merging them.
   if not skip_qiifa:
-    if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" or QSSI_TARGET == "qssi_wear" :
+    if QSSI_TARGET == "qssi" or QSSI_TARGET == "qssi_64" or QSSI_TARGET == "qssi_wear" or QSSI_TARGET == "qssi_xrl":
       run_qiifa_checks(temp_dir, qssi_build_path, merged_build_path, target_lunch)
     else:
       logging.info("Skipping QIIFA checks for 32-bit and Go targets")
@@ -332,8 +332,9 @@ def main():
     "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go"],
-    "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "chora", "pitti", "lahaina612", "art", "bengal_612"],
+    "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "chora", "malabar", "pitti", "lahaina612", "art", "bengal_612"],
     "qssi_wear" : ["monaco_aon_64", "vienna64"],
+    "qssi_xrl" : ["seraph"],
   }
 
 
@@ -347,6 +348,8 @@ def main():
     QSSI_TARGET="qssi_64"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_wear']:
     QSSI_TARGET="qssi_wear"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_xrl']:
+    QSSI_TARGET="qssi_xrl"
   else:
     print("ERROR: Unrecognized target_lunch input. Need to add lunch option to the vendor_qssi_matching_dict")
     return

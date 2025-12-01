@@ -253,9 +253,8 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
     fi
 fi
 
-if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
-" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_wear" ]]; then
-    if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
+if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32"  || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_wear" || "$TARGET_PRODUCT" == "qssi_xrl" ]] ; then
+    if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]] ; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
     fi
@@ -291,10 +290,11 @@ ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "crow" "anorak")
-TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "chora" "pitti" "lahaina612" "art" "bengal_612")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "chora" "malabar" "pitti" "lahaina612" "art" "bengal_612")
 TARGET_PRODUCT_MAPPING_QSSI_WEAR=("qssi_wear" "monaco_aon_64" "vienna64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go")
+TARGET_PRODUCT_MAPPING_QSSI_XRL=("qssi_xrl" "seraph" )
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -308,8 +308,10 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32go"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_XRL=[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_xrl"
 else
-    QSSI_TARGET_FLAG=0
+    QSSI_TARGET_FLAG=1
     TARGET_MATCHING_QSSI="qssi"
     echo "Non QSSI mapped target. If this not a nonqssi_legacy_build, the target must be added to the TARGET_PRODUCT_MAPPING lists"
 fi
@@ -323,9 +325,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp" "hexlp_tp" "graphics_tp" "dspplatform_tp" )
@@ -632,6 +634,25 @@ function run_qiifa_dependency_checker() {
     fi
 }
 
+function generate_camx_preamble_if_needed () {
+    if [ "$TARGET_BOARD_PLATFORM" != "malabar" ] && [ "$TARGET_BOARD_PLATFORM" != "seraph" ]; then
+        log "Set camx preamble generation script......."
+        if [ -z "${CAMX_PATH_PREFIX}" ]; then
+            log "CAMX_PATH_PREFIX is $QCPATH"
+            CAMX_PATH_PREFIX=$QCPATH
+        fi
+        CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
+
+        if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
+        GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/etc/camera"
+        GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
+        command "mkdir -p $GEN_PREAMBLE_DIR"
+        log "Run camx preamble generation......."
+        command "python3 $CAMX_PREAMBLE_PYTHON_SCRIPT -o $GEN_PREAMBLE_OUTPUT -d $ANDROID_PRODUCT_OUT/obj"
+        fi
+    fi
+}
+
 function build_qssi_only () {
     command "source build/envsetup.sh"
     if [ -n "$TARGET_RELEASE" ]; then
@@ -710,20 +731,7 @@ function build_target_only () {
     fi
     command "run_qiifa techpack"
 
-    log "Set camx preamble generation script......."
-    if [ -z "${CAMX_PATH_PREFIX}" ]; then
-        log "CAMX_PATH_PREFIX is $QCPATH"
-        CAMX_PATH_PREFIX=$QCPATH
-    fi
-    CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
-
-    if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
-    GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/etc/camera"
-    GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
-    command "mkdir -p $GEN_PREAMBLE_DIR"
-    log "Run camx preamble generation......."
-    command "python3 $CAMX_PREAMBLE_PYTHON_SCRIPT -o $GEN_PREAMBLE_OUTPUT -d $ANDROID_PRODUCT_OUT/obj"
-    fi
+    generate_camx_preamble_if_needed 
 }
 
 function merge_only () {
@@ -899,7 +907,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]] || [[ "$TARGET_PRODUCT" == "qssi_xrl" ]]; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
