@@ -81,16 +81,16 @@ sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
 print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
 print("QSSI_VARIANT:{}".format(QSSI_VARIANT))
 try:
+    if "qssi" not in TARGET_PRODUCT:
+        from target_makefile_whitelist import *
+        print("Using target specific whitelist")
+
     if QSSI_VARIANT == "qssi":
         print("Using legacy target whitelist for legacy qssi builds.")
         from makefile_whitelist import *
     else:
         from qssi_makefile_whitelist import *
         print("Using {} whitelist file".format(QSSI_VARIANT))
-
-    if "qssi" not in TARGET_PRODUCT:
-        from target_makefile_whitelist import *
-        print("Using target specific whitelist")
 except:
     # Fall back to legacy
     print("Using legacy target whitelist.")

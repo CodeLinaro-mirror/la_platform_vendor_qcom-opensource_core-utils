@@ -864,7 +864,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.gnss</name>
-        <version>1-8</version>
+        <version>1-9</version>
         <interface>
             <name>ILocAidlGnss</name>
             <instance>default</instance>
@@ -1351,7 +1351,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.qccvndhal_aidl</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IQccvndhal</name>
             <instance>qccvndhal</instance>
@@ -1461,7 +1461,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
 
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.agm</name>
-        <version>1</version>
+        <version>1-3</version>
         <interface>
            <name>IAGM</name>
            <instance>default</instance>
@@ -1470,7 +1470,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
 
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.agm</name>
-        <version>1</version>
+        <version>1-3</version>
         <interface>
            <name>ICodecIpc</name>
            <instance>default</instance>
@@ -1499,9 +1499,18 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.ListenSoundModel</name>
         <transport>hwbinder</transport>
-        <version>1.0</version>
+        <version>1.0-2</version>
         <interface>
             <name>IListenSoundModel</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+      <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.paleventnotifier</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IPALEventNotifier</name>
             <instance>default</instance>
         </interface>
     </hal>
