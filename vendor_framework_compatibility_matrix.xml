@@ -1018,6 +1018,22 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
            <instance>default</instance>
        </interface>
    </hal>
+   <hal format="aidl" optional="true">
+       <name>vendor.qti.videoqutestsys</name>
+       <version>1</version>
+       <interface>
+           <name>IVideoQuTestSys</name>
+           <instance>default</instance>
+       </interface>
+       <interface>
+           <name>IVideoQuTestSysCallback</name>
+           <instance>default</instance>
+       </interface>
+       <interface>
+           <name>IVideoQuTestSysFactory</name>
+           <instance>default</instance>
+       </interface>
+   </hal>
    <!-- Codec2 HAl service -->
    <hal format="hidl" optional="true">
        <name>android.hardware.media.c2</name>
