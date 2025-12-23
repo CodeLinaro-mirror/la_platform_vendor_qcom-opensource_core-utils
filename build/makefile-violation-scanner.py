@@ -40,7 +40,12 @@ import glob
 ANDROID_BUILD_TOP = os.environ.get('ANDROID_BUILD_TOP') + '/'
 TARGET_PRODUCT = os.environ.get('TARGET_PRODUCT')
 QCPATH = os.environ.get('QCPATH')
-TARGET_BOARD_PLATFORM = TARGET_PRODUCT
+TBP = os.environ.get('TARGET_BOARD_PLATFORM')
+if TBP == "shikra":
+    TARGET_BOARD_PLATFORM = TBP
+else:
+    TARGET_BOARD_PLATFORM = TARGET_PRODUCT
+
 board_config_files = []
 product_config_files = []
 inherited_files_product = []
