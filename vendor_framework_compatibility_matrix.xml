@@ -77,6 +77,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
          </interface>
     </hal>
     <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.bluetooth.gatt</name>
+        <version>1</version>
+        <interface>
+            <name>IBluetoothGatt</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
         <name>vendor.qti.snapdragonServices.qape</name>
          <version>1</version>
          <interface>
