@@ -967,7 +967,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
          <name>vendor.qti.automotive.qcarcam2</name>
-         <version>1-4</version>
+         <version>1-5</version>
          <interface>
              <name>IQcarCamera</name>
              <instance>default</instance>
