@@ -1886,4 +1886,12 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.frameworks.utils</name>
+        <version>1</version>
+        <interface>
+            <name>IFrameworksUtils</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
