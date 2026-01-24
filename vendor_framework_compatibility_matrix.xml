@@ -1574,7 +1574,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.wifi.wificfr</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
            <name>IWificfr</name>
            <instance>default</instance>
