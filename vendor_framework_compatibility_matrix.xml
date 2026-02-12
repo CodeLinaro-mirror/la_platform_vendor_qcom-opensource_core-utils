@@ -1907,4 +1907,12 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.qacs.ambientdatacapture</name>
+        <version>1</version>
+        <interface>
+            <name>IAmbientDataCapture</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
