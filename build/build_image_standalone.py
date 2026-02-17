@@ -334,6 +334,8 @@ def main():
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go", "bengal_515_32go", "bengal_515s_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "pitti", "lahaina612", "art"],
     "qssi_wear" : ["monaco_aon_64", "vienna64"],
+    "qssi_tiny"  : ["bengal_515tiny"],
+    "qssi_tiny_32go"  : ["bengal_515tiny_32go"],
   }
 
 
@@ -347,6 +349,10 @@ def main():
     QSSI_TARGET="qssi_64"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_wear']:
     QSSI_TARGET="qssi_wear"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_tiny']:
+    QSSI_TARGET="qssi_tiny"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_tiny_32go']:
+    QSSI_TARGET="qssi_tiny_32go"
   else:
     print("ERROR: Unrecognized target_lunch input. Need to add lunch option to the vendor_qssi_matching_dict")
     return
