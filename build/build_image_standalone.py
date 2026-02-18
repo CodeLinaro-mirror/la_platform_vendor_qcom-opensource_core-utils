@@ -336,7 +336,7 @@ def main():
     "qssi_64go" : ["shikra_64go"],
     "qssi_wear" : ["monaco_aon_64", "vienna64"],
     "qssi_tiny"  : ["bengal_515tiny"],
-    "qssi_tiny_32go"  : ["bengal_515tiny_32go"],
+    "qssi_tiny_32go"  : ["bengal_515tiny_32go", "shikra_tiny_32go"],
   }
 
 
