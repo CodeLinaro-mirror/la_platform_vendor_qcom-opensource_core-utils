@@ -333,6 +333,7 @@ def main():
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go", "bengal_515_32go", "bengal_515s_32go"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "pitti", "lahaina612", "art", "shikra_64"],
+    "qssi_64go" : ["shikra_64go"],
     "qssi_wear" : ["monaco_aon_64", "vienna64"],
     "qssi_tiny"  : ["bengal_515tiny"],
     "qssi_tiny_32go"  : ["bengal_515tiny_32go"],
@@ -347,6 +348,8 @@ def main():
     QSSI_TARGET="qssi_32"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_64']:
     QSSI_TARGET="qssi_64"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_64go']:
+    QSSI_TARGET="qssi_64go"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_wear']:
     QSSI_TARGET="qssi_wear"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_tiny']:
