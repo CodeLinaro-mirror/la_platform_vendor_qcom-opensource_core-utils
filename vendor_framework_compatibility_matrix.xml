@@ -1605,6 +1605,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         </interface>
     </hal>
     <hal format="aidl" optional="true">
+        <name>vendor.qti.snapdragonServices.mpamService</name>
+        <version>1</version>
+        <interface>
+            <name>IMpamService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
         <name>vendor.qti.snapdragonServices.sanityService</name>
         <version>1</version>
         <interface>
