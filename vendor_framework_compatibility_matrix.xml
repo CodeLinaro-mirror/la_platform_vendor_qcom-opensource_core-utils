@@ -1507,7 +1507,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.qasr</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>IQasr</name>
             <instance>default</instance>
