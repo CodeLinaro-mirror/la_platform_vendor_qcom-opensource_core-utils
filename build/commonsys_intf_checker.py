@@ -214,7 +214,10 @@ def start_commonsys_intf_checker():
         violation_file_path = violation_file_path + "/configs"
     module_info_dict = load_json_file(out_path + "/module-info.json")
     whitelist_projects_list = load_json_file(script_dir + "/whitelist_commonsys_intf_project.json")
-    manifest_root = parse_xml_file(croot + "/.repo/manifest.xml")
+    if os.path.exists(croot + "/.repo/manifests/default.xml"):
+      manifest_root = parse_xml_file(croot + "/.repo/manifests/default.xml")
+    else:
+      manifest_root = parse_xml_file(croot + "/.repo/manifests/pwmanifest.xml")
     aidl_metadata_dict = load_json_file(aidl_metadata_file)
     for project in manifest_root.findall("project"):
         git_project_path = project.attrib.get('path')
