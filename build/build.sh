@@ -644,7 +644,7 @@ function run_qiifa_dependency_checker() {
 }
 
 function generate_camx_preamble_if_needed () {
-    if [ "$TARGET_BOARD_PLATFORM" != "malabar" ] && [ "$TARGET_BOARD_PLATFORM" != "seraph" ]; then
+    if [ "$TARGET_BOARD_PLATFORM" != "malabar" ] && [ "$TARGET_BOARD_PLATFORM" != "seraph" ] && [ "$TARGET_BOARD_PLATFORM" != "shikra" ]; then
         log "Set camx preamble generation script......."
         if [ -z "${CAMX_PATH_PREFIX}" ]; then
             log "CAMX_PATH_PREFIX is $QCPATH"
