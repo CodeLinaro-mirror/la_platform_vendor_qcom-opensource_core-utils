@@ -156,7 +156,7 @@ fi
 # Function to extract arguments passed to prepare_vendor.sh from KERNEL_CMD_STR
 extract_prepare_args() {
   local cmd="$1"
-  local script='./kernel_platform/build/android/prepare_vendor.sh'
+  local script='prepare_vendor.sh'
 
   # Check if the command contains prepare_vendor.sh
   case "$cmd" in
