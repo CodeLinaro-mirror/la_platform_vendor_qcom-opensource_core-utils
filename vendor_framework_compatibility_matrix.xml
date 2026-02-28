@@ -937,6 +937,20 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+	<!-- Power State HAL -->
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.power.powerstateservice</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IPowerStateService</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IPowerStateUtility</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <!-- Memory PASR HAL -->
     <hal format="aidl" optional="true">
         <name>vendor.qti.memory.pasrmanager</name>
@@ -1900,6 +1914,19 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1</version>
         <interface>
             <name>IUwbTpi</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!-- Power State HAL -->
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.powerstateservice</name>
+        <version>1</version>
+        <interface>
+            <name>IPowerStateService</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IPowerStateUtility</name>
             <instance>default</instance>
         </interface>
     </hal>
