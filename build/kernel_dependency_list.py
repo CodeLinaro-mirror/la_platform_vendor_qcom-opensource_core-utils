@@ -1,0 +1,35 @@
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
+KERNEL_DEPENDENCY_ALLOWED_LIST = {
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/debug",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/kernel-gbl/gbl_aarch64.efi",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/kernel-gbl/gbl.bin",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/kernel-abl/abl.bin",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/vendor_dlkm/system_dlkm.modules.blocklist",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/vendor_dlkm/system_dlkm.modules.blocklist",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/extra_cmdline",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/extra_bootconfig",
+    "device/qcom/$(TARGET_BOARD_PLATFORM)-kernel/build_opts.txt",
+    "$(KERNEL_PREBUILT_DIR)/Image",
+    "$(KERNEL_PREBUILT_DIR)/System.map",
+    "$(KERNEL_PREBUILT_DIR)/debug/kernel-tests",
+    "$(KERNEL_PREBUILT_DIR)/kernel-headers",
+    "$(KERNEL_PREBUILT_DIR)/kernel-abl/abl-$(TARGET_BUILD_VARIANT)",
+    "$(KERNEL_PREBUILT_DIR)/dtbs",
+    "$(KERNEL_PREBUILT_DIR)/dtbs/dtbo.img"
+    "$(KERNEL_PREBUILT_DIR)/dtbs/dtb.img",
+    "$(KERNEL_PREBUILT_DIR)/dtbo.img",
+    "$(KERNEL_PREBUILT_DIR)/$(1)/modules.load",
+    "$(KERNEL_PREBUILT_DIR)/system_dlkm/flatten/lib/modules/*.ko",
+    "$(KERNEL_PREBUILT_DIR)/$(notdir $@)",
+    "$(KERNEL_PREBUILT_DIR)/vendor_dlkm/$(notdir $@)",
+    "$(KERNEL_PREBUILT_DIR)/vendor_dlkm/modules.blocklist",
+    "$(KERNEL_PREBUILT_DIR)/vendor_dlkm/cfg80211.ko",
+    "$(KERNEL_PREBUILT_DIR)/vendor_dlkm/mac80211.ko",
+    "$(KERNEL_PREBUILT_DIR)/vendor_dlkm",
+    "$(KERNEL_PREBUILT_DIR)/techpack.built",
+    "$(KERNEL_PREBUILT_DIR)/.config",
+    "$(KERNEL_PREBUILT_DIR)/Module.symvers",
+    "$(KERNEL_PREBUILT_DIR)/system_dlkm/flatten/lib/modules/$(notdir $@)",
+}
