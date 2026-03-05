@@ -40,7 +40,7 @@ import glob
 ANDROID_BUILD_TOP = os.environ.get('ANDROID_BUILD_TOP') + '/'
 TARGET_PRODUCT = os.environ.get('TARGET_PRODUCT')
 QCPATH = os.environ.get('QCPATH')
-TARGET_BOARD_PLATFORM = TARGET_PRODUCT
+TARGET_BOARD_PLATFORM = os.environ.get('TARGET_BOARD_PLATFORM')
 board_config_files = []
 product_config_files = []
 inherited_files_product = []
@@ -67,6 +67,9 @@ vendor_qssi_mapping_dict = {
     "qssi" : ["qssi","anorak"],
     "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
     "qssi_wear" : ["qssi_wear", "vienna64"],
+    "qssi_64go" : ["qssi_64go","shikra_64go"],
+    "qssi_tiny" : ["qssi_tiny","bengal_515tiny"],
+    "qssi_tiny_32go" : ["qssi_tiny_32go","bengal_515tiny_32go","shikra_tiny_32go"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():

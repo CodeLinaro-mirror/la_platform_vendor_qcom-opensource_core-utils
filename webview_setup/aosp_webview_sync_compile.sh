@@ -10,7 +10,8 @@ DEPOT_TOOLS_URL="https://chromium.googlesource.com/chromium/tools/depot_tools.gi
 WEBVIEW_WORKSPACE="webview_chromium"
 WEBVIEW_BUILD_OPTIONS_FILE="webview_build_options.txt"
 BUILD_OUT_DIR="android_def"
-VALIDATED_WEBVIEW_VERSION="134.0.6998.13"
+VALIDATED_WEBVIEW_VERSION="145.0.7632.26"
+LTO_OPT_PATCHED_WEBVIEW_VERSION="138.0.7184.0"
 
 
 #==================== Color codes =========================#
@@ -58,12 +59,19 @@ echo -e "${GEN}Installing additional build dependencies and would require sudo p
 ./build/install-build-deps.sh --android
 
 echo -e "${GEN}Sync all other projects as per webview version $1 ...${END}"
-gclient sync -D
+gclient sync -D --reset
 
 
 echo -e "${GEN}Applying optimization patches${END}"
-git apply ../../*.patch
+ver_to_int() {
+    IFS='.' read -r major minor build patch <<< $1
+    echo "$(( major * 1000000000000 + minor * 100000000 + build * 10000 + patch ))"
+}
 
+if (( $(ver_to_int $1) < $(ver_to_int $LTO_OPT_PATCHED_WEBVIEW_VERSION) ))
+  then
+    git apply ../../*.patch
+fi
 
 echo -e "${IMP}Using build options from file $WEBVIEW_BUILD_OPTIONS_FILE. For recommended webview build options,${END}"
 echo -e "${IMP}Please refer @${URL}https://chromium.googlesource.com/chromium/src/+/HEAD/android_webview/docs/aosp-system-integration.md#Choosing-build-options${END}"

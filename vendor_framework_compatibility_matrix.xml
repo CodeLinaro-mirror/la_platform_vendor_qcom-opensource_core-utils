@@ -607,7 +607,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.radio.qtiradioconfig</name>
-        <version>1-9</version>
+        <version>1-10</version>
         <interface>
             <name>IQtiRadioConfig</name>
             <instance>default</instance>
@@ -1554,7 +1554,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.wifi.wificfr</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
            <name>IWificfr</name>
            <instance>default</instance>
@@ -1888,6 +1888,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1</version>
         <interface>
             <name>IFrameworksUtils</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.qrs.qrsprovider</name>
+        <version>1-2</version>
+        <interface>
+            <name>IQrsProvider</name>
             <instance>default</instance>
         </interface>
     </hal>
