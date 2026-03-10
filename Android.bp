@@ -12,9 +12,52 @@ soong_config_module_type {
                 ],
 }
 
+soong_config_module_type {
+    name: "qssi_vs_vendor_java_base",
+    module_type: "java_defaults",
+    config_namespace: "qssi_vs_vendor",
+    variables: ["qssi_or_vendor"],
+    properties: [
+        "static_libs",
+    ],
+}
+
+soong_config_module_type {
+    name: "qcomfeatureconfig_cc_base",
+    module_type: "cc_defaults",
+    config_namespace: "qcomfeatureconfig",
+    bool_variables: ["target_qlmd"],
+    properties: [
+        "cflags",
+    ],
+}
+
 soong_config_string_variable {
     name: "qssi_or_vendor",
     values: ["qssi", "vendor"],
+}
+
+qssi_vs_vendor_java_base {
+    name: "qcomfeatureconfig_java_defaults",
+    soong_config_variables: {
+      qssi_or_vendor: {
+        qssi : {
+          static_libs: ["qcomFeatureConfigLib_system"],
+        },
+        vendor :{
+          static_libs: ["qcomFeatureConfigLib_vendor"],
+        },
+      },
+    },
+}
+
+qcomfeatureconfig_cc_base {
+    name: "qcomfeatureconfig_cc_defaults",
+    soong_config_variables: {
+        target_qlmd: {
+            cflags: ["-DTARGET_IS_QLMD"],
+        },
+    },
 }
 
 //================Usage Example===================//
