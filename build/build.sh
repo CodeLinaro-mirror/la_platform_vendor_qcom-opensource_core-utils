@@ -738,7 +738,7 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     # command "run_qiifa techpack"
-    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ]; then
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || [ "$TARGET_PRODUCT" == "gen4_gvm_gy_qmaa" ]; then
         #invoke the pilsplitter script after all the userspace images are created.
         GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
         cd "$GH_SCRIPT_PATH"
