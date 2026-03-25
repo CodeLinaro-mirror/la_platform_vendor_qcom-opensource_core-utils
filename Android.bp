@@ -44,8 +44,11 @@ qssi_vs_vendor_java_base {
         qssi : {
           static_libs: ["qcomFeatureConfigLib_system"],
         },
-        vendor :{
+        vendor : {
           static_libs: ["qcomFeatureConfigLib_vendor"],
+        },
+        conditions_default : {
+          static_libs: ["qcomFeatureConfigLib_system"],
         },
       },
     },
