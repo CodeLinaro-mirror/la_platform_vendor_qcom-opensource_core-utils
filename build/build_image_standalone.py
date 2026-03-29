@@ -335,7 +335,7 @@ def main():
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "niobe"],
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy",  "gen4_gvm_gy_qmaa", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu"],
+    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy",  "gen4_gvm_gy_qmaa", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "prime_gvm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu"],
     "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm"],
   }
 
