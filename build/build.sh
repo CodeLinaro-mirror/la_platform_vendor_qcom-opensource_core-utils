@@ -169,6 +169,9 @@ QIIFA_MAIN_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
 QIIFA_TARGET_BASH_CONFIG_FILEPATH="$QCPATH/QIIFA-cmd-vendor/qiifa_bash_configs"
 QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_config/qiifa_bash_configs"
 
+FEATURE_PROFILE=default
+ENABLE_CENTRALIZED_FEATURE_CONTROL=false
+
 while [[ $# -gt 0 ]]
     do
     arg="$1"
@@ -191,6 +194,15 @@ while [[ $# -gt 0 ]]
             ;;
         --tech_package*)
             LIST_TECH_PACKAGE="$LIST_TECH_PACKAGE$arg"
+            shift
+            ;;
+        --profile)
+            # Assign next arg as profile only if it is non-empty and not a flag;
+            # otherwise keep the default value of FEATURE_PROFILE.
+            if [ -n "$2" ] && [[ "$2" != -* ]]; then
+              FEATURE_PROFILE="$2"
+              shift
+            fi
             shift
             ;;
         *techpack)
@@ -710,6 +722,13 @@ function build_target_only () {
         find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
+    if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+        command "python -B $QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py \
+            --input_path vendor/qcom/features/vendor \
+            --profile $FEATURE_PROFILE \
+            --target $TARGET_BOARD_PLATFORM \
+            --out_dir vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+    fi
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
@@ -825,6 +844,14 @@ function build_techpack_only () {
     else
     echo "error:No release config set for target; please set TARGET_RELEASE, using 'lunch <target>-<release>-<build_type>'"
     exit 1
+    fi
+
+    if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+        command "python -B $QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py \
+            --input_path vendor/qcom/features/vendor \
+            --profile $FEATURE_PROFILE \
+            --target $TARGET_BOARD_PLATFORM \
+            --out_dir vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
