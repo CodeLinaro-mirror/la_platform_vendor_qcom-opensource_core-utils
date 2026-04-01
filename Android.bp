@@ -17,6 +17,18 @@ soong_config_string_variable {
     values: ["qssi", "vendor"],
 }
 
+soong_config_module_type {
+    name: "is_wearable_target_java_defaults",
+    module_type: "java_defaults",
+    config_namespace: "qtiwearable",
+    bool_variables: ["is_wearable_target"],
+    properties: ["libs"],
+}
+
+soong_config_bool_variable {
+     name: "is_wearable_target",
+}
+
 //================Usage Example===================//
 
 //in your Android.bp file, you must import this file so that your
