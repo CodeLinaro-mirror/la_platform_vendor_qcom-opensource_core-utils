@@ -36,6 +36,10 @@ import re
 import sys
 import glob
 import fnmatch
+import time
+import importlib.util
+import os
+
 
 # Dynamically get whitelists from device/qcom/<target>/
 ANDROID_BUILD_TOP = os.environ.get('ANDROID_BUILD_TOP') + '/'
@@ -132,6 +136,9 @@ is_macro_errors = set()
 override_errors = set()
 soong_namespace_errors = set()
 
+# Enforcement set for new makefile validation
+new_makefile_errors = set()
+
 # a set to maintain any new failed file opening
 failed_filepaths = set()
 
@@ -156,6 +163,8 @@ BUILD_BROKEN_USES_FOREACH = False
 BUILD_BROKEN_USES_DEPRICATED_MACROS = False
 BUILD_BROKEN_USES_SOONG_NAMESPACE = False
 BUILD_BROKEN_USES_OVERRIDE = False
+# Default makefile whitelist validation enforcement variable
+BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK = False
 
 
 # Set whitelist variables if not defined
@@ -437,6 +446,231 @@ def parse_makefile_for_includes(file_path , config_files, inherited_files):
                 warning_message = "WARNING: Error opening file: " + file_path
                 print(warning_message)
             failed_filepaths.add(file_path)
+
+
+def load_whitelist_from_file(dirpath, filename):
+    full_path = os.path.join(ANDROID_BUILD_TOP, dirpath, filename)
+    if not os.path.isfile(full_path):
+        return None, "not_found"
+
+    try:
+        spec = importlib.util.spec_from_file_location("makefiles_whitelist_mod", full_path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+
+        if not hasattr(mod, "ALL_MAKEFILES_WHITELIST"):
+            return None, "missing_ALL_MAKEFILES_WHITELIST"
+
+        return set(mod.ALL_MAKEFILES_WHITELIST), None
+    except Exception as e:
+        return None, str(e)
+
+
+def load_makefile_whitelist():
+
+    candidates = []
+
+    # Primary: always look under the target directory with a standard filename
+    if TARGET_PRODUCT:
+      if TARGET_PRODUCT.startswith("qssi"):
+        candidates = [
+            (f"device/qcom/{TARGET_PRODUCT}",
+             f"{TARGET_PRODUCT}_all_makefiles_whitelist.py"),
+            ("device/qcom/qssi",
+            "qssi_all_makefiles_whitelist.py"),
+        ]
+
+      else:
+        candidates = [
+          (f"device/qcom/{TARGET_PRODUCT}",
+           "target_all_makefiles_whitelist.py"),
+        ]
+
+    # unsupported / empty TARGET_PRODUCT
+    else:
+        print("ERROR: Unsupported or empty TARGET_PRODUCT for makefile whitelist validation")
+        return None, None, None, True
+
+    # Try candidates in order
+    for d, py in candidates:
+        wl, err = load_whitelist_from_file(d, py)
+        if wl is not None:
+            print("Loaded makefile whitelist from %s/%s" % (d, py))
+            return wl, py, d, False
+
+    # HARD FAILURE (required)
+    print("ERROR: Failed to locate a valid makefile reference whitelist.")
+    print("TARGET_PRODUCT :", TARGET_PRODUCT)
+    print("Paths tried:")
+    for d, py in candidates:
+        print("  - %s/%s" % (d, py))
+
+    return None, None, None, True
+
+
+def discover_all_makefiles():
+    """
+    Recursively find all .mk files under ANDROID_BUILD_TOP,
+    pruning known large / irrelevant directories.
+    Returns a set of paths relative to ANDROID_BUILD_TOP.
+    """
+
+    PRUNE_DIRS = [
+        "out",
+        ".repo",
+        "*/.git",
+        "prebuilt_HY11*",
+        "prebuilt_HY22*",
+        "prebuilt_HY33*",
+        "prebuilt_grease*",
+        "prebuilt_ASAN*",
+    ]
+
+    # Build prune expression once
+    prune_expr = " -o ".join(
+        f"-path '{ANDROID_BUILD_TOP}{p}' -o -path '{ANDROID_BUILD_TOP}{p}/*'"
+        for p in PRUNE_DIRS
+    )
+
+    find_cmd = f"""
+    find {ANDROID_BUILD_TOP} \
+      \\( {prune_expr} \\) -prune \
+      -o -type f -iname '*.mk' -print
+    """
+
+    makefiles = set()
+
+    try:
+        with open(os.devnull, "w") as dev_null:
+            output = subprocess.check_output(
+                find_cmd,
+                shell=True,
+                stderr=dev_null,
+                universal_newlines=True,
+            )
+
+        for line in output.splitlines():
+            path = line.strip()
+            if not path:
+                continue
+
+            # Normalize to path relative to ANDROID_BUILD_TOP
+            rel_path = path.replace(ANDROID_BUILD_TOP, "").strip()
+            if rel_path:
+                makefiles.add(rel_path)
+
+    except subprocess.CalledProcessError as e:
+        print("Warning: Error during makefile discovery:", e)
+    except Exception as e:
+        print("Warning: Unexpected error during makefile discovery:", e)
+
+    return makefiles
+
+
+def write_makefiles_to_out_dir(discovered_makefiles):
+    """
+    Write all discovered makefiles to a text file in the OUT directory.
+    This is used when whitelist loading fails in INFO mode.
+    """
+    try:
+        out_dir = os.environ.get('OUT')
+        
+        if not out_dir:
+            print("WARNING: OUT directory not found, cannot write makefile list")
+            return
+        
+        output_file = os.path.join(out_dir, "all_makefiles_pending_bp_conversion.txt")
+        
+        with open(output_file, 'w') as f:
+            f.write("# All makefiles discovered in workspace\n")
+            f.write("# These files are pending conversion to Android.bp\n")
+            f.write("# Total count: %d\n\n" % len(discovered_makefiles))
+            for mk_file in sorted(discovered_makefiles):
+                f.write("%s\n" % mk_file)
+        
+        print("All discovered makefiles written to: %s" % output_file)
+    except Exception as e:
+        print("WARNING: Failed to write makefile list to OUT directory: %s" % str(e))
+
+
+def validate_makefiles_against_whitelist(whitelist, whitelist_py, whitelist_dir):
+    global new_makefile_errors
+
+    start_time = time.time()
+
+    # If whitelist is None, we're in INFO mode and whitelist failed to load
+    if whitelist is None:
+        print("Discovering all makefiles in workspace...\n")
+        discovered = discover_all_makefiles()
+        elapsed = time.time() - start_time
+
+        print(
+            "Makefile discovery completed in %.2f seconds, "
+            "discovered %d makefiles in workspace in total"
+            % (elapsed, len(discovered))
+        )
+
+        print("Writing all discovered makefiles to OUT directory for reference.")
+        print("-----------------------------------------------------")
+
+        write_makefiles_to_out_dir(discovered)
+
+        # In INFO mode, continue the build
+        return True
+
+    print("Loaded %s from %s" % (whitelist_py, whitelist_dir))
+    print("Discovering all makefiles in workspace...\n")
+
+    discovered = discover_all_makefiles()
+    elapsed = time.time() - start_time
+
+    print("Whitelist contains %d makefiles" % len(whitelist))
+    print(
+        "Makefile whitelist validation completed in %.2f seconds, "
+        "found %d makefiles in workspace in total"
+        % (elapsed, len(discovered))
+    )
+
+    new_makefile_errors = discovered - whitelist
+
+    # ---- Common summary header (moved up, printed once) ----
+    print("\n================ MAKEFILE WHITELIST SUMMARY ================\n")
+
+    # ---- Clean case ----
+    if not new_makefile_errors:
+        print("No new makefiles detected. Workspace matches whitelist.")
+        print("-----------------------------------------------------")
+        return True
+
+    # ---- New makefiles detected ----
+    if BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK:
+        print("cnt_new_makefile_error : %d" % len(new_makefile_errors))
+        print("Error: New makefile(s) detected that are not in the whitelist.")
+    else:
+        print("cnt_new_makefile_warning : %d" % len(new_makefile_errors))
+        print("WARNING: New makefile(s) detected:")
+        for f in sorted(new_makefile_errors):
+            print(" %s" % f)
+
+    print("")
+    print("IMPORTANT: Adding new makefiles (.mk) is strongly discouraged.")
+    print("We recommend writing your build rules in Android.bp format instead.")
+    print("Android.bp provides better build performance, maintainability, and is the")
+    print("preferred build system for Android projects.")
+    print("")
+    print(
+        "For assistance with migrating to Android.bp or questions about this %s,"
+        % ("error" if BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK else "warning")
+    )
+    print("please contact: android.core.na@quicinc.com")
+    print("-----------------------------------------------------")
+
+    # ---- Enforced mode: fail ----
+    if BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK:
+        return False
+
+    # ---- Warning-only mode: continue ----
+    return True
 
 
 def extract_product_board_makefile():
@@ -793,6 +1027,7 @@ def main():
     print("      Checking is-xxx macro usage ......")
     print("      Checking override usage ......")
     print("      Checking soong_config usage ......")
+    print("      Checking for new makefiles against whitelist ......")
     print("-----------------------------------------------------")
     sys.stdout.flush()
 
@@ -823,6 +1058,26 @@ def main():
     #Extracting product and board config make files
     extract_product_board_makefile()
 
+    makefile_whitelist = set()
+
+    # Validate makefiles against whitelist (if enabled)
+    makefile_whitelist, whitelist_py, whitelist_dir, load_failed = load_makefile_whitelist()
+    if load_failed:
+        # In INFO mode (BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK = False), just warn and continue
+        if not BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK:
+            # Pass None as whitelist to trigger INFO mode handling
+            ok = validate_makefiles_against_whitelist(None, None, None)
+        else:
+            # In ENFORCED mode (BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK = True), fail the build
+            print("ERROR: BUILD_ENABLE_MAKEFILE_WHITELIST_CHECK - whitelist could not be loaded.")
+            exit(1)
+    else:
+        ok = validate_makefiles_against_whitelist(
+            makefile_whitelist, whitelist_py, whitelist_dir
+        )
+
+    if not ok:
+        exit(1)
 
     # Find all files and convert to relative path
     with open(os.devnull, 'w') as dev_null:
