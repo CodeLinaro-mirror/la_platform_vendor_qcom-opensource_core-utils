@@ -65,7 +65,7 @@ QSSI_VARIANT = "qssi_64"
 # Create a Vendor-QSSI mapping between targets
 # Add the qssi variant as a target to the list. This is needed for running this scanner on QSSI builds only
 vendor_qssi_mapping_dict = {
-    "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti","anorak61"],
+    "qssi_64" : ["qssi_64","pineapple","sun","blair","pitti","anorak61","bengal_612","bengal_612s"],
     "qssi_xrM" : ["qssi_xrM","niobe"],
     "qssi_sdg" : ["qssi_sdg","capri"],
     "qssi_lite" : ["qssi_lite","neo"],
@@ -73,8 +73,9 @@ vendor_qssi_mapping_dict = {
     "qssi_xrl" : ["qssi_xrl","seraph","neo61"],
     "qssi_wear" : ["qssi_wear", "vienna64"],
     "qssi_64go" : ["qssi_64go","bengal_515_64go","shikra_64go"],
-    "qssi_tiny" : ["qssi_tiny","bengal_515tiny"],
-    "qssi_tiny_32go" : ["qssi_tiny_32go","bengal_515tiny_32go","shikra_tiny_32go"],
+    "qssi_tiny" : ["qssi_tiny","bengal_515tiny","bengal_612tiny"],
+    "qssi_tiny_32go" : ["qssi_tiny_32go","bengal_515tiny_32go","shikra_tiny_32go","bengal_612tiny_32go"],
+    "qssi_32go" : ["qssi_32go","bengal_612_32go","bengal_612s_32go"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():
