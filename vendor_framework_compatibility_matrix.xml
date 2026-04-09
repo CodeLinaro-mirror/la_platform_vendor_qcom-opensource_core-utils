@@ -1915,4 +1915,16 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.screen_understanding.display_capture</name>
+        <version>1</version>
+        <interface>
+            <name>IDisplayCaptureControl</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IDisplayCaptureData</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
