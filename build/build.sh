@@ -115,7 +115,9 @@
 #     Build utilizes the TARGET_RELEASE set by the lunch without overriding.
 # Version 18:
 #     Remove TEST_MAPPING files from bazel-cache.
-BUILD_SH_VERSION=18
+# Version 19:
+#     Enable makefile-violation-scanner for non-qssi targets..
+BUILD_SH_VERSION=19
 if [ "$1" == "--version" ]; then
     return $BUILD_SH_VERSION
     # Above return will work only if someone source'ed this script (which is expected, need to source the script).
@@ -790,6 +792,7 @@ function nonqssi_legacy_build () {
         find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
+    command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "make $ARGS"
     if [ "$DIST_ENABLED" = true ] && [ "$BOARD_DYNAMIC_PARTITION_ENABLE" = true ]; then
       check_if_file_exists "$DIST_DIR/super.img"
