@@ -17,5 +17,7 @@
 "vendor/qcom/proprietary/wear",
 "vendor/qcom/proprietary/android-wear",
 "vendor/qcom/proprietary/wear-internal",
-"vendor/st/opensource/commonsys/packages/modules/Nfc"
+"vendor/st/opensource/commonsys/packages/modules/Nfc",
+"vendor/unbundled_google/packages/AttestationVerifierPrebuilt",
+"vendor/unbundled_google/packages/YourWidgetsPrebuilt"
 ]

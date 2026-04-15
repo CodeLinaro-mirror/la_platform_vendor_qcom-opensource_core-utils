@@ -291,7 +291,7 @@ ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "bengal_515s" "crow" "anorak")
-TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "pitti" "lahaina612" "art" "shikra_64" "bengal_612" "hamoa_la")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "malabar" "pitti" "lahaina612" "art" "shikra_64" "bengal_612" "hamoa_la")
 TARGET_PRODUCT_MAPPING_QSSI_64GO=( "qssi_64go" "shikra_64go")
 TARGET_PRODUCT_MAPPING_QSSI_WEAR=("qssi_wear" "monaco_aon_64" "vienna64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
@@ -332,9 +332,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "hamoa_la")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "bengal_515_32go" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "hamoa_la")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "hamoa_la")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "hamoa_la")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "bengal_515_32go" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "hamoa_la")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "hamoa_la")
 
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
@@ -642,6 +642,25 @@ function run_qiifa_dependency_checker() {
     fi
 }
 
+function generate_camx_preamble_if_needed () {
+    if [ "$TARGET_BOARD_PLATFORM" != "malabar" ] && [ "$TARGET_BOARD_PLATFORM" != "seraph" ]; then
+        log "Set camx preamble generation script......."
+        if [ -z "${CAMX_PATH_PREFIX}" ]; then
+            log "CAMX_PATH_PREFIX is $QCPATH"
+            CAMX_PATH_PREFIX=$QCPATH
+        fi
+        CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
+
+        if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
+        GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/etc/camera"
+        GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
+        command "mkdir -p $GEN_PREAMBLE_DIR"
+        log "Run camx preamble generation......."
+        command "python3 $CAMX_PREAMBLE_PYTHON_SCRIPT -o $GEN_PREAMBLE_OUTPUT -d $ANDROID_PRODUCT_OUT/obj"
+        fi
+    fi
+}
+
 function build_qssi_only () {
     command "source build/envsetup.sh"
     if [ -n "$TARGET_RELEASE" ]; then
@@ -719,6 +738,8 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     command "run_qiifa techpack"
+
+    generate_camx_preamble_if_needed 
 }
 
 function merge_only () {
