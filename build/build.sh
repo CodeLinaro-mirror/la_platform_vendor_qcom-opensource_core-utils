@@ -253,7 +253,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
     fi
 fi
 
-if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32"  || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_wear" || "$TARGET_PRODUCT" == "qssi_xrl" ]] ; then
+if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32"  || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_wear" || "$TARGET_PRODUCT" == "qssi_xrl" || "$TARGET_PRODUCT" == "qssi_wear32" ]] ; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]] ; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
@@ -292,6 +292,7 @@ ENABLE_VIRTUAL_AB=false
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "crow" "anorak")
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "chora" "malabar" "pitti" "lahaina612" "art" "bengal_612")
 TARGET_PRODUCT_MAPPING_QSSI_WEAR=("qssi_wear" "monaco_aon_64" "vienna64")
+TARGET_PRODUCT_MAPPING_QSSI_WEAR_32=("qssi_wear32" "pitti_wear32")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go")
 TARGET_PRODUCT_MAPPING_QSSI_XRL=("qssi_xrl" "seraph" )
@@ -304,6 +305,8 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_64[@]}"; then
     TARGET_MATCHING_QSSI="qssi_64"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_WEAR[@]}"; then
     TARGET_MATCHING_QSSI="qssi_wear"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_WEAR_32[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_wear32"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32[@]}"; then
     TARGET_MATCHING_QSSI="qssi_32"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_32GO[@]}"; then
@@ -325,9 +328,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "qssi_wear32" "pitti_wear32")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "qssi_wear32" "pitti_wear32")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "qssi_wear32" "pitti_wear32")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp" "hexlp_tp" "graphics_tp" "dspplatform_tp" )
@@ -907,7 +910,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]] || [[ "$TARGET_PRODUCT" == "qssi_xrl" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]] || [[ "$TARGET_PRODUCT" == "qssi_xrl" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear32" ]] ; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."
