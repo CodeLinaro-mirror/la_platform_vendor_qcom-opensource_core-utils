@@ -330,7 +330,7 @@ def main():
   global QSSI_TARGET, OUT_QSSI, QSSI_TARGET_FILES_ZIP
 
   # use this dict to pair target lunch options with their corresponding qssi type.
-  vendor_qssi_mapping_dict = {
+  vendor_qssi_mapping_dict_32 = {
     "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
@@ -338,6 +338,21 @@ def main():
     "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy",  "gen4_gvm_gy_qmaa", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu", "gen4_gvm_vcu"],
     "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm", " gen5_gvm_qmaa"],
   }
+
+  vendor_qssi_mapping_dict_64 = {
+    "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
+    "qssi_32"   : ["bengal_32", "monaco"],
+    "qssi_32go" : ["bengal_32go", "msm8937_lily"],
+    "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "niobe"],
+    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t"],
+    "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm", " gen5_gvm_qmaa", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_cdccomm", "gen4_gvm_cdcsdv", "gen4_gvm_gy",  "gen4_gvm_gy_qmaa", "gen4_gvm_sdv", "gen4_gvm_sdvcomm", "gen4_gvm_cmu", "gen4_gvm_vcu"],
+  }
+
+  platform_version = float(os.environ.get("PLATFORM_VERSION", 17))
+  if platform_version >= 17 and  args.target_lunch in vendor_qssi_mapping_dict_64['qssi_au_64']:
+    vendor_qssi_mapping_dict = vendor_qssi_mapping_dict_64
+  else:
+    vendor_qssi_mapping_dict = vendor_qssi_mapping_dict_32
 
   if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
     QSSI_TARGET="qssi"
