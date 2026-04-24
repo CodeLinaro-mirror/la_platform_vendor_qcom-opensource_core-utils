@@ -961,7 +961,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="hidl" optional="true">
         <name>vendor.qti.hardware.power.powermodule</name>
-        <version>1.0</version>
+        <version>1.0-1</version>
         <interface>
             <name>IPowerModule</name>
             <instance>default</instance>
