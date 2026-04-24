@@ -68,6 +68,7 @@ if [ "${1:-}" = "clean" ]; then
   clean_env
   echo "Cleaning build output directories..."
   rm -rf out/ kernel_platform/out kernel_platform/bazel-cache
+  rm -rf device/qcom/${TARGET_BOARD_PLATFORM}-kernel
   echo "Clean finished."
   exit 0
 fi
@@ -184,6 +185,33 @@ extract_prepare_args() {
   echo "$args"
 }
 
+# Extract inline env var assignments (VAR=value) that precede prepare_vendor.sh in the command.
+# These are passed to prepare_for_parallel.sh so it uses the same variant/target as the real build.
+extract_prepare_env() {
+  local cmd="$1"
+  local script='prepare_vendor.sh'
+
+  case "$cmd" in
+    *"$script"*) ;;
+    *) echo ""; return 0 ;;
+  esac
+
+  # Everything before the script name (includes the script's directory path prefix)
+  local before="${cmd%%${script}*}"
+
+  # Keep only VAR=value tokens; skip path tokens (contain / or start with . or -)
+  local env_vars=""
+  for token in $before; do
+    case "$token" in
+      [A-Za-z_][A-Za-z0-9_]*=*)
+        env_vars="${env_vars:+$env_vars }$token"
+        ;;
+    esac
+  done
+
+  echo "$env_vars"
+}
+
 pid_prepare=""
 pid_build=""
 pid_prepare_for_parallel=""
@@ -212,11 +240,14 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 echo "Kernel prepare stage..."
-# Extract arguments from KERNEL_CMD_STR and pass them to prepare_for_parallel.sh
+# Extract positional args and inline env var assignments from KERNEL_CMD_STR,
+# then pass both to prepare_for_parallel.sh so it uses the correct variant/target.
 PREPARE_ARGS="$(extract_prepare_args "$KERNEL_CMD_STR")"
+PREPARE_ENV="$(extract_prepare_env "$KERNEL_CMD_STR")"
 echo "Prepare args extracted from kernel cmd: '${PREPARE_ARGS}'"
+echo "Prepare env vars extracted from kernel cmd: '${PREPARE_ENV}'"
 
-setsid bash -c "./kernel_platform/build/kernel/android/prepare_for_parallel.sh ${PREPARE_ARGS:+$PREPARE_ARGS}" &
+setsid bash -c "${PREPARE_ENV:+$PREPARE_ENV }./kernel_platform/build/kernel/android/prepare_for_parallel.sh ${PREPARE_ARGS:+$PREPARE_ARGS}" &
 pid_prepare_for_parallel=$!
 wait "$pid_prepare_for_parallel"
 prepare_for_parallel_status=$?
