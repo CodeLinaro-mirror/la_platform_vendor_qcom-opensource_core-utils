@@ -21,5 +21,7 @@
 "vendor/qcom/proprietary/wear-internal",
 "vendor/qcom/proprietary/common-noship",
 "vendor/google/qcom-chre",
-"vendor/st/opensource/commonsys/packages/modules/Nfc"
+"vendor/st/opensource/commonsys/packages/modules/Nfc",
+"vendor/unbundled_google/packages/AttestationVerifierPrebuilt",
+"vendor/unbundled_google/packages/YourWidgetsPrebuilt"
 ]
