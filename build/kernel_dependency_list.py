@@ -45,7 +45,7 @@ KERNEL_PREBUILT_DIR_FILES = [
 ]
 
 KERNEL_DEPENDENCY_ALLOWED_LIST = {
-    f"{base}/{file}"
+    "{}/{}".format(base, file)
     for base in KERNEL_PREBUILT_DIR_BASES
     for file in KERNEL_PREBUILT_DIR_FILES
 }
