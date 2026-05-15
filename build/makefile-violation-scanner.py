@@ -112,13 +112,10 @@ try:
             from target_makefile_whitelist import *
         print("Using target specific whitelist")
 except ImportError:
-        print("Using {} whitelist file".format(QSSI_VARIANT))
-
-        print("Using {} whitelist file".format(QSSI_VARIANT))
-    
+    print("Using {} whitelist file".format(QSSI_VARIANT))
     if "qssi" not in TARGET_PRODUCT:
-         from target_makefile_whitelist import *
-         print("Using target specific whitelist")
+        from target_makefile_whitelist import *
+        print("Using target specific whitelist")
 except:
     # Fall back to legacy
     print("Using legacy target whitelist.")
