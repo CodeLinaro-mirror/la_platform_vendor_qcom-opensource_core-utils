@@ -506,6 +506,8 @@ def scan_files(file_list):
     for f in file_list:
         if f == '%s/makefile-violation-scanner.py' % QTI_BUILDTOOLS_DIR.replace(ANDROID_BUILD_TOP, ''):
             continue
+        if f == '%s/kernel_dependency_list.py' % QTI_BUILDTOOLS_DIR.replace(ANDROID_BUILD_TOP, ''):
+            continue
 
         # create flags to check if the file is a android make file or product/board config make file
         is_android_make = False
