@@ -1917,7 +1917,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.screen_understanding.display_capture</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IDisplayCaptureControl</name>
             <instance>default</instance>
@@ -1929,7 +1929,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.qaior.screen_understanding</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IScreenUnderstandingService</name>
             <instance>default</instance>
