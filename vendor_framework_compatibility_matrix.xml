@@ -1956,4 +1956,13 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.hardware.umd_aidl</name>
+        <version>1</version>
+        <interface>
+            <name>IUMDAdaptor</name>
+            <instance>audio</instance>
+            <instance>camera</instance>
+        </interface>
+    </hal>
 </compatibility-matrix>
