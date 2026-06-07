@@ -2,4 +2,5 @@ java_library {
     name: "appLauncherServiceImpl",
     srcs: ["src/**/*.java"],
     static_libs: ["app_launcher_service_aidl-V1-java"],
+    visibility: ["//frameworks/base/services"],
 }
