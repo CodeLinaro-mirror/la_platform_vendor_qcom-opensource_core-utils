@@ -53,11 +53,11 @@ inherited_files_board = []
 
 #Hard coded path macros
 SRC_TARGET_DIR = "build/make/target"
-QCPATH = "vendor/qcom/proprietary"
-QC_PROP_ROOT = "vendor/qcom/proprietary"
+QCPATH = "vendor/qcom/proprietary/vienna"
+QC_PROP_ROOT = "vendor/qcom/proprietary/vienna"
 target_base_product = TARGET_PRODUCT
 ANDROID_PARTNER_GMS_HOME = "vendor/partner_gms"
-OVERLAY_PATH_VND = "vendor/qcom/proprietary/resource-overlay"
+OVERLAY_PATH_VND = "vendor/qcom/proprietary/vienna/resource-overlay"
 TARGET_VENDOR = "qcom"
 PREBUILT_BOARD_PLATFORM_DIR = TARGET_PRODUCT
 QSSI_VARIANT = "qssi_64"
