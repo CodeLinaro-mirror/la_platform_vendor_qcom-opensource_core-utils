@@ -969,7 +969,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.power.powermodule</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IPowerModule</name>
             <instance>default</instance>
@@ -1773,6 +1773,15 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         </interface>
         <interface>
             <name>IPowerStateUtility</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.qti.gptupdater</name>
+        <transport>hwbinder</transport>
+        <version>1.1</version>
+        <interface>
+            <name>IGPTUpdater</name>
             <instance>default</instance>
         </interface>
     </hal>
