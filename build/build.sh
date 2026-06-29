@@ -750,6 +750,7 @@ function build_target_only () {
     if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || \
        [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
        [ "$TARGET_PRODUCT" == "gen4_gvm_gy_qmaa" ] || \
+       [ "$TARGET_PRODUCT" == "auto_gen_prime" ] || \
        [ "$TARGET_PRODUCT" == "gen5_gvm" ] || \
        [ "$TARGET_PRODUCT" == "gen5_gvm_sgt" ] || \
        [ "$TARGET_PRODUCT" == "gen5_gvm_qmaa" ]; then
