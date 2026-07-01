@@ -255,7 +255,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
 fi
 
 if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
-" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_au_64" || "$TARGET_PRODUCT" == "qssi_au" || "$TARGET_PRODUCT" == "qssi_au_sdvivi" || $TARGET_PRODUCT == "qssi_au_sdv" ]]; then
+" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_au_64" || "$TARGET_PRODUCT" == "qssi_au" || "$TARGET_PRODUCT" == "qssi_au_sdvivi" || "$TARGET_PRODUCT" == "qssi_au_sdv" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
