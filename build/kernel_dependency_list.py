@@ -30,6 +30,7 @@ KERNEL_PREBUILT_DIR_FILES = [
     "dtbs/dtb.img",
     "dtbo.img",
     "$(1)/modules.load",
+    "modules.load",
     "system_dlkm/flatten/lib/modules",
     "system_dlkm/flatten/lib/modules/*.ko",
     "$(notdir $@)",
