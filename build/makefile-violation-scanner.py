@@ -46,7 +46,6 @@ ANDROID_BUILD_TOP = os.environ.get('ANDROID_BUILD_TOP') + '/'
 TARGET_PRODUCT = os.environ.get('TARGET_PRODUCT')
 QCPATH = os.environ.get('QCPATH')
 TARGET_BOARD_PLATFORM = os.environ.get('TARGET_BOARD_PLATFORM')
-KERNEL_VENDOR_PARALLEL_BUILDING = os.environ.get("KERNEL_VENDOR_PARALLEL_BUILDING")
 board_config_files = []
 product_config_files = []
 inherited_files_product = []
@@ -111,14 +110,11 @@ try:
 except:
     print("No target_specific_configs file present")
 
-from kernel_dependency_list import *
-
 # Enforcement sets for Android make files
 kernel_errors = set()
 shell_errors = set()
 target_out_headers_errors = set()
 recursive_errors = set()
-kernel_dependency_errors = set()
 kernel_prebuilt_errors = set()
 rm_errors = set()
 kernel_obj_errors = set()
@@ -303,22 +299,6 @@ def check_target_product_related(line, file_name):
 
     if re.match(r'.*ro.build.product.*', line):
         ro_build_product_errors.add(file_name)
-
-
-def check_kernel_dependency(line, file_name):
-    global kernel_dependency_errors
-    stripped_line = line.strip()
-
-    if re.search(r"\$\(KERNEL_PREBUILT_DIR\)/[^)\s]+", stripped_line) or \
-       re.search(r"\$\(TARGET_BOARD_PLATFORM\)-kernel/[^)\s]+", stripped_line):
-        in_allowedlist = False
-        for allowed_item in KERNEL_DEPENDENCY_ALLOWED_LIST:
-            if allowed_item in stripped_line:
-                in_allowedlist = True
-                break
-
-        if not in_allowedlist:
-            kernel_dependency_errors.add(file_name + " :: " + stripped_line)
 
 
 def resolve_symlink(file_path):
@@ -740,8 +720,6 @@ def scan_files(file_list):
     for f in file_list:
         if f == '%s/makefile-violation-scanner.py' % QTI_BUILDTOOLS_DIR.replace(ANDROID_BUILD_TOP, ''):
             continue
-        if f == '%s/kernel_dependency_list.py' % QTI_BUILDTOOLS_DIR.replace(ANDROID_BUILD_TOP, ''):
-            continue
 
         # create flags to check if the file is a android make file or product/board config make file
         is_android_make = False
@@ -766,9 +744,6 @@ def scan_files(file_list):
                                 line = line[:-1] + next(lines_itr).strip()
                             except StopIteration:
                                 line = line[:-1]
-
-                        if KERNEL_VENDOR_PARALLEL_BUILDING == "true":
-                            check_kernel_dependency(line, f)
 
                         # check for android make file
                         if is_android_make:
@@ -990,15 +965,6 @@ def print_messages():
         print("Error: Using override_errors in below makefiles.")
         for file_name in sorted(override_errors):
             print("    %s" % file_name)
-        print("-----------------------------------------------------")
-        found_errors = True
-
-    if len(kernel_dependency_errors) > 0:
-        print("-----------------------------------------------------")
-        print("cnt_kernel_dependency_errors : %s" % len(kernel_dependency_errors))
-        print("Error: Using kernel dependency paths not in allowedlist in below makefiles.")
-        for error in sorted(kernel_dependency_errors):
-            print("    %s" % error)
         print("-----------------------------------------------------")
         found_errors = True
 
