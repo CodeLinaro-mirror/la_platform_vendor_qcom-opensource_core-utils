@@ -74,6 +74,14 @@ for qssi,targets in vendor_qssi_mapping_dict.items():
         QSSI_VARIANT = qssi
 
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, TARGET_PRODUCT))
+# Fallback: TARGET_PRODUCT dir may live as a subdirectory of another device dir
+# e.g. device/qcom/canoe/canoe_au/ for canoe_au target
+import os as _os
+for _parent in _os.listdir("%sdevice/qcom" % ANDROID_BUILD_TOP):
+    _sub = "%sdevice/qcom/%s/%s" % (ANDROID_BUILD_TOP, _parent, TARGET_PRODUCT)
+    if _os.path.isdir(_sub):
+        sys.path.insert(1, _sub)
+        break
 sys.path.insert(1, "%sdevice/qcom/%s" % (ANDROID_BUILD_TOP, QSSI_VARIANT))
 print("TARGET_PRODUCT:{}".format(TARGET_PRODUCT))
 print("QSSI_VARIANT:{}".format(QSSI_VARIANT))
@@ -466,10 +474,12 @@ def extract_product_board_makefile():
     for var in config_files_to_remove:
         if var in board_config_files:
             board_config_files.remove(var)
-            inherited_files_board.remove(var)
+            if var in inherited_files_board:
+                inherited_files_board.remove(var)
         if var in product_config_files:
             product_config_files.remove(var)
-            inherited_files_product.remove(var)
+            if var in inherited_files_product:
+                inherited_files_product.remove(var)
 
 
 def scan_files(file_list):
