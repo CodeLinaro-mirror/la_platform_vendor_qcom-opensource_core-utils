@@ -255,7 +255,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
 fi
 
 if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_32
-" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_au_64" || "$TARGET_PRODUCT" == "qssi_au" ]]; then
+" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_au_64" || "$TARGET_PRODUCT" == "qssi_au" || "$TARGET_PRODUCT" == "qssi_au_sdvivi" || "$TARGET_PRODUCT" == "qssi_au_sdv" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
@@ -295,7 +295,10 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "niobe")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
-TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "qssi_au" "qssi_au_64" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen5_gvm_cmu" "gen4_gvm_vcu")
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy_qmaa" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen4_gvm_vcu")
+TARGET_PRODUCT_MAPPING_QSSI_AU_64=("gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "gen5_gvm_cmu" "qssi_au_64" "gen4_gvm_gy" "gen4_gvm_gy_sgt")
+TARGET_PRODUCT_MAPPING_QSSI_AU_SDVIVI=("gen4_gvm_sdvivi" "qssi_au_sdvivi")
+TARGET_PRODUCT_MAPPING_QSSI_AU_SDV=("gen4_gvm_sdv" "qssi_au_sdv")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -311,12 +314,17 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_AU[@]}"; then
     TARGET_MATCHING_QSSI="qssi_au"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_AU_64[@]}"; then
     TARGET_MATCHING_QSSI="qssi_au_64"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_AU_SDVIVI[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_au_sdvivi"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_AU_SDV[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_au_sdv"
 else
     QSSI_TARGET_FLAG=0
     TARGET_MATCHING_QSSI="qssi"
     echo "Non QSSI mapped target. If this not a nonqssi_legacy_build, the target must be added to the TARGET_PRODUCT_MAPPING lists"
 fi
 
+    echo "QSSI mapped target = $TARGET_MATCHING_QSSI "
 # OTA/Dist related variables
 QSSI_OUT="out/target/product/$TARGET_PRODUCT"
 DIST_COMMAND="dist"
@@ -326,9 +334,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "crow" "niobe" "anorak" "monaco" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "gen5_gvm_qmaa" "qssi_au" "qssi_au_64" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen5_gvm_cmu" "gen4_gvm_vcu")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen5_gvm_cmu" "gen4_gvm_vcu")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "crow" "niobe" "anorak" "monaco" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "qssi_au" "qssi_au_64" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen5_gvm_cmu" "gen4_gvm_vcu")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "crow" "niobe" "anorak" "monaco" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "gen5_gvm_qmaa" "qssi_au" "qssi_au_64" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen4_gvm_vcu" "gen5_gvm_cmu" "qssi_au_sdvivi" "qssi_au_sdv" "gen4_gvm_sdvivi")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen5_gvm_cmu" "gen4_gvm_vcu" "gen4_gvm_sdvivi")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "crow" "niobe" "anorak" "monaco" "msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdcsdv" "gen4_gvm_microdroid" "gen4_gvm_gy" "gen4_gvm_gy_sgt" "gen4_gvm_gy_qmaa" "gen4_gvm_sdv" "gen4_gvm_sdvcomm" "qssi_au" "qssi_au_64" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen5_gvm_cmu" "gen4_gvm_vcu" "qssi_au_sdvivi" "qssi_au_sdv" "gen4_gvm_sdvivi")
 
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
