@@ -1529,7 +1529,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.hardware.display.config</name>
-        <version>1-17</version>
+        <version>1-18</version>
         <interface>
             <name>IDisplayConfig</name>
             <instance>default</instance>
@@ -1598,6 +1598,14 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
         <version>1-2</version>
         <interface>
             <name>ISnapdragonServices</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.snapdragonServices.mpamService</name>
+        <version>1</version>
+        <interface>
+            <name>IMpamService</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -1917,7 +1925,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.screen_understanding.display_capture</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IDisplayCaptureControl</name>
             <instance>default</instance>
@@ -1929,9 +1937,59 @@ SPDX-License-Identifier: BSD-3-Clause-Clear.
     </hal>
     <hal format="aidl" optional="true">
         <name>vendor.qti.qaior.screen_understanding</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IScreenUnderstandingService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.AmbientDataControl</name>
+        <version>1</version>
+        <interface>
+            <name>IAmbientDataControl</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.AmbientDataReporting</name>
+        <version>1</version>
+        <interface>
+            <name>IAmbientDataReporting</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.sub</name>
+        <version>1</version>
+        <interface>
+            <name>ICoreInterfaceRegistration</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.SensorDataCollectionControl</name>
+        <version>1</version>
+        <interface>
+            <name>IAmbientDataRegisterService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!-- VoiceAI Life Logger Service -->
+    <hal format="aidl" optional="true">
+        <name>com.qualcomm.qti.voiceai.lifelogger.service.control</name>
+        <version>1</version>
+        <interface>
+            <name>IVoiceAILifeLoggerService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!-- Agentic Core Interface Adaptation Service -->
+    <hal format="aidl" optional="true">
+        <name>vendor.qti.coreif</name>
+        <version>1</version>
+        <interface>
+            <name>ICoreInterfaceAdaptation</name>
             <instance>default</instance>
         </interface>
     </hal>
