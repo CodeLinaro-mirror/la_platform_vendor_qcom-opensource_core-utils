@@ -75,6 +75,7 @@ vendor_qssi_mapping_dict = {
     "qssi_64go" : ["qssi_64go","shikra_64go"],
     "qssi_tiny" : ["qssi_tiny","bengal_515tiny"],
     "qssi_tiny_32go" : ["qssi_tiny_32go","bengal_515tiny_32go","shikra_tiny_32go"],
+    "qssi_lp" : ["qssi_lp","hamoa_la"],
 }
 
 for qssi,targets in vendor_qssi_mapping_dict.items():
