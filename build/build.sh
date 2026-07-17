@@ -794,7 +794,12 @@ function build_target_only () {
        fi
     fi
 
-    command "run_qiifa"
+    # auto_gen_prime is a Cuttlefish virtual device — skip QIIFA validation
+    if [ "$TARGET_PRODUCT" != "auto_gen_prime" ]; then
+        command "run_qiifa"
+    else
+        log "Skipping QIIFA for $TARGET_PRODUCT (Cuttlefish virtual device)"
+    fi
     command "python -B $QTI_BUILDTOOLS_DIR/build/vendor_prop_context_restriction.py --m error"
 }
 
