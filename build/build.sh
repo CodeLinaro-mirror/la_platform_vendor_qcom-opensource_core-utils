@@ -169,8 +169,96 @@ QIIFA_MAIN_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
 QIIFA_TARGET_BASH_CONFIG_FILEPATH="$QCPATH/QIIFA-cmd-vendor/qiifa_bash_configs"
 QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_config/qiifa_bash_configs"
 
-FEATURE_PROFILE=default
+# Pipeline stage selector.  Comma-separated list of stages to execute.
+# Only consulted when ENABLE_PREBUILD_STAGES=true (see below); otherwise this
+# value is inert and the full build always runs.
+# Default is "all": the full build.
+# Set to a specific stage or combination to run only those stages.
+#   all       - full build (same as not specifying --stages)
+#   cfc       - run CFC step only
+#   cfc,xyz   - run cfc and xyz steps
+# Set via --stages=<value>.
+PREBUILD_STAGES=all
+
+# Master switch for the --stages framework (default false).
+#   ENABLE_PREBUILD_STAGES             -> the --stages mechanism itself
+#   ENABLE_CENTRALIZED_FEATURE_CONTROL -> CFC business logic only
+# The two are independent. When this is false, the block below is
+# skipped wholesale and build.sh behaves exactly as before -- zero impact.
+ENABLE_PREBUILD_STAGES=false
+
+# CFC-namespaced parameters, consumed by run_cfc_setup.
+# Set via --cfc.<key>=<value>.
+CFC_PROFILE=default
+
+# CFC master switch.
+# Default false. To enable CFC: change to true.
 ENABLE_CENTRALIZED_FEATURE_CONTROL=false
+
+# run_cfc_setup [side] [profile]
+#   side:    "qssi" | "vendor" | "" (auto-detect from TARGET_BOARD_PLATFORM)
+#   profile: feature profile name; default "default"
+# Returns 0 on success, 1 on bad args / missing env, or the feature_tool exit
+# code. Callers must check ENABLE_CENTRALIZED_FEATURE_CONTROL before calling.
+# Note: TARGET_BOARD_PLATFORM must be set (normally done by lunch); the function
+# will return 1 immediately if it is missing.
+run_cfc_setup() {
+    local side="$1"
+    local profile="${2:-default}"
+
+    if [ -z "$TARGET_BOARD_PLATFORM" ]; then
+        echo "[cfc_setup] error: TARGET_BOARD_PLATFORM not set; please lunch first." >&2
+        return 1
+    fi
+    if [ -z "$QTI_BUILDTOOLS_DIR" ]; then
+        echo "[cfc_setup] error: QTI_BUILDTOOLS_DIR not set." >&2
+        return 1
+    fi
+
+    local feature_tool="$QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py"
+    if [ ! -f "$feature_tool" ]; then
+        echo "[cfc_setup] error: feature_tool not found at $feature_tool" >&2
+        return 1
+    fi
+
+    if [ -z "$side" ]; then
+        if [[ "$TARGET_BOARD_PLATFORM" == qssi* ]]; then
+            side="qssi"
+        else
+            side="vendor"
+        fi
+    fi
+
+    local input_path out_dir
+    case "$side" in
+        qssi)
+            input_path="vendor/qcom/features/system"
+            out_dir="vendor/qcom/opensource/core-utils/centralized-features/"
+            ;;
+        vendor)
+            input_path="vendor/qcom/features/vendor"
+            out_dir="vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+            ;;
+        *)
+            echo "[cfc_setup] error: side must be 'qssi' or 'vendor', got '$side'" >&2
+            return 1
+            ;;
+    esac
+
+    echo "============================================"
+    log "Command: \"run_cfc_setup ${side} $profile\""
+    echo "[cfc_setup] side=$side profile=$profile target=$TARGET_BOARD_PLATFORM"
+    echo "[cfc_setup] input=$input_path"
+    echo "[cfc_setup] out=$out_dir"
+    echo "============================================"
+
+    python -B "$feature_tool" \
+        --input_path "$input_path" \
+        --profile    "$profile" \
+        --target     "$TARGET_BOARD_PLATFORM" \
+        --out_dir    "$out_dir"
+    return $?
+}
 
 while [[ $# -gt 0 ]]
     do
@@ -196,12 +284,23 @@ while [[ $# -gt 0 ]]
             LIST_TECH_PACKAGE="$LIST_TECH_PACKAGE$arg"
             shift
             ;;
-        --profile)
-            # Assign next arg as profile only if it is non-empty and not a flag;
-            # otherwise keep the default value of FEATURE_PROFILE.
-            if [ -n "$2" ] && [[ "$2" != -* ]]; then
-              FEATURE_PROFILE="$2"
-              shift
+        --stages=*)
+            # Parse only when the stages framework is on; otherwise this arg
+            # falls through exactly as it would if --stages never existed.
+            if [ "$ENABLE_PREBUILD_STAGES" = true ]; then
+                PREBUILD_STAGES="${arg#--stages=}"
+            else
+                MAKE_ARGUMENTS+=("$1")
+            fi
+            shift
+            ;;
+        --cfc.profile=*)
+            # Parse only when CFC is on; otherwise this arg falls through
+            # exactly as it would if --cfc.profile never existed.
+            if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+                CFC_PROFILE="${arg#--cfc.profile=}"
+            else
+                MAKE_ARGUMENTS+=("$1")
             fi
             shift
             ;;
@@ -216,6 +315,41 @@ while [[ $# -gt 0 ]]
     esac
 done
 set -- "${MAKE_ARGUMENTS[@]}" # restore the argument list ($@) to be set to MAKE_ARGUMENTS
+
+# partial path: gated on ENABLE_PREBUILD_STAGES=true AND --stages != all.
+# When both hold, run only the requested stages and then exit. 
+# This path does not depend on lunch having run, but
+# individual stages may still require specific env vars that lunch normally
+# sets (e.g. the cfc stage requires TARGET_BOARD_PLATFORM to be exported).
+#
+# When ENABLE_PREBUILD_STAGES is off (default), this block is skipped
+# wholesale -- no stage parsing -- so build.sh is byte-for-byte equivalent to
+# its pre-stage behavior regardless of any --stages argument. --stages=all
+# likewise preserves existing build behavior unchanged.
+#
+# Each stage decides for itself whether it is enabled. The cfc stage is
+# gated on the CFC master switch: when it is off, the stage is a no-op, so
+# an explicit --stages=cfc never turns into an unexpected full build or a
+# lunch-required error. Other (future) stages are unaffected by the CFC
+# switch.
+if [ "$ENABLE_PREBUILD_STAGES" = true ] && [ "$PREBUILD_STAGES" != all ]; then
+    IFS=',' read -ra _stage_list <<< "$PREBUILD_STAGES"
+    for _stage in "${_stage_list[@]}"; do
+        case "$_stage" in
+            cfc)
+                if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+                    run_cfc_setup "" "$CFC_PROFILE" || exit $?
+                fi
+                ;;
+            # future stages: xyz) run_xyz || exit $? ;;
+            *)
+                echo "[build.sh] error: unknown stage '$_stage'; known stages: cfc" >&2
+                exit 1
+                ;;
+        esac
+    done
+    exit 0
+fi
 
 # function to check if the target product is present in the list passed in
 function target_product_in_list() {
@@ -703,6 +837,10 @@ function build_qssi_only () {
         find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
+    if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+        run_cfc_setup qssi "$CFC_PROFILE" || exit $?
+    fi
+
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
@@ -742,12 +880,9 @@ function build_target_only () {
     fi
 
     if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
-        command "python -B $QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py \
-            --input_path vendor/qcom/features/vendor \
-            --profile $FEATURE_PROFILE \
-            --target $TARGET_BOARD_PLATFORM \
-            --out_dir vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+        run_cfc_setup vendor "$CFC_PROFILE" || exit $?
     fi
+
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
@@ -868,11 +1003,7 @@ function build_techpack_only () {
     fi
 
     if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
-        command "python -B $QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py \
-            --input_path vendor/qcom/features/vendor \
-            --profile $FEATURE_PROFILE \
-            --target $TARGET_BOARD_PLATFORM \
-            --out_dir vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+        run_cfc_setup vendor "$CFC_PROFILE" || exit $?
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
@@ -910,7 +1041,6 @@ function build_techpack_only_non_qssi () {
     command "source build/envsetup.sh"
     command "make $ARGS"
 }
-
 
 
 # Check if TARGET_PRODUCT is defined
