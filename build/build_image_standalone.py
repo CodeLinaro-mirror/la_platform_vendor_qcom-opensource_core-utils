@@ -336,12 +336,13 @@ def main():
     "qssi"      : ["holi", "taro", "kalama", "lahaina", "sdm710", "sdm845", "msmnile", "sm6150", "kona", "atoll", "trinket", "lito", "bengal", "parrot", "bengal_515", "crow", "anorak"],
     "qssi_32"   : ["bengal_32"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily", "pitti_32go", "bengal_515_32go", "bengal_612_32go", "bengal_612s_32go"],
-    "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "niobe", "parrot66", "volcano", "canoe", "chora", "malabar", "pitti", "lahaina612", "art", "bengal_612", "bengal_612s", "shikra_64"],
+    "qssi_64"   : ["kalama64", "pineapple", "blair", "hala", "sun", "parrot66", "volcano", "canoe", "chora", "malabar", "pitti", "lahaina612", "art", "bengal_612", "bengal_612s", "shikra_64"],
     "qssi_64go" : ["bengal_515_64go", "shikra_64go"],
     "qssi_wear" : ["monaco_aon_64", "vienna64"],
     "qssi_tiny"  : ["bengal_515tiny", "bengal_612tiny"],
     "qssi_tiny_32go"  : ["bengal_515tiny_32go", "shikra_tiny_32go", "bengal_612tiny_32go"],
     "qssi_xrl" : ["seraph"],
+    "qssi_xrM"  : ["niobe"],
     "qssi_lite"  : ["neo"],
   }
 
@@ -364,6 +365,8 @@ def main():
     QSSI_TARGET="qssi_tiny_32go"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_xrl']:
     QSSI_TARGET="qssi_xrl"
+  elif args.target_lunch in vendor_qssi_mapping_dict['qssi_xrM']:
+    QSSI_TARGET="qssi_xrM"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_lite']:
     QSSI_TARGET="qssi_lite"
   else:
