@@ -746,27 +746,65 @@ function build_target_only () {
         command "cp vendor/qcom/otatools_snapshot/otatools.zip out/dist/otatools.zip"
     fi
     # command "run_qiifa techpack"
-    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || [ "$TARGET_PRODUCT" == "gen4_gvm_gy_qmaa" ]; then
-        #invoke the pilsplitter script after all the userspace images are created.
-        GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
-        cd "$GH_SCRIPT_PATH"
-        bash ghgvm-pilsplitter.sh
-        log "PIL splitted images are created at $OUT/scratch"
+
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || \
+       [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
+       [ "$TARGET_PRODUCT" == "gen4_gvm_gy_qmaa" ] || \
+       [ "$TARGET_PRODUCT" == "gen5_gvm" ] || \
+       [ "$TARGET_PRODUCT" == "gen5_gvm_sgt" ] || \
+       [ "$TARGET_PRODUCT" == "gen5_gvm_qmaa" ]; then
+
+       # Invoke the pilsplitter script after all the userspace images are created.
+       GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
+
+        if ! cd "$GH_SCRIPT_PATH"; then
+          log "ERROR: Failed to change directory to $GH_SCRIPT_PATH"
+          exit 1
+        fi
+
+        if ! bash ghgvm-pilsplitter.sh; then
+           log "ERROR: ghgvm-pilsplitter.sh failed for $TARGET_PRODUCT"
+          exit 1
+        fi
+
+       log "PIL splitted images are created at $OUT/scratch"
     fi
-    if [ "$TARGET_PRODUCT" == "gen5_gvm_gy" ]; then
-        #invoke the pilsplitter script after all the userspace images are created.
-        GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
-        cd "$GH_SCRIPT_PATH"
-        bash ghgvm-pilsplitter.sh
-        log "PIL splitted images are created at $OUT/scratch"
+
+    # Add support for gen4_gvm_gy,gen4_gvm_gy_sgt,gen5_gvm and gen5_gvm_sgt OTA package generation. QMAA target is not added.
+
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
+       [ "$TARGET_PRODUCT" == "gen5_gvm_sgt" ]; then
+       # OTA partition list for HGY all A/B supported partitions using single tree
+       OTA_PARTITIONS="boot dtbo init_boot system product system_ext system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
+    elif [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || \
+         [ "$TARGET_PRODUCT" == "gen5_gvm" ]; then
+       # OTA partition list for HGY from the split vendor tree
+       OTA_PARTITIONS="boot dtbo init_boot system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
     fi
-    if [ "$TARGET_PRODUCT" == "gen5_gvm" ] || [ "$TARGET_PRODUCT" == "gen5_gvm_sgt" ] || [ "$TARGET_PRODUCT" == "gen5_gvm_qmaa" ]; then
-        #invoke the pilsplitter script after all the userspace images are created.
-        GH_SCRIPT_PATH="device/qcom/$TARGET_PRODUCT"
-        cd "$GH_SCRIPT_PATH"
-        bash ghgvm-pilsplitter.sh
-        log "PIL splitted images are created at $OUT/scratch"
+
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || \
+       [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
+       [ "$TARGET_PRODUCT" == "gen5_gvm_sgt" ] || \
+       [ "$TARGET_PRODUCT" == "gen5_gvm" ]; then
+
+       # Log start of OTA generation
+       log "Starting OTA package generation for HGY... Using AB_OTA_PARTITIONS: $OTA_PARTITIONS"
+
+       # Navigate to build top
+       if ! cd "$ANDROID_BUILD_TOP"; then
+          log "ERROR: Failed to change directory to ANDROID_BUILD_TOP=$ANDROID_BUILD_TOP"
+          exit 1
+       fi
+
+       # Run OTA generation
+       log "Running: make dist AB_OTA_PARTITIONS=\"$OTA_PARTITIONS\""
+
+       if ! make dist AB_OTA_PARTITIONS="$OTA_PARTITIONS"; then
+          log "ERROR: OTA package generation failed for $TARGET_PRODUCT"
+          exit 1
+       fi
     fi
+
     command "run_qiifa"
     command "python -B $QTI_BUILDTOOLS_DIR/build/vendor_prop_context_restriction.py --m error"
 }
