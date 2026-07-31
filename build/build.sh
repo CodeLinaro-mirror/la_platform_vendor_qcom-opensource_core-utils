@@ -772,15 +772,18 @@ function build_target_only () {
 
     # Add support for gen4_gvm_gy,gen4_gvm_gy_sgt,gen5_gvm and gen5_gvm_sgt OTA package generation. QMAA target is not added.
 
-    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
-       [ "$TARGET_PRODUCT" == "gen5_gvm_sgt" ]; then
-       # OTA partition list for HGY all A/B supported partitions using single tree
-       OTA_PARTITIONS="boot dtbo init_boot system product system_ext system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
-    elif [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || \
-         [ "$TARGET_PRODUCT" == "gen5_gvm" ]; then
-       # OTA partition list for HGY from the split vendor tree
-       OTA_PARTITIONS="boot dtbo init_boot system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
-    fi
+    case "$TARGET_PRODUCT" in
+    gen4_gvm_gy_sgt|gen5_gvm_sgt)
+        OTA_PARTITIONS="boot dtbo init_boot system product system_ext system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
+        ;;
+    gen4_gvm_gy|gen5_gvm)
+        if [ "$TARGET_SINGLE_TREE" = "true" ]; then
+            OTA_PARTITIONS="boot dtbo init_boot system product system_ext system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
+        else
+            OTA_PARTITIONS="boot dtbo init_boot system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
+        fi
+        ;;
+    esac
 
     if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] || \
        [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
