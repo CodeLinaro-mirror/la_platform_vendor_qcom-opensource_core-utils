@@ -169,8 +169,96 @@ QIIFA_MAIN_SCRIPT="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_main.py"
 QIIFA_TARGET_BASH_CONFIG_FILEPATH="$QCPATH/QIIFA-cmd-vendor/qiifa_bash_configs"
 QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_config/qiifa_bash_configs"
 
-FEATURE_PROFILE=default
+# Pipeline stage selector.  Comma-separated list of stages to execute.
+# Only consulted when ENABLE_PREBUILD_STAGES=true (see below); otherwise this
+# value is inert and the full build always runs.
+# Default is "all": the full build.
+# Set to a specific stage or combination to run only those stages.
+#   all       - full build (same as not specifying --stages)
+#   cfc       - run CFC step only
+#   cfc,xyz   - run cfc and xyz steps
+# Set via --stages=<value>.
+PREBUILD_STAGES=all
+
+# Master switch for the --stages framework (default false).
+#   ENABLE_PREBUILD_STAGES             -> the --stages mechanism itself
+#   ENABLE_CENTRALIZED_FEATURE_CONTROL -> CFC business logic only
+# The two are independent. When this is false, the block below is
+# skipped wholesale and build.sh behaves exactly as before -- zero impact.
+ENABLE_PREBUILD_STAGES=false
+
+# CFC-namespaced parameters, consumed by run_cfc_setup.
+# Set via --cfc.<key>=<value>.
+CFC_PROFILE=default
+
+# CFC master switch.
+# Default false. To enable CFC: change to true.
 ENABLE_CENTRALIZED_FEATURE_CONTROL=false
+
+# run_cfc_setup [side] [profile]
+#   side:    "qssi" | "vendor" | "" (auto-detect from TARGET_BOARD_PLATFORM)
+#   profile: feature profile name; default "default"
+# Returns 0 on success, 1 on bad args / missing env, or the feature_tool exit
+# code. Callers must check ENABLE_CENTRALIZED_FEATURE_CONTROL before calling.
+# Note: TARGET_BOARD_PLATFORM must be set (normally done by lunch); the function
+# will return 1 immediately if it is missing.
+run_cfc_setup() {
+    local side="$1"
+    local profile="${2:-default}"
+
+    if [ -z "$TARGET_BOARD_PLATFORM" ]; then
+        echo "[cfc_setup] error: TARGET_BOARD_PLATFORM not set; please lunch first." >&2
+        return 1
+    fi
+    if [ -z "$QTI_BUILDTOOLS_DIR" ]; then
+        echo "[cfc_setup] error: QTI_BUILDTOOLS_DIR not set." >&2
+        return 1
+    fi
+
+    local feature_tool="$QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py"
+    if [ ! -f "$feature_tool" ]; then
+        echo "[cfc_setup] error: feature_tool not found at $feature_tool" >&2
+        return 1
+    fi
+
+    if [ -z "$side" ]; then
+        if [[ "$TARGET_BOARD_PLATFORM" == qssi* ]]; then
+            side="qssi"
+        else
+            side="vendor"
+        fi
+    fi
+
+    local input_path out_dir
+    case "$side" in
+        qssi)
+            input_path="vendor/qcom/features/system"
+            out_dir="vendor/qcom/opensource/core-utils/centralized-features/"
+            ;;
+        vendor)
+            input_path="vendor/qcom/features/vendor"
+            out_dir="vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+            ;;
+        *)
+            echo "[cfc_setup] error: side must be 'qssi' or 'vendor', got '$side'" >&2
+            return 1
+            ;;
+    esac
+
+    echo "============================================"
+    log "Command: \"run_cfc_setup ${side} $profile\""
+    echo "[cfc_setup] side=$side profile=$profile target=$TARGET_BOARD_PLATFORM"
+    echo "[cfc_setup] input=$input_path"
+    echo "[cfc_setup] out=$out_dir"
+    echo "============================================"
+
+    python -B "$feature_tool" \
+        --input_path "$input_path" \
+        --profile    "$profile" \
+        --target     "$TARGET_BOARD_PLATFORM" \
+        --out_dir    "$out_dir"
+    return $?
+}
 
 while [[ $# -gt 0 ]]
     do
@@ -196,12 +284,23 @@ while [[ $# -gt 0 ]]
             LIST_TECH_PACKAGE="$LIST_TECH_PACKAGE$arg"
             shift
             ;;
-        --profile)
-            # Assign next arg as profile only if it is non-empty and not a flag;
-            # otherwise keep the default value of FEATURE_PROFILE.
-            if [ -n "$2" ] && [[ "$2" != -* ]]; then
-              FEATURE_PROFILE="$2"
-              shift
+        --stages=*)
+            # Parse only when the stages framework is on; otherwise this arg
+            # falls through exactly as it would if --stages never existed.
+            if [ "$ENABLE_PREBUILD_STAGES" = true ]; then
+                PREBUILD_STAGES="${arg#--stages=}"
+            else
+                MAKE_ARGUMENTS+=("$1")
+            fi
+            shift
+            ;;
+        --cfc.profile=*)
+            # Parse only when CFC is on; otherwise this arg falls through
+            # exactly as it would if --cfc.profile never existed.
+            if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+                CFC_PROFILE="${arg#--cfc.profile=}"
+            else
+                MAKE_ARGUMENTS+=("$1")
             fi
             shift
             ;;
@@ -216,6 +315,41 @@ while [[ $# -gt 0 ]]
     esac
 done
 set -- "${MAKE_ARGUMENTS[@]}" # restore the argument list ($@) to be set to MAKE_ARGUMENTS
+
+# partial path: gated on ENABLE_PREBUILD_STAGES=true AND --stages != all.
+# When both hold, run only the requested stages and then exit. 
+# This path does not depend on lunch having run, but
+# individual stages may still require specific env vars that lunch normally
+# sets (e.g. the cfc stage requires TARGET_BOARD_PLATFORM to be exported).
+#
+# When ENABLE_PREBUILD_STAGES is off (default), this block is skipped
+# wholesale -- no stage parsing -- so build.sh is byte-for-byte equivalent to
+# its pre-stage behavior regardless of any --stages argument. --stages=all
+# likewise preserves existing build behavior unchanged.
+#
+# Each stage decides for itself whether it is enabled. The cfc stage is
+# gated on the CFC master switch: when it is off, the stage is a no-op, so
+# an explicit --stages=cfc never turns into an unexpected full build or a
+# lunch-required error. Other (future) stages are unaffected by the CFC
+# switch.
+if [ "$ENABLE_PREBUILD_STAGES" = true ] && [ "$PREBUILD_STAGES" != all ]; then
+    IFS=',' read -ra _stage_list <<< "$PREBUILD_STAGES"
+    for _stage in "${_stage_list[@]}"; do
+        case "$_stage" in
+            cfc)
+                if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+                    run_cfc_setup "" "$CFC_PROFILE" || exit $?
+                fi
+                ;;
+            # future stages: xyz) run_xyz || exit $? ;;
+            *)
+                echo "[build.sh] error: unknown stage '$_stage'; known stages: cfc" >&2
+                exit 1
+                ;;
+        esac
+    done
+    exit 0
+fi
 
 # function to check if the target product is present in the list passed in
 function target_product_in_list() {
@@ -266,7 +400,7 @@ if [[ "$MERGE_ONLY" == 1 ]]; then
 fi
 
 if [[ "$TARGET_PRODUCT" == "qssi" || "$TARGET_PRODUCT" == "qssi_64" || "$TARGET_PRODUCT" == "qssi_64go" || "$TARGET_PRODUCT" == "qssi_32
-" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_wear" || "$TARGET_PRODUCT" == "qssi_tiny" || "$TARGET_PRODUCT" == "qssi_tiny_32go" ]]; then
+" || "$TARGET_PRODUCT" == "qssi_32go" || "$TARGET_PRODUCT" == "qssi_lp" || "$TARGET_PRODUCT" == "qssi_wear" || "$TARGET_PRODUCT" == "qssi_tiny" || "$TARGET_PRODUCT" == "qssi_tiny_32go" ]]; then
     if [[ "$MERGE_ONLY" == 1 || "$TARGET_ONLY" == 1 ]]; then
         echo "merge_only and target_only options aren't supported for lunch qssi variant"
         exit 1
@@ -303,13 +437,14 @@ ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "bengal_515s" "crow" "anorak")
-TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "chora" "malabar" "pitti" "lahaina612" "art" "shikra_64" "bengal_612" "bengal_612s" "hamoa_la" "honu")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "niobe" "parrot66" "volcano" "canoe" "chora" "malabar" "pitti" "lahaina612" "art" "shikra_64" "bengal_612" "bengal_612s" "honu" "taro612")
 TARGET_PRODUCT_MAPPING_QSSI_64GO=( "qssi_64go" "shikra_64go")
 TARGET_PRODUCT_MAPPING_QSSI_WEAR=("qssi_wear" "monaco_aon_64" "vienna64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go" "bengal_515_32go" "bengal_515s_32go" "bengal_612_32go" "bengal_612s_32go")
 TARGET_PRODUCT_MAPPING_QSSI_TINY=("qssi_tiny" "bengal_515tiny" "bengal_612tiny")
 TARGET_PRODUCT_MAPPING_QSSI_TINY_32GO=("qssi_tiny_32go" "bengal_515tiny_32go" "shikra_tiny_32go" "bengal_612tiny_32go")
+TARGET_PRODUCT_MAPPING_QSSI_LP=( "qssi_lp" "hamoa_la")
 
 QSSI_TARGET_FLAG=1
 # check if our TARGET_PRODUCT is in any of these lists
@@ -329,6 +464,8 @@ elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_TINY[@]}"; then
     TARGET_MATCHING_QSSI="qssi_tiny"
 elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_TINY_32GO[@]}"; then
     TARGET_MATCHING_QSSI="qssi_tiny_32go"
+elif target_product_in_list "${TARGET_PRODUCT_MAPPING_QSSI_LP[@]}"; then
+    TARGET_MATCHING_QSSI="qssi_lp"
 else
     QSSI_TARGET_FLAG=0
     TARGET_MATCHING_QSSI="qssi"
@@ -344,9 +481,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "bengal_612s" "bengal_612tiny" "bengal_612_32go" "bengal_612s_32go" "bengal_612tiny_32go" "hamoa_la" "honu")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "bengal_515_32go" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "bengal_612s" "bengal_612tiny" "bengal_612_32go" "bengal_612s_32go" "bengal_612tiny_32go" "hamoa_la" "honu")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "bengal_612s" "bengal_612tiny" "bengal_612_32go" "bengal_612s_32go" "bengal_612tiny_32go" "hamoa_la" "honu")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "qssi_lp" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "bengal_612s" "bengal_612tiny" "bengal_612_32go" "bengal_612s_32go" "bengal_612tiny_32go" "hamoa_la" "honu" "taro612")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "bengal_515_32go" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "bengal_612s" "bengal_612tiny" "bengal_612_32go" "bengal_612s_32go" "bengal_612tiny_32go" "hamoa_la" "honu" "taro612")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_64go" "qssi_32" "qssi_32go" "qssi_lp" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "bengal_515_32go" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_515s" "bengal_515s_32go" "qssi_tiny" "qssi_tiny_32go" "bengal_515tiny" "bengal_515tiny_32go" "shikra_64" "shikra_64go" "shikra_tiny_32go" "bengal_612" "bengal_612s" "bengal_612tiny" "bengal_612_32go" "bengal_612s_32go" "bengal_612tiny_32go" "hamoa_la" "honu" "taro612")
 
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
@@ -703,6 +840,10 @@ function build_qssi_only () {
         find "${KP_OUT_DIR}" \( -name METADATA -o -name TEST_MAPPING \) -delete
     fi
 
+    if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
+        run_cfc_setup qssi "$CFC_PROFILE" || exit $?
+    fi
+
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     command "make $QSSI_ARGS"
     COMMONSYS_INTF_SCRIPT="$QTI_BUILDTOOLS_DIR/build/commonsys_intf_checker.py"
@@ -742,12 +883,9 @@ function build_target_only () {
     fi
 
     if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
-        command "python -B $QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py \
-            --input_path vendor/qcom/features/vendor \
-            --profile $FEATURE_PROFILE \
-            --target $TARGET_BOARD_PLATFORM \
-            --out_dir vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+        run_cfc_setup vendor "$CFC_PROFILE" || exit $?
     fi
+
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
     QSSI_ARGS="$QSSI_ARGS SKIP_ABI_CHECKS=$SKIP_ABI_CHECKS"
     command "run_qiifa_initialization"
@@ -868,11 +1006,7 @@ function build_techpack_only () {
     fi
 
     if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
-        command "python -B $QTI_BUILDTOOLS_DIR/centralized-features/features-control/feature_tool/main.py \
-            --input_path vendor/qcom/features/vendor \
-            --profile $FEATURE_PROFILE \
-            --target $TARGET_BOARD_PLATFORM \
-            --out_dir vendor/qcom/opensource/core-utils-vendor/centralized-features-vendor/"
+        run_cfc_setup vendor "$CFC_PROFILE" || exit $?
     fi
 
     command "python -B $QTI_BUILDTOOLS_DIR/build/makefile-violation-scanner.py"
@@ -912,7 +1046,6 @@ function build_techpack_only_non_qssi () {
 }
 
 
-
 # Check if TARGET_PRODUCT is defined
 if [ -z "$TARGET_PRODUCT" ]; then
     echo "error:No target product; please set TARGET_PRODUCT, using 'lunch <target>-<release>-<build_type>'"
@@ -942,7 +1075,7 @@ else # For QSSI targets
     if [[ "$QSSI_ONLY" -eq 1 ]]; then
         log "Executing a QSSI only build ..."
         build_qssi_only
-        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_64go" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]] || [[ "$TARGET_PRODUCT" == "qssi_tiny" ]] || [[ "$TARGET_PRODUCT" == "qssi_tiny_32go" ]]; then
+        if [[ "$TARGET_PRODUCT" == "qssi" ]] || [[ "$TARGET_PRODUCT" == "qssi_64" ]] || [[ "$TARGET_PRODUCT" == "qssi_64go" ]] || [[ "$TARGET_PRODUCT" == "qssi_wear" ]] || [[ "$TARGET_PRODUCT" == "qssi_lp" ]] || [[ "$TARGET_PRODUCT" == "qssi_tiny" ]] || [[ "$TARGET_PRODUCT" == "qssi_tiny_32go" ]]; then
             run_qiifa
         else
             log "Skipping QIIFA Validation for ${TARGET_PRODUCT}..."

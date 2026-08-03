@@ -1,0 +1,6 @@
+# Ignore Auto-generated Artifacts Dir
+features-impl-gen/**
+!features-impl-gen/native_feature_query/
+!features-impl-gen/native_feature_query/.keep
+# Ignore Yaml Dir
+features-yaml/**

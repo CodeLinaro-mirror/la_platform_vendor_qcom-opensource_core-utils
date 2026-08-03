@@ -78,7 +78,7 @@ def run(config: BuildConfig, paths: BuildPaths) -> int:
     logger.info("[main]: validation successful")
 
     generator = QtiFeatureGenerator()
-    ret = generator.generate(stitch.feature_dict, paths.gen_out_dir)
+    ret = generator.generate(stitch.feature_dict, paths.gen_out_dir, build_variant=config.build_variant)
     if ret != 0:
         logger.error(f"[main]: generator failed for target: {config.target} and profile: {config.profile}")
         return -1

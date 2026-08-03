@@ -18,6 +18,12 @@ class QtiFeatureConstants:
     FEATURE_TYPE_STRING = "string"
     FEATURE_TYPE_BOOLEAN = "boolean"
     FEATURE_TYPE_INTEGER = "integer"
+    # SOC Override Keys
+    SOC_OVERRIDES_KEY = "soc_overrides"
+    SOC_IDS_KEY = "soc_ids"
+    SOC_NAMES_KEY = "soc_names"
+    SOC_OVERRIDE_VALUE_KEY = "value"
+
 
 class QtiFeatureUtils:
     @staticmethod
@@ -28,7 +34,7 @@ class QtiFeatureUtils:
         for key in features_dict.keys():
             node = features_dict[key]
             if isinstance(node, dict):
-                if "feature_value" in node:
+                if QtiFeatureConstants.FEATURE_VALUE_KEY in node:
                     yield key, node
                 else:
                     yield from QtiFeatureUtils.iter_feature_nodes(node)

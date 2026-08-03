@@ -1,0 +1,11 @@
+cc_library_headers {
+    name: "libqcfeatures_headers",
+    export_include_dirs: ["features-impl-gen/native_feature_query"],
+}
+
+java_library_static {
+    name: "libqcfeatures_static",
+    srcs: ["features-impl-gen/java_feature_query/**/*.java"],
+    sdk_version: "current",
+    owner: "qti",
+}

@@ -10,7 +10,7 @@ DEPOT_TOOLS_URL="https://chromium.googlesource.com/chromium/tools/depot_tools.gi
 WEBVIEW_WORKSPACE="webview_chromium"
 WEBVIEW_BUILD_OPTIONS_FILE="webview_build_options.txt"
 BUILD_OUT_DIR="android_def"
-VALIDATED_WEBVIEW_VERSION="145.0.7632.26"
+VALIDATED_WEBVIEW_VERSION="150.0.7871.28"
 LTO_OPT_PATCHED_WEBVIEW_VERSION="138.0.7184.0"
 
 
