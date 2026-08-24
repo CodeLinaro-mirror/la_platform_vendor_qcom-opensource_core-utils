@@ -285,9 +285,9 @@ def build_superimage(temp_dir, qssi_build_path, target_build_path,
   # Ensure java bins have execute permission
   cmd = ["chmod", "+x", "-R", JAVA_PREBUILT_PATH]
   status = call(cmd)
-
+  JOBS = os.cpu_count()
   logging.info("Triggering Merge Process and generating merged-target-files, OTA zip and super.img...")
-  cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j16", "--merge_only", "--rebuild_sepolicy_with_vendor_otatools=out/dist/vendor/"+TARGET_OTATOOLS_ZIP]
+  cmd = ["bash", "vendor/qcom/opensource/core-utils/build/build.sh", "dist", "-j" + str(JOBS), "--merge_only", "--rebuild_sepolicy_with_vendor_otatools=out/dist/vendor/"+TARGET_OTATOOLS_ZIP]
   logging.info("Running: " + str(cmd))
   status = call(cmd)
 
