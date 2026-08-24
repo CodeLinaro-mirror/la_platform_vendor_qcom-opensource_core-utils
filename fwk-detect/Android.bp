@@ -34,7 +34,7 @@ cc_library_shared {
         "libutils",
         "liblog",
     ],
-    include_dirs: [
+    local_include_dirs: [
         ".",
     ],
     header_libs: [
