@@ -95,8 +95,22 @@ class IGenerator(ABC):
             return '""'
         if len(feature_value) == 0:
             return '""'
-        return "\"" + (feature_value.replace("\\", "\\\\")
-                                    .replace('"', '\\"')) + "\""
+        return "\"" + self._escape_chars(feature_value) + "\""
+
+    def _escape_chars(self, s: str) -> str:
+        '''
+        Escape the characters that are illegal inside a C/Java double-quoted
+        string literal: backslash, double quote, and the control characters
+        that would otherwise break the literal or the enclosing #define /
+        statement. Shared by escape() (Native/Java backends) and
+        RuntimeNativeGenerator._escape(), so there is exactly one
+        implementation of this character set.
+        '''
+        return (s.replace("\\", "\\\\")
+                 .replace('"', '\\"')
+                 .replace("\n", "\\n")
+                 .replace("\r", "\\r")
+                 .replace("\t", "\\t"))
 
 # Makefile Generator Implementation
 class MakeGenerator(IGenerator):
@@ -123,14 +137,22 @@ class MakeGenerator(IGenerator):
 
     def escape(self, feature_value: str) -> str:
         # Makefile variables don't use quoted strings; return bare value (unlike base class).
+        # Internal spaces are NOT escaped here: a bare ':=' value has no
+        # word-splitting semantics of its own, so escaping a space would
+        # inject a literal backslash that was never part of the value.
         if (feature_value is None):
             return ''
         if (len(feature_value) == 0):
             return ''
+        # A raw newline here would terminate the ':=' assignment mid-value,
+        # corrupting the rest of config.mk (confirmed: GNU Make has no
+        # character-level escape that decodes back to a real newline). Turning
+        # it into the literal two-character sequence "\n" keeps config.mk
+        # syntactically valid; it does NOT round-trip back to a real newline on read.
         return (feature_value.replace("\\", "\\\\")
-                            .replace(" ", "\\ ")
                             .replace("$", "$$")
-                            .replace("#", "\\#"))
+                            .replace("#", "\\#")
+                            .replace("\n", "\\n"))
 
 # Native Generator Implementation
 class NativeGenerator(IGenerator):
@@ -239,7 +261,7 @@ class RuntimeNativeGenerator(IGenerator):
         return self._DTYPE_C.get(datatype, "CAP_DTYPE_STRING")
 
     def _escape(self, s: str) -> str:
-        return s.replace("\\", "\\\\").replace('"', '\\"')
+        return self._escape_chars(s)
 
     def generate_artifact(self, feature_key: str, feature_node: dict) -> int:
         feature_type  = feature_node[QtiFeatureConstants.FEATURE_TYPE_KEY]
