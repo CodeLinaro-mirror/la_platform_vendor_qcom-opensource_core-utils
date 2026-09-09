@@ -766,7 +766,8 @@ function build_target_only () {
 
     # OTA generation now adding the support for gen4_gvm_gy and gen4_gvm_gy_sgt. QMAA target is not added.
     # TODO: Add support for gen5_gvm and gen5_gvm_sgt
-    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ]; then
+    if [ "$TARGET_PRODUCT" == "gen4_gvm_gy_sgt" ] || \
+       ( [ "$TARGET_SINGLE_TREE" == "true" ] && [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] ); then
        # OTA partition list for HGY all A/B supported partitions using single tree
        OTA_PARTITIONS="boot dtbo init_boot system product system_ext system_dlkm vbmeta vendor vendor_boot vendor_dlkm vm-bootloader"
     elif [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ]; then

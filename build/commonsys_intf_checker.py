@@ -26,11 +26,9 @@
 #WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 #OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 #IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 import os,json,sys
 import subprocess
 from xml.etree import ElementTree as et
-
 module_info_dict = {}
 git_project_dict = {}
 out_path = os.getenv("OUT")
@@ -44,11 +42,14 @@ violation_file_path = out_path
 aidl_metadata_file = croot + "/out/soong/.intermediates/system/tools/aidl/build/aidl_metadata_json/aidl_metadata.json"
 noship_project_marker = os.path.join(croot,os.getenv("QCPATH"),"interfaces-noship")
 aidl_metadata_dict = {}
-
 def parse_xml_file(path):
     xml_element = None
     if os.path.isfile(path):
         try:
+            root = et.parse(path).getroot()
+            include = root.find("include")
+            if include is not None:
+                path = include.attrib.get("name", path)
             xml_element = et.parse(path).getroot()
         except Exception as e:
             print("Exiting!! Xml Parsing Failed : " + path)
@@ -57,7 +58,6 @@ def parse_xml_file(path):
         print("Exiting!! File not Present : " + path)
         sys.exit(1)
     return xml_element
-
 def load_json_file(path):
     json_dict = {}
     if os.path.isfile(path):
@@ -71,7 +71,6 @@ def load_json_file(path):
         print("Exiting!! File not Present : " + path)
         sys.exit(1)
     return json_dict
-
 def check_if_module_contributing_to_qssi_or_vendor(install_path):
     qssi_path = False
     vendor_path = False
@@ -88,21 +87,18 @@ def check_if_module_contributing_to_qssi_or_vendor(install_path):
                 vendor_path = True
                 break
     return {"qssi_path":qssi_path, "vendor_path":vendor_path}
-
 def find_and_update_git_project_path(path):
      for git_repository in git_repository_list:
          if git_repository in path:
              return git_repository
          else:
              return path
-
 def filter_whitelist_projects(violation_list):
     filtered_project_violation_list = []
     for violator in violation_list:
         if not ignore_whitelist_projects(violator):
             filtered_project_violation_list.append(violator)
     return filtered_project_violation_list
-
 def print_violations_to_file(violation_list,qssi_path_project_list,vendor_path_project_list):
     violation_list = filter_whitelist_projects(violation_list)
     if violation_list:
@@ -125,7 +121,6 @@ def print_violations_to_file(violation_list,qssi_path_project_list,vendor_path_p
             print("Commonsys-Intf Violation found !! Exiting Compilation !!")
             print("For details execute : cat $OUT/configs/commonsys-intf-violator.txt")
             sys.exit(-1)
-
 def check_for_hidl_aidl_intermediate_libs(module_name,class_type):
     if "@" in module_name or "-ndk" in module_name:
         if class_type == "EXECUTABLES" or "-impl" in module_name:
@@ -141,17 +136,14 @@ def check_for_hidl_aidl_intermediate_libs(module_name,class_type):
                     if class_type == "JAVA_LIBRARIES" or class_type == "SHARED_LIBRARIES" or "cpp-analyzer" in module_name:
                         return True
         return False
-
 def ignore_whitelist_projects(project_name):
     for project in whitelist_projects_list :
         if project == project_name:
             return True
     return False
-
 def is_dylib_file(filepath):
     DYLIB_SO_EXTENSION = ".dylib.so"
     return filepath.endswith(DYLIB_SO_EXTENSION)
-
 def find_commonsys_intf_project_paths():
     qssi_install_keywords = ["system","system_ext","product"]
     vendor_install_keywords = ["vendor"]
@@ -169,13 +161,10 @@ def find_commonsys_intf_project_paths():
             continue
         except KeyError:
             continue
-
         if(is_dylib_file(install_path)):
             continue
-
         if project_path is None or install_path is None or class_type is None:
             continue
-
         relative_out_path = out_path.split(croot + "/")[1]
         ## Ignore host and other paths
         if not relative_out_path in install_path:
@@ -189,7 +178,6 @@ def find_commonsys_intf_project_paths():
             qssi_or_vendor = check_if_module_contributing_to_qssi_or_vendor(install_path)
             if not qssi_or_vendor["qssi_path"] and not qssi_or_vendor["vendor_path"]:
                 continue
-
             project_path = find_and_update_git_project_path(project_path)
             if qssi_or_vendor["qssi_path"]:
                 install_path_list =  []
@@ -201,7 +189,6 @@ def find_commonsys_intf_project_paths():
                 if project_path in vendor_path_project_list:
                     violation_list[project_path] = install_path
                 continue
-
             if qssi_or_vendor["vendor_path"]:
                 install_path_list =  []
                 if project_path in vendor_path_project_list:
@@ -214,7 +201,6 @@ def find_commonsys_intf_project_paths():
                 if project_path in qssi_path_project_list:
                     violation_list[project_path] = install_path
     print_violations_to_file(violation_list,qssi_path_project_list,vendor_path_project_list)
-
 def start_commonsys_intf_checker():
     global module_info_dict
     global git_repository_list
@@ -233,7 +219,6 @@ def start_commonsys_intf_checker():
         if not git_project_path == None:
             git_repository_list.append(git_project_path)
     find_commonsys_intf_project_paths()
-
 def read_enforcement_value_from_mkfile():
     global commonsys_intf_enforcement
     script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -256,7 +241,6 @@ def read_enforcement_value_from_mkfile():
     else:
         print("configs_enforcement.mk fime missing. Exiting!!")
         sys.exit(-1)
-
 def main():
     if os.path.exists(noship_project_marker):
         read_enforcement_value_from_mkfile()
@@ -264,6 +248,5 @@ def main():
         print("Commonsys-Intf Script Executed Successfully!!")
     else:
         print("Skipping Commonsys-Intf Checker!!")
-
 if __name__ == '__main__':
     main()
