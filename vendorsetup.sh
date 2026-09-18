@@ -26,3 +26,9 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE US
 
 export QTI_BUILDTOOLS_DIR=$(dirname ${BASH_SOURCE[0]})
+
+# CFC (Centralized Feature Control) master switch.  This is where the value is
+# set; it is exported so that every build orchestrator that consumes it reads
+# one shared value -- this tree's build/build.sh, and Keystone's build
+# orchestrator when building there.  Set to true to enable CFC.
+export ENABLE_CENTRALIZED_FEATURE_CONTROL=false
