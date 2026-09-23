@@ -170,8 +170,8 @@ QIIFA_TARGET_BASH_CONFIG_FILEPATH="$QCPATH/QIIFA-cmd-vendor/qiifa_bash_configs"
 QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_config/qiifa_bash_configs"
 
 # Pipeline stage selector.  Comma-separated list of stages to execute.
-# Only consulted when ENABLE_PREBUILD_STAGES=true (see below); otherwise this
-# value is inert and the full build always runs.
+# Only consulted when ENABLE_CENTRALIZED_FEATURE_CONTROL=true (see below);
+# otherwise this value is inert and the full build always runs.
 # Default is "all": the full build.
 # Set to a specific stage or combination to run only those stages.
 #   all       - full build (same as not specifying --stages)
@@ -180,20 +180,13 @@ QIIFA_FRAMEWORK_BASH_CONFIG_FILEPATH="$QCPATH/commonsys-intf/QIIFA-fwk/qiifa_con
 # Set via --stages=<value>.
 PREBUILD_STAGES=all
 
-# Master switch for the --stages framework (default false).
-#   ENABLE_PREBUILD_STAGES             -> the --stages mechanism itself
-#   ENABLE_CENTRALIZED_FEATURE_CONTROL -> CFC business logic only
-# The two are independent. When this is false, the block below is
-# skipped wholesale and build.sh behaves exactly as before -- zero impact.
-ENABLE_PREBUILD_STAGES=false
-
 # CFC-namespaced parameters, consumed by run_cfc_setup.
 # Set via --cfc.<key>=<value>.
 CFC_PROFILE=default
 
-# CFC master switch.
-# Default false. To enable CFC: change to true.
-ENABLE_CENTRALIZED_FEATURE_CONTROL=false
+# CFC master switch.  Set and exported by core-utils/vendorsetup.sh; the
+# expansion below only supplies a default if that was never sourced.
+ENABLE_CENTRALIZED_FEATURE_CONTROL=${ENABLE_CENTRALIZED_FEATURE_CONTROL:-false}
 
 # run_cfc_setup [side] [profile]
 #   side:    "qssi" | "vendor" | "" (auto-detect from TARGET_BOARD_PLATFORM)
@@ -285,9 +278,9 @@ while [[ $# -gt 0 ]]
             shift
             ;;
         --stages=*)
-            # Parse only when the stages framework is on; otherwise this arg
+            # Parse only when CFC is on; otherwise this arg
             # falls through exactly as it would if --stages never existed.
-            if [ "$ENABLE_PREBUILD_STAGES" = true ]; then
+            if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
                 PREBUILD_STAGES="${arg#--stages=}"
             else
                 MAKE_ARGUMENTS+=("$1")
@@ -316,30 +309,22 @@ while [[ $# -gt 0 ]]
 done
 set -- "${MAKE_ARGUMENTS[@]}" # restore the argument list ($@) to be set to MAKE_ARGUMENTS
 
-# partial path: gated on ENABLE_PREBUILD_STAGES=true AND --stages != all.
-# When both hold, run only the requested stages and then exit. 
+# partial path: gated on ENABLE_CENTRALIZED_FEATURE_CONTROL=true AND --stages != all.
+# When both hold, run only the requested stages and then exit.
 # This path does not depend on lunch having run, but
 # individual stages may still require specific env vars that lunch normally
 # sets (e.g. the cfc stage requires TARGET_BOARD_PLATFORM to be exported).
 #
-# When ENABLE_PREBUILD_STAGES is off (default), this block is skipped
-# wholesale -- no stage parsing -- so build.sh is byte-for-byte equivalent to
-# its pre-stage behavior regardless of any --stages argument. --stages=all
-# likewise preserves existing build behavior unchanged.
-#
-# Each stage decides for itself whether it is enabled. The cfc stage is
-# gated on the CFC master switch: when it is off, the stage is a no-op, so
-# an explicit --stages=cfc never turns into an unexpected full build or a
-# lunch-required error. Other (future) stages are unaffected by the CFC
-# switch.
-if [ "$ENABLE_PREBUILD_STAGES" = true ] && [ "$PREBUILD_STAGES" != all ]; then
+# When the switch is off, this block is skipped wholesale -- no stage parsing --
+# so build.sh behaves as it did before CFC. Note that a --stages argument
+# passed while the switch is off is not recognised as a stage: it reaches make
+# as an ordinary argument, and make rejects it.
+if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ] && [ "$PREBUILD_STAGES" != all ]; then
     IFS=',' read -ra _stage_list <<< "$PREBUILD_STAGES"
     for _stage in "${_stage_list[@]}"; do
         case "$_stage" in
             cfc)
-                if [ "$ENABLE_CENTRALIZED_FEATURE_CONTROL" = true ]; then
-                    run_cfc_setup "" "$CFC_PROFILE" || exit $?
-                fi
+                run_cfc_setup "" "$CFC_PROFILE" || exit $?
                 ;;
             # future stages: xyz) run_xyz || exit $? ;;
             *)
