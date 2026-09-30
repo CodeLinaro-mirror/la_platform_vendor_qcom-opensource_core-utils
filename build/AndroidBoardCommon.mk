@@ -21,6 +21,13 @@ ifeq ($(TARGET_BOARD_PLATFORM),qssi)
 	@echo "Creating $(VM_SYSTEM_MOUNT_POINT)"
 	@mkdir -p $(TARGET_OUT_PRODUCT)/vm-system
  endif
+ ifeq ($(TARGET_BOARD_SUFFIX),_xrM)
+  VM_SYSTEM_MOUNT_POINT := $(TARGET_OUT_PRODUCT)/vm-system
+  ALL_DEFAULT_INSTALLED_MODULES += $(VM_SYSTEM_MOUNT_POINT)
+  $(VM_SYSTEM_MOUNT_POINT):
+	@echo "Creating $(VM_SYSTEM_MOUNT_POINT)"
+	@mkdir -p $(TARGET_OUT_PRODUCT)/vm-system
+ endif
 endif
 
 # create symlink system/lib/modules -> system_dlkm/lib/modules
