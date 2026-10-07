@@ -292,7 +292,7 @@ ENABLE_VIRTUAL_AB=false
 
 # use these lists to pair target lunch options with their corresponding qssi type.
 TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" "msmnile" "sm6150" "kona" "atoll" "trinket" "lito" "bengal" "qssi" "parrot" "bengal_515" "crow" "anorak")
-TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "parrot66" "volcano" "canoe" "chora" "malabar" "pitti" "lahaina612" "art" "bengal_612")
+TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "hala" "sun" "qssi_64" "parrot66" "volcano" "canoe" "chora" "malabar" "pitti" "lahaina612" "art" "bengal_612" "taro612")
 TARGET_PRODUCT_MAPPING_QSSI_WEAR=("qssi_wear" "monaco_aon_64" "vienna64")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily" "pitti_32go")
@@ -333,9 +333,9 @@ DIST_DIR="out/dist"
 MERGED_TARGET_FILES="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-target_files.zip"
 LEGACY_TARGET_FILES="$DIST_DIR/${TARGET_PRODUCT}-target_files-*.zip"
 MERGED_OTA_ZIP="$DIST_DIR/merged-${TARGET_MATCHING_QSSI}_${TARGET_PRODUCT}-ota.zip"
-DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "qssi_xrM" "qssi_lite" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "neo")
-VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "neo")
-DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "qssi_xrM" "qssi_lite" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "neo")
+DIST_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "sdm710" "sdm845" "msmnile" "sm6150" "trinket" "lito" "bengal" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "qssi_xrM" "qssi_lite" "bengal_32" "bengal_32go" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "neo" "taro612")
+VIRTUAL_AB_ENABLED_TARGET_LIST=("kona" "lito" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "bengal_515" "crow" "niobe" "anorak" "parrot66" "volcano" "monaco" "canoe" "chora" "malabar" "vienna" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "neo" "taro612")
+DYNAMIC_PARTITION_ENABLED_TARGET_LIST=("holi" "taro" "kalama" "parrot" "kalama64" "pineapple" "blair" "sun" "lahaina" "kona" "msmnile" "sdm710" "lito" "trinket" "atoll" "qssi" "qssi_64" "qssi_32" "qssi_32go" "qssi_xrl" "qssi_xrM" "qssi_lite" "bengal" "bengal_32" "bengal_32go" "sm6150" "sdm660_64" "msm8937_lily" "bengal_515" "monaco" "crow" "niobe" "anorak" "parrot66" "volcano" "canoe" "chora" "malabar" "vienna" "qssi_wear" "monaco_aon_64" "pitti" "pitti_32go" "vienna64" "lahaina612" "art" "bengal_612" "seraph" "neo" "taro612")
 DYNAMIC_PARTITIONS_IMAGES_PATH=$OUT
 DP_IMAGES_OVERRIDE=false
 TECHPACK_LIST=("camera_tp" "display_tp" "video_tp" "audio_tp" "sensors_tp" "cv_tp" "xr_tp" "btfm_tp" "wlan_tp" "hexlp_tp" "graphics_tp" "dspplatform_tp" )
@@ -644,19 +644,21 @@ function run_qiifa_dependency_checker() {
 
 function generate_camx_preamble_if_needed () {
     if [ "$TARGET_BOARD_PLATFORM" != "malabar" ] && [ "$TARGET_BOARD_PLATFORM" != "seraph" ]; then
-        log "Set camx preamble generation script......."
-        if [ -z "${CAMX_PATH_PREFIX}" ]; then
-            log "CAMX_PATH_PREFIX is $QCPATH"
-            CAMX_PATH_PREFIX=$QCPATH
-        fi
-        CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
+        if [ "$USE_CAMERA_STUB" = false ]; then
+            log "Set camx preamble generation script......."
+            if [ -z "${CAMX_PATH_PREFIX}" ]; then
+                log "CAMX_PATH_PREFIX is $QCPATH"
+                CAMX_PATH_PREFIX=$QCPATH
+            fi
+            CAMX_PREAMBLE_PYTHON_SCRIPT="$CAMX_PATH_PREFIX/chi-cdk/tools/binary_log/gen_preamble.py"
 
-        if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
-        GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/etc/camera"
-        GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
-        command "mkdir -p $GEN_PREAMBLE_DIR"
-        log "Run camx preamble generation......."
-        command "python3 $CAMX_PREAMBLE_PYTHON_SCRIPT -o $GEN_PREAMBLE_OUTPUT -d $ANDROID_PRODUCT_OUT/obj"
+            if [ -f $CAMX_PREAMBLE_PYTHON_SCRIPT ]; then
+            GEN_PREAMBLE_DIR="$ANDROID_PRODUCT_OUT/vendor/etc/camera"
+            GEN_PREAMBLE_OUTPUT="$GEN_PREAMBLE_DIR/camera-preamble.json"
+            command "mkdir -p $GEN_PREAMBLE_DIR"
+            log "Run camx preamble generation......."
+            command "python3 $CAMX_PREAMBLE_PYTHON_SCRIPT -o $GEN_PREAMBLE_OUTPUT -d $ANDROID_PRODUCT_OUT/obj"
+            fi
         fi
     fi
 }
