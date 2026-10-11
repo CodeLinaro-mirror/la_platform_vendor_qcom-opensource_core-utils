@@ -172,6 +172,10 @@ feature_schema:
       doc: "List of layers/systems where this feature applies.
             native is for c/cpp.
             make is for make variables, can be used in Android.mk or product/board makefiles.
+              Boolean features consumed under make: GNU Make treats any non-empty string as
+              true, so the literal string 'false' is Make-truthy. Consumers MUST use a positive
+              comparison (ifeq ($(FEATURE_X),true)) and MUST NOT rely on presence/non-empty
+              checks (ifdef, ifneq ($(FEATURE_X),)).
             java is for java files.
             runtime is to enable runtime api's framework so that the processes can use it for runtime feature capability queries.
             To enable all the scopes, we can give 'all' as a supported value. 'all' cannot be combined with other values."
