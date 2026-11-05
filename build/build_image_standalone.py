@@ -335,13 +335,19 @@ def main():
     "qssi_32"   : ["bengal_32", "monaco"],
     "qssi_32go" : ["bengal_32go", "msm8937_lily"],
     "qssi_64"   : ["kalama64", "pineapple", "blair", "sun", "niobe"],
-    "qssi_au"   : ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu", "gen4_gvm_vcu"],
-    "qssi_au_64"   : ["gen5_gvm_gy", "gen5_gvm", "gen5_gvm_cmu", "gen5_gvm_qmaa" ,"gen4_gvm_gy",  "gen4_gvm_gy_qmaa"],
     "qssi_au_sdv"  : ["gen4_gvm_sdv", "gen4_gvm_cdcsdv","gen4_gvm_cdcsdv_cev"],
     "qssi_au_sdvivi"    : ["gen4_gvm_sdvivi","gen4_gvm_cdccomm","gen4_gvm_cdccomm_cev"],
   }
 
-  if args.target_lunch   in vendor_qssi_mapping_dict['qssi']:
+  # gen4_gvm_gy pairs with qssi_au on vendor version 16, qssi_au_64 otherwise.
+  if os.environ.get('BOARD_SHIPPING_API_LEVEL') == '202504':
+    vendor_qssi_mapping_dict["qssi_au"] = ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu", "gen4_gvm_vcu", "gen4_gvm_gy"]
+    vendor_qssi_mapping_dict["qssi_au_64"] = ["gen5_gvm_gy", "gen5_gvm", "gen5_gvm_cmu", "gen5_gvm_qmaa", "gen4_gvm_gy_qmaa"]
+  else:
+    vendor_qssi_mapping_dict["qssi_au"] = ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu", "gen4_gvm_vcu"]
+    vendor_qssi_mapping_dict["qssi_au_64"] = ["gen5_gvm_gy", "gen5_gvm", "gen5_gvm_cmu", "gen5_gvm_qmaa", "gen4_gvm_gy_qmaa", "gen4_gvm_gy"]
+
+  if args.target_lunch in vendor_qssi_mapping_dict['qssi']:
     QSSI_TARGET="qssi"
   elif args.target_lunch in vendor_qssi_mapping_dict['qssi_32go']:
     QSSI_TARGET="qssi_32go"
