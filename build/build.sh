@@ -334,6 +334,13 @@ fi
 
     echo "QSSI mapped target = $TARGET_MATCHING_QSSI "
 # OTA/Dist related variables
+if [ "$TARGET_PRODUCT" == "gen4_gvm_gy" ] && [ "$BOARD_SHIPPING_API_LEVEL" == "202504" ]; then
+TEMP_OUT="out/dist"
+QSSI_TARGET_MAPPING_LEVEL_FILE="$TEMP_OUT/QSSI_TARGET_MAPPING_LEVEL"
+mkdir -p "$TEMP_OUT"
+printf '%s\n' "${BOARD_SHIPPING_API_LEVEL:-}" > "${QSSI_TARGET_MAPPING_LEVEL_FILE}.tmp.$$"
+mv -f "${QSSI_TARGET_MAPPING_LEVEL_FILE}.tmp.$$" "$QSSI_TARGET_MAPPING_LEVEL_FILE"
+fi
 QSSI_OUT="out/target/product/$TARGET_PRODUCT"
 DIST_COMMAND="dist"
 DIST_ENABLED=false

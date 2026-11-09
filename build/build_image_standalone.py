@@ -339,8 +339,22 @@ def main():
     "qssi_au_sdvivi"    : ["gen4_gvm_sdvivi","gen4_gvm_cdccomm","gen4_gvm_cdccomm_cev"],
   }
 
-  # gen4_gvm_gy pairs with qssi_au on vendor version 16, qssi_au_64 otherwise.
-  if os.environ.get('BOARD_SHIPPING_API_LEVEL') == '202504':
+  qssi_target_mapping_file = os.path.join(
+     args.target_build_path, OUT_DIST, 'QSSI_TARGET_MAPPING_LEVEL')
+  try:
+    with open(qssi_target_mapping_file, 'r') as api_level_file:
+      board_shipping_api_level = api_level_file.read().strip()
+      os.remove(qssi_target_mapping_file)
+    logging.info('Read QSSI_TARGET_MAPPING_LEVEL=%s from %s',
+                 board_shipping_api_level, qssi_target_mapping_file)
+  except FileNotFoundError:
+    # Preserve support for older build outputs and direct invocations.
+    board_shipping_api_level = os.environ.get('BOARD_SHIPPING_API_LEVEL', '')
+    logging.warning('No QSSI_TARGET_MAPPING_LEVEL file at %s; using environment value',
+                    qssi_target_mapping_file)
+
+    # gen4_gvm_gy pairs with qssi_au on vendor version 16, qssi_au_64 otherwise.
+  if board_shipping_api_level == '202504':
     vendor_qssi_mapping_dict["qssi_au"] = ["msmnile_au", "sm6150_au", "msmnile_gvmq", "gen4_gvm", "gen4_gvm_qmaa", "gen4_gvm_sdvcomm", "msmnile_gvmq_vcu", "msmnile_gvmq_s_u", "msmnile_au_s_u", "sm6150_au_s_u", "msmnile_au_t", "gen4_gvm_cmu", "gen4_gvm_vcu", "gen4_gvm_gy"]
     vendor_qssi_mapping_dict["qssi_au_64"] = ["gen5_gvm_gy", "gen5_gvm", "gen5_gvm_cmu", "gen5_gvm_qmaa", "gen4_gvm_gy_qmaa"]
   else:
