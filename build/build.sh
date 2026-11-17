@@ -295,8 +295,16 @@ TARGET_PRODUCT_MAPPING_QSSI=("holi" "taro" "kalama" "lahaina" "sdm710" "sdm845" 
 TARGET_PRODUCT_MAPPING_QSSI_64=("kalama64" "pineapple" "blair" "sun" "qssi_64" "niobe")
 TARGET_PRODUCT_MAPPING_QSSI_32=("bengal_32" "qssi_32" "monaco")
 TARGET_PRODUCT_MAPPING_QSSI_32GO=("bengal_32go" "qssi_32go" "msm8937_lily")
+
+# gen4_gvm_gy pairs with qssi_au on BOARD_SHIPPING_API_LEVEL 202504 ,and to qssi_au_64 otherwise
+if [ "$BOARD_SHIPPING_API_LEVEL" == "202504" ]; then
+TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdccomm_cev" "gen4_gvm_cdcsdv" "gen4_gvm_cdcsdv_cev" "gen4_gvm_microdroid" "gen4_gvm_gy_qmaa" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen4_gvm_vcu" "gen4_gvm_gy")
+TARGET_PRODUCT_MAPPING_QSSI_AU_64=("gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "gen5_gvm_cmu" "qssi_au_64" "gen4_gvm_gy_sgt")
+else
 TARGET_PRODUCT_MAPPING_QSSI_AU=("msmnile_au" "msmnile_gvmq" "msmnile_gvmq_sgt" "gen4_gvm" "gen4_gvm_sgt" "gen4_gvm_qmaa" "gen4_gvm_cdccomm" "gen4_gvm_cdccomm_cev" "gen4_gvm_cdcsdv" "gen4_gvm_cdcsdv_cev" "gen4_gvm_microdroid" "gen4_gvm_gy_qmaa" "gen4_gvm_sdvcomm" "qssi_au" "sm6150_au" "msmnile_gvmq_vcu" "msmnile_gvmq_s_u" "msmnile_au_s_u" "sm6150_au_s_u" "msmnile_au_t" "gen4_gvm_cmu" "gen4_gvm_vcu")
 TARGET_PRODUCT_MAPPING_QSSI_AU_64=("gen5_gvm_gy" "gen5_gvm" "gen5_gvm_sgt" "gen5_gvm_qmaa" "gen5_gvm_cmu" "qssi_au_64" "gen4_gvm_gy" "gen4_gvm_gy_sgt")
+fi
+
 TARGET_PRODUCT_MAPPING_QSSI_AU_SDVIVI=("gen4_gvm_sdvivi" "qssi_au_sdvivi")
 TARGET_PRODUCT_MAPPING_QSSI_AU_SDV=("gen4_gvm_sdv" "qssi_au_sdv")
 
